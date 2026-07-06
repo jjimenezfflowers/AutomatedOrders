@@ -1,0 +1,38 @@
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+  <h2 class="text-2xl font-semibold mb-4">Order History</h2>
+
+  @if (loading) {
+    <p class="text-gray-500">Loading history...</p>
+  } @else if (history.length === 0) {
+    <p class="text-gray-500">No orders placed yet.</p>
+  } @else {
+    <div class="space-y-3">
+      @for (entry of history; track entry.orderNumber + entry.date) {
+        <div class="border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="font-semibold text-gray-800">#{{ entry.orderNumber }}</span>
+              @if (entry.environment === 'staging') {
+                <span class="text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-0.5 rounded">🟡 Staging</span>
+              } @else {
+                <span class="text-xs font-bold bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded">🟢 DEV</span>
+              }
+            </div>
+            <span class="text-xs text-gray-400">{{ formatDate(entry.date) }}</span>
+          </div>
+          <div class="text-sm text-gray-600">
+            <span class="mr-4">👤 {{ entry.customer }}</span>
+            <span>📦 {{ entry.products.length }} product(s)</span>
+          </div>
+          @if (entry.products.length) {
+            <ul class="mt-2 text-xs text-gray-500 list-disc list-inside">
+              @for (p of entry.products; track p.productId) {
+                <li>{{ p.productId }} × {{ p.quantity }}{{ p.variant ? ' — ' + p.variant : '' }}</li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

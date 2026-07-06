@@ -1,0 +1,42 @@
+{
+  "deliveryDate": "2026-02-21",
+  "customerInfo": {
+    "email": "jose@fiftyflowers.com",
+    "phone": "(208) 391-2924",
+    "firstName": "Jose",
+    "lastName": "Testing",
+    "address": "179 Wall St",
+    "city": "West Long Branch",
+    "state": "NJ",
+    "zipCode": "07764"
+  },
+  "payment": {
+    "cardNumber": "1",
+    "cvv": "123",
+    "expiry": "1226"
+  },
+  "orders": [
+    {
+      "productId": "floreana-white-spray-roses",
+      "quantity": 2,
+      "variant": "100 stems (10 Bunches)"
+    },
+    {
+      "productId": "eskimo-white-rose-1",
+      "quantity": 3,
+      "variant": "150 Roses"
+    },
+    {
+      "productId": "wedding-flower-kit",
+      "quantity": 1,
+      "variant": "Wedding Combo Box",
+      "productOptions": {
+        "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+        "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+        "vo_2_1383": "White",
+        "vo_3_1384": "White Spray Roses 8 Stem Bunches",
+        "vo_4_1385": "White"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "deliveryDate": "2026-07-13",
+  "customerInfo": {
+    "email": "jose@fiftyflowers.com",
+    "phone": "(208) 391-2924",
+    "firstName": "Jose",
+    "lastName": "Testing",
+    "address": "179 Wall St",
+    "city": "West Long Branch",
+    "state": "NJ",
+    "zipCode": "07764"
+  },
+  "payment": {
+    "cardNumber": "4242424242424242",
+    "cvv": "123",
+    "expiry": "1226"
+  },
+  "orders": [
+    {
+      "productId": "floreana-white-spray-roses",
+      "quantity": 1,
+      "variant": "20 stems (2 Bunches)",
+      "deliveryDate": "2026-07-17"
+    },
+    {
+      "productId": "wedding-flower-kit",
+      "quantity": 1,
+      "variant": "Wedding Combo Box",
+      "deliveryDate": "2026-07-13",
+      "productOptions": {
+        "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+        "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+        "vo_2_1383": "Cream",
+        "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+        "vo_4_1385": "Bicolor White with Pink Tips"
+      }
+    }
+  ]
+}

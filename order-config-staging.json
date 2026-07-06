@@ -1,0 +1,11 @@
+{
+  "stagingBaseUrl": "https://bloom-brain-stage.myshopify.com/",
+  "deliveryDate": "2026-05-23",
+  "orders": [
+    {
+      "productId": "impressive-daydream-diy-flower-kit-1",
+      "quantity": 1,
+      "variant": "Medium Pack"
+    }
+  ]
+}

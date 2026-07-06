@@ -1,0 +1,2648 @@
+[
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-02-10T16:58:01.943Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-02-10T17:01:02.961Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-02-10T17:05:46.421Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2327",
+    "date": "2026-02-10T18:12:02.888Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2328",
+    "date": "2026-02-10T18:21:15.980Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2329",
+    "date": "2026-02-10T18:25:26.500Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-10T21:31:04.008Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 4
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-10T21:40:20.378Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-10T21:57:30.259Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-13T18:00:59.500Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-13T18:14:41.132Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-18T18:03:39.670Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-02-18T20:13:08.211Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "variant": "20 stems (2 Bunches)",
+        "quantity": 1
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "quantity": 1
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2340",
+    "date": "2026-02-18T20:15:32.404Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2348",
+    "date": "2026-02-27T14:29:22.133Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 5,
+        "variant": "50 stems (5 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2349",
+    "date": "2026-02-27T14:30:17.855Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 5,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-02-27T15:43:56.865Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 3,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-02T14:59:08.269Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-02T16:14:08.427Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Hypericum 10 stem bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2353",
+    "date": "2026-03-02T16:58:22.941Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 4,
+        "variant": "5 bunches Special_Slash $16.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2354",
+    "date": "2026-03-02T16:58:57.296Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 4,
+        "variant": "5 bunches Special_Slash $16.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-03T15:54:32.001Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 2,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-04T13:38:24.661Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "30 Bunches"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "150 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-04T15:03:32.808Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "30 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-04T18:34:48.675Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-04T22:29:21.166Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-05T15:06:06.543Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2367",
+    "date": "2026-03-05T15:07:51.023Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2368",
+    "date": "2026-03-05T15:16:44.637Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2369",
+    "date": "2026-03-05T15:18:30.914Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 2,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-06T18:37:52.578Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2372",
+    "date": "2026-03-06T18:38:36.433Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2371",
+    "date": "2026-03-06T18:38:36.697Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2373",
+    "date": "2026-03-06T18:41:38.614Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2374",
+    "date": "2026-03-06T18:42:35.190Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2375",
+    "date": "2026-03-06T18:43:22.548Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2376",
+    "date": "2026-03-06T18:46:03.831Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2377",
+    "date": "2026-03-06T18:47:03.420Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2378",
+    "date": "2026-03-06T18:49:18.839Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "50 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-09T20:23:19.621Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 4,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-09T20:23:20.051Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 4,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T14:49:13.718Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 4,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T14:52:03.509Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2389",
+    "date": "2026-03-12T14:52:34.703Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "5 bunches Special_Slash $16.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2390",
+    "date": "2026-03-12T14:53:12.527Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "100 stems (10 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T15:07:07.777Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 5,
+        "variant": "50 stems (5 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T15:12:20.324Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "150 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T15:23:24.777Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 6,
+        "variant": "100 stems (10 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T15:24:40.806Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-12T17:37:27.607Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-13T17:45:25.739Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-13T18:21:17.384Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2402",
+    "date": "2026-03-13T18:21:37.569Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-13T18:42:37.636Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-13T20:09:30.068Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-13T20:25:56.814Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-16T13:29:34.182Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2408",
+    "date": "2026-03-16T15:24:48.083Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2409",
+    "date": "2026-03-16T15:35:12.718Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-16T17:45:46.538Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-19T16:58:00.408Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-19T16:58:48.209Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-19T17:29:33.396Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-19T17:31:18.351Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-19T17:33:58.398Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2417",
+    "date": "2026-03-19T17:41:38.240Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2422",
+    "date": "2026-03-23T00:57:51.688Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-23T17:39:50.469Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-24T14:02:01.639Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-24T14:06:32.176Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2425",
+    "date": "2026-03-24T14:07:15.704Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2426",
+    "date": "2026-03-24T14:27:43.102Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-24T15:23:15.493Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-24T16:13:31.744Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-24T16:25:27.320Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2429",
+    "date": "2026-03-24T16:36:04.984Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-24T16:39:19.446Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-25T14:57:01.221Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-25T15:18:16.977Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2433",
+    "date": "2026-03-25T15:22:22.117Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-26T16:50:55.356Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "50 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-27T15:05:35.647Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-27T21:16:22.305Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-30T14:15:48.266Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2437",
+    "date": "2026-03-30T14:26:53.678Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2438",
+    "date": "2026-03-30T14:37:05.389Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "10 bunches Special_Slash $12.99 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-31T16:26:54.535Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-31T16:28:39.291Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-31T16:42:42.974Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-31T17:19:37.803Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-03-31T17:21:13.685Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-03-31T17:32:57.679Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 2,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-06T13:48:35.868Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 2,
+        "variant": "15 bunches Special_Slash $11.67 per bunch"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-10T21:23:59.033Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2446",
+    "date": "2026-04-10T21:25:31.870Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2447",
+    "date": "2026-04-10T21:28:39.447Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-10T21:47:09.429Z",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 4,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T15:25:07.218Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "50 stems (5 Bunches)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "50 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2462",
+    "date": "2026-04-17T15:26:10.827Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T16:07:52.232Z",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2464",
+    "date": "2026-04-17T16:09:26.952Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T16:10:09.846Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2468",
+    "date": "2026-04-17T16:25:44.451Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2469",
+    "date": "2026-04-17T16:28:03.993Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2470",
+    "date": "2026-04-17T16:30:20.905Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2471",
+    "date": "2026-04-17T16:33:05.204Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2472",
+    "date": "2026-04-17T16:35:50.427Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2473",
+    "date": "2026-04-17T16:37:17.955Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2474",
+    "date": "2026-04-17T16:38:14.979Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2475",
+    "date": "2026-04-17T16:39:40.739Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T16:41:07.743Z",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T16:43:00.086Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "Sample bunch (please allow 4 days for delivery)"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T16:44:42.956Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T16:50:56.526Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T19:39:04.108Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T19:45:38.478Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T22:28:38.579Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T23:00:50.571Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "50 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T23:00:54.231Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-17T23:15:44.151Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3,
+        "variant": "150 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T23:16:12.099Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-17T23:16:55.739Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:22:36.458Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:23:50.128Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:26:14.622Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T14:27:21.727Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "100 stems (10 Bunches)"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:35:04.550Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:35:48.676Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:37:12.394Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:38:07.401Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:40:55.978Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:40:57.128Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:42:42.757Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:44:14.332Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T14:46:10.717Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T15:17:59.215Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-04-20T15:22:30.445Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T15:26:19.818Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T15:30:06.421Z",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T18:24:25.363Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "150 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T18:27:12.557Z",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "150 Roses"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-20T18:27:33.259Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 3,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-21T19:56:37.771Z",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-04-21T19:56:38.500Z",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-2",
+        "quantity": 1,
+        "variant": "20 bunches Special_Slash $11.25 per bunch"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-07T15:16:46.171Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2506",
+    "date": "2026-05-07T15:17:14.287Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-07T15:26:31.002Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-07T16:58:11.641Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 1,
+        "variant": "Medium Pack"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-07T18:10:03.685Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 2,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-07T20:58:02.837Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 1,
+        "variant": "Medium Pack"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-12T15:43:41.728Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 2,
+        "variant": "Medium Pack"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-12T15:49:03.351Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 4,
+        "variant": "Large Pack"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: BB-STAGE-50F1346",
+    "date": "2026-05-12T15:51:46.991Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 2,
+        "variant": "Large Pack"
+      },
+      {
+        "productId": "light-blue-delphinium-flower-2",
+        "quantity": 3,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-13T15:19:54.004Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower-2",
+        "quantity": 3,
+        "variant": "10 Bunches"
+      },
+      {
+        "productId": "200-mini-and-50-standard-calla-lily-diy-wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-14T00:37:44.409Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 2,
+        "variant": "Medium Pack"
+      },
+      {
+        "productId": "light-blue-delphinium-flower-2",
+        "quantity": 3,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-14T00:51:36.221Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "impressive-daydream-diy-flower-kit-1",
+        "quantity": 3,
+        "variant": "Small Pack"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-05-14T00:53:41.775Z",
+    "environment": "staging",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower-2",
+        "quantity": 2,
+        "variant": "5 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-06T14:33:34.206Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 2,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-06T14:39:30.215Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 2,
+        "variant": "10 Bunches"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-06T15:07:18.355Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-06T15:08:42.431Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T15:10:10.734Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T15:10:59.795Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T15:22:50.682Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-07-17"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-07-13",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  }
+]

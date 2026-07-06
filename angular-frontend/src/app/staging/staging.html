@@ -1,0 +1,42 @@
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+  <h2 class="text-2xl font-semibold mb-2">🧪 Staging Testing</h2>
+  <p class="text-gray-600 mb-6">Run order tests against a staging store. Product paths are preserved — only the base domain is replaced.</p>
+
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Staging Base URL</label>
+    <input
+      type="url"
+      [(ngModel)]="stagingConfig.stagingBaseUrl"
+      class="w-full px-3 py-2 border border-gray-300 rounded"
+      placeholder="https://staging-store.myshopify.com"
+    >
+    <p class="text-xs text-gray-500 mt-1">
+      Example: <code>https://staging.example.com</code> — replaces the domain in all product URLs when the test runs.
+    </p>
+  </div>
+
+  <div class="flex flex-wrap gap-3 mb-6">
+    <button
+      (click)="saveConfig()"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+    >
+      💾 Save Config
+    </button>
+    <button
+      (click)="runStagingTest()"
+      [disabled]="isRunning || !stagingConfig.stagingBaseUrl"
+      class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {{ isRunning ? '⏳ Running...' : '🚀 Run Staging Test' }}
+    </button>
+  </div>
+
+  @if (testOutput) {
+    <div>
+      <h3 class="text-sm font-semibold mb-2" [class.text-green-700]="testSuccess === true" [class.text-red-700]="testSuccess === false">
+        {{ testSuccess ? '✅ Test passed' : '❌ Test failed' }}
+      </h3>
+      <pre class="bg-gray-900 text-gray-100 p-4 rounded overflow-auto text-xs max-h-96 whitespace-pre-wrap">{{ testOutput }}</pre>
+    </div>
+  }
+</div>

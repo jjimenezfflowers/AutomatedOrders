@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./products.json:/app/products.json
+      - ./order-config.json:/app/order-config.json
+      - ./order-history.json:/app/order-history.json
+    environment:
+      NODE_ENV: production

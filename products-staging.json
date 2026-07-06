@@ -1,0 +1,39 @@
+[
+  {
+    "id": "impressive-daydream-diy-flower-kit-1",
+    "name": "Impressive Daydream DIY Flower Kit",
+    "url": "https://bloom-brain-stage.myshopify.com/products/impressive-daydream-diy-flower-kit-1",
+    "quantitySelector": "#quantity-9370992607471-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "Small Pack",
+      "Medium Pack",
+      "Large Pack"
+    ],
+    "defaultVariant": "Small Pack"
+  },
+  {
+    "id": "light-blue-delphinium-flower-2",
+    "name": "Light Blue Delphinium Flower",
+    "url": "https://bloom-brain-stage.myshopify.com/products/light-blue-delphinium-flower-2",
+    "quantitySelector": "#quantity-9369910673647-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 Bunches",
+      "10 Bunches",
+      "20 Bunches"
+    ],
+    "defaultVariant": "5 Bunches",
+    "type": ""
+  },
+  {
+    "id": "",
+    "name": "",
+    "url": "",
+    "quantitySelector": "",
+    "defaultQuantity": 1
+  }
+]

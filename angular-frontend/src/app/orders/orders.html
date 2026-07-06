@@ -1,0 +1,95 @@
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+  <h2 class="text-2xl font-semibold mb-4">Create Order</h2>
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Date</label>
+    <div class="flex space-x-2">
+      <input type="date" [(ngModel)]="deliveryDate" class="flex-1 px-3 py-2 border border-gray-300 rounded" title="Select delivery date">
+      <button (click)="generateRandomDate()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded whitespace-nowrap text-sm" title="Pick random date 7-10 days ahead (excluding Sundays)">
+        🎲 Random (7-10 days)
+      </button>
+    </div>
+  </div>
+  <div class="mb-4">
+    <h3 class="text-lg font-medium mb-2">Available Products</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-gray-50 rounded-lg">
+      @for (product of products; track product.id) {
+        <div class="flex items-center">
+          <input type="checkbox" [id]="'product-' + product.id" [(ngModel)]="selectedProducts[product.id]" (change)="updateOrderItems()" class="mr-2" title="Select product">
+          <label [for]="'product-' + product.id" class="text-sm">{{ product.name }}</label>
+        </div>
+      }
+    </div>
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-lg font-medium">Selected Products</h3>
+      @if (orderItems.length > 0) {
+        <button (click)="applyDateToAll()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm" title="Apply main delivery date to all products">
+          📅 Apply Date to All
+        </button>
+      }
+    </div>
+    <div class="space-y-3">
+      @for (item of orderItems; track item.id; let i = $index) {
+        <div class="p-3 bg-gray-50 rounded">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-medium">{{ item.name }}</span>
+            @if (getProductById(item.id)?.type === 'product-options') {
+              <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Product Options</span>
+            }
+          </div>
+          
+          @if (item.variant) {
+            <div class="mb-2">
+              <label class="block text-xs text-gray-600 mb-1">Variant</label>
+              @if (getProductById(item.id)?.variants?.length) {
+                <select [(ngModel)]="item.variant" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                  @for (v of getProductById(item.id)?.variants; track v) {
+                    <option [value]="v">{{ v }}</option>
+                  }
+                </select>
+              } @else {
+                <input type="text" [(ngModel)]="item.variant" class="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="Variant">
+              }
+            </div>
+          }
+          
+          @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
+            <div class="mb-2">
+              <label class="block text-xs text-gray-600 mb-1 font-semibold">Product Options:</label>
+              <div class="space-y-2">
+                @for (option of getProductById(item.id)!.productOptions; track option.id) {
+                  <div>
+                    <label class="block text-xs text-gray-600 mb-1">{{ option.label }}</label>
+                    <select [(ngModel)]="item.productOptions![option.id]" 
+                            class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                      @for (opt of option.options; track $index) {
+                        <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">
+                          {{ getOptionLabel(opt) }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          
+          <div class="mt-2 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">Quantity</label>
+              <input type="number" [(ngModel)]="item.quantity" min="1" class="w-full px-2 py-1 border border-gray-300 rounded" placeholder="1">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">Delivery Date</label>
+              <input type="date" [(ngModel)]="item.deliveryDate" class="w-full px-2 py-1 border border-gray-300 rounded text-sm" title="Delivery date for this product">
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="flex space-x-4">
+    <button (click)="saveOrder()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">Save Order</button>
+    <button (click)="runTest()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded">🚀 Place Order</button>
+  </div>
+</div>

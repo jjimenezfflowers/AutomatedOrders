@@ -1,0 +1,4 @@
+node_modules
+angular-frontend/node_modules
+angular-frontend/dist
+npm-debug.log

@@ -1,0 +1,56 @@
+<div class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8">🌸 Order Manager</h1>
+
+    <!-- Tabs -->
+    <div class="mb-6 border-b border-gray-200">
+      <nav class="flex items-center flex-wrap gap-y-2 space-x-1">
+
+        <!-- DEV Group -->
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 py-1 self-center">🟢 DEV</span>
+        <button (click)="showTab('products')" [class.active]="activeTab === 'products'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Products</button>
+        <button (click)="showTab('orders')" [class.active]="activeTab === 'orders'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Orders</button>
+
+        <div class="w-px h-6 bg-gray-300 mx-2 self-center"></div>
+
+        <!-- Staging Group -->
+        <span class="text-xs font-bold text-yellow-500 uppercase tracking-wider px-2 py-1 self-center">🟡 Staging</span>
+        <button (click)="showTab('staging-products')" [class.active]="activeTab === 'staging-products'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Products</button>
+        <button (click)="showTab('staging-orders')" [class.active]="activeTab === 'staging-orders'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Orders</button>
+
+        <div class="w-px h-6 bg-gray-300 mx-2 self-center"></div>
+
+        <!-- Shared Group -->
+        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 py-1 self-center">Shared</span>
+        <button (click)="showTab('customer')" [class.active]="activeTab === 'customer'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Customer Info</button>
+        <button (click)="showTab('history')" [class.active]="activeTab === 'history'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">History</button>
+
+      </nav>
+    </div>
+
+    <!-- Content -->
+    @switch (activeTab) {
+      @case ('products') {
+        <app-products></app-products>
+      }
+      @case ('orders') {
+        <app-orders></app-orders>
+      }
+      @case ('staging-products') {
+        <app-products [apiEndpoint]="'/api/staging-products'"></app-products>
+      }
+      @case ('staging-orders') {
+        <app-staging-orders></app-staging-orders>
+      }
+      @case ('customer') {
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-800">
+          ℹ️ <strong>Shared</strong> — Customer info and payment details are used by both DEV and Staging test runs.
+        </div>
+        <app-customer></app-customer>
+      }
+      @case ('history') {
+        <app-history></app-history>
+      }
+    }
+  </div>
+</div>

@@ -64,6 +64,7 @@ export class OrdersComponent implements OnInit {
     deliveryDate: '',
     orders: []
   };
+  isSavingOrder = false;
 
   constructor(private http: HttpClient) {}
 
@@ -190,9 +191,17 @@ export class OrdersComponent implements OnInit {
       orders: Array.from(uniqueOrders.values())
     };
 
-    this.http.post('/api/order-config', orderConfig).subscribe(() => {
-      this.orderConfig = orderConfig;
-      alert('Order saved!');
+    this.isSavingOrder = true;
+    this.http.post('/api/order-config', orderConfig).subscribe({
+      next: () => {
+        this.orderConfig = orderConfig;
+        this.isSavingOrder = false;
+        alert('Order saved successfully!');
+      },
+      error: (err) => {
+        this.isSavingOrder = false;
+        alert('Failed to save order: ' + (err.message || 'Unknown error'));
+      }
     });
   }
 
@@ -207,13 +216,32 @@ export class OrdersComponent implements OnInit {
   }
 
   runTest() {
-    this.http.post<RunTestResponse>('/api/run-test', {}).subscribe(response => {
-      if (response.success) {
-        alert('Test completed successfully!');
-        return;
-      }
+    if (this.orderItems.length === 0) {
+      alert('Please select at least one product before placing an order');
+      return;
+    }
+    
+    if (!this.deliveryDate) {
+      alert('Please select a delivery date');
+      return;
+    }
 
-      alert(`Test failed:\n\n${response.output || 'No output available'}`);
+    console.log('Starting Playwright test...');
+    
+    this.http.post<RunTestResponse>('/api/run-test', {}).subscribe({
+      next: (response) => {
+        if (response.success) {
+          alert('✅ Order placed successfully!\n\nThe test completed without errors.');
+          return;
+        }
+
+        const output = response.output || 'No output available';
+        alert(`❌ Order placement failed:\n\n${output.substring(0, 500)}${output.length > 500 ? '...' : ''}\n\nCheck the Logs tab for full details.`);
+      },
+      error: (err) => {
+        console.error('Test execution error:', err);
+        alert(`❌ Failed to run test:\n\n${err.message || 'Unknown error'}\n\nCheck the Logs tab for details.`);
+      }
     });
   }
 
@@ -235,6 +263,13 @@ export class OrdersComponent implements OnInit {
 
   hasPrice(opt: string | { value: string; label: string; price?: number }): boolean {
     return typeof opt !== 'string' && opt.price !== undefined;
+  }
+
+  randomDateAndApply() {
+    this.generateRandomDate();
+    this.orderItems.forEach(item => {
+      item.deliveryDate = this.deliveryDate;
+    });
   }
 
   generateRandomDate() {

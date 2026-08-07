@@ -1,0 +1,47 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold text-gray-800">📊 Server Logs</h2>
+    <div class="flex gap-2">
+      <button 
+        (click)="toggleAutoRefresh()"
+        [class.bg-green-500]="autoRefresh"
+        [class.bg-gray-500]="!autoRefresh"
+        class="text-white px-4 py-2 rounded hover:opacity-80 transition text-sm font-medium">
+        {{ autoRefresh ? '🔄 Auto-Refresh ON' : '⏸️ Auto-Refresh OFF' }}
+      </button>
+      <button 
+        (click)="loadLogs()"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition text-sm font-medium">
+        🔄 Refresh Now
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 rounded-lg p-3 mb-4 text-sm">
+    <p class="text-gray-700">
+      📝 Showing last <strong>{{ logs.length }}</strong> of <strong>{{ totalLogs }}</strong> total logs
+      @if (autoRefresh) {
+        <span class="text-green-600 ml-2">• Updating every 2 seconds</span>
+      }
+    </p>
+  </div>
+
+  <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm max-h-[600px] overflow-y-auto">
+    @if (logs.length === 0) {
+      <div class="text-gray-400 text-center py-8">
+        No logs available yet. Server activity will appear here.
+      </div>
+    }
+    @for (log of logs; track log.timestamp) {
+      <div class="mb-1 flex items-start gap-2 hover:bg-gray-800 px-2 py-1 rounded">
+        <span class="text-gray-500 shrink-0">{{ formatTimestamp(log.timestamp) }}</span>
+        <span class="shrink-0">{{ getLevelIcon(log.level) }}</span>
+        <span class="text-gray-300 break-all">{{ log.message }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="mt-4 text-sm text-gray-600">
+    <p>💡 <strong>Tip:</strong> Logs are stored in memory (last 500 entries). They reset when the server restarts.</p>
+  </div>
+</div>

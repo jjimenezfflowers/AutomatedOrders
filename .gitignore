@@ -10,6 +10,7 @@ angular-frontend/.angular/
 test-results/
 playwright-report/
 playwright/.cache/
+tests/.auth/
 
 # Environment variables
 .env

@@ -47,7 +47,8 @@ async function loadProducts() {
   return JSON.parse(data);
 }
 
-test("Place order from config", async ({ page }) => {
+test("Place order from config", async ({ page, context }) => {
+  
   const orderConfig = await loadOrderConfig();
   const products = await loadProducts();
   const customer = orderConfig.customerInfo;
@@ -64,11 +65,20 @@ test("Place order from config", async ({ page }) => {
     await page.goto(resolveProductUrl(product.url));
     await page.waitForLoadState('domcontentloaded');
     
+    // Wait a moment for page to settle after navigation
+    await page.waitForTimeout(1000);
+    
     // Close sidecart if it's open from previous product
     const sidebarClose = page.locator('.halo-sidebar-close, a[data-close-cart-sidebar]');
-    const isSidebarOpen = await sidebarClose.first().isVisible({ timeout: 1000 }).catch(() => false);
+    const isSidebarOpen = await sidebarClose.first().isVisible({ timeout: 2000 }).catch(() => false);
     if (isSidebarOpen) {
+      console.log('  ⚠️  Sidebar detected open on page load, closing...');
       await sidebarClose.first().click();
+      // Wait for sidebar to fully close
+      await page.waitForTimeout(1500);
+      // Verify sidebar wrapper is hidden
+      await page.locator('.halo-sidebar-wrapper, #cart-sidebar-wrapper, [data-cart-sidebar]').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
+      console.log('  ✅ Sidebar closed');
     }
     
     // Select variant FIRST if product has variant selector (this reloads the calendar)
@@ -306,10 +316,13 @@ test("Place order from config", async ({ page }) => {
     // Close sidebar cart if not the last product
     if (i < orderConfig.orders.length - 1) {
       const closeButton = page.locator('.halo-sidebar-close, a[data-close-cart-sidebar]');
-      const isVisible = await closeButton.first().isVisible({ timeout: 2000 }).catch(() => false);
+      const isVisible = await closeButton.first().isVisible({ timeout: 3000 }).catch(() => false);
       if (isVisible) {
         await closeButton.first().click();
-        await page.waitForTimeout(300);
+        // Wait longer for sidebar close animation to complete
+        await page.waitForTimeout(1500);
+        // Verify sidebar is fully hidden (including backdrop)
+        await page.locator('.halo-sidebar-wrapper, #cart-sidebar-wrapper, [data-cart-sidebar]').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
       }
     }
   }

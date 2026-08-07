@@ -46,19 +46,19 @@ test("wedding: product-options (debug)", async ({ page }) => {
   const oneHundredRoseColorSelector = "#\\:ri\\:-form-item";
 
   // Select variant (if present) — use helper to handle either element type
-  await chooseOption(greenerySelector, "Bear Grass 40 shoots per Bunch");
+  await chooseOption(greenerySelector, "Lily Grass Green 25 Shoots per Bunch");
   await chooseOption(
     heartygreenerySelector,
-    "Aspidistras Green 5-8 Stem Bunches",
+    "Eucalyptus baby 5-8 Stem Bunches",
   );
   await chooseOption(threeHundredCarnationsColorSelector, "Cream");
   await chooseOption(
     tenFillerFlowerBunshesSelector,
-    "Pink Veronica 15 Stem Bunches",
+    "Pink Medium Lisianthus 10 Stem Bunches",
   );
   await chooseOption(
     oneHundredRoseColorSelector,
-    "Bicolor White with Pink Tips",
+    "Creamy White",
   );
 
   if (product.variantSelector && product.defaultVariant) {

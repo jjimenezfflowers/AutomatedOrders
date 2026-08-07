@@ -71,7 +71,7 @@
           "Lily Grass Variegated 25 Shoots per Bunch",
           "Plumosa 8-10 Stem Bunches"
         ],
-        "defaultValue": "Bear Grass 40 shoots per Bunch"
+        "defaultValue": "Lily Grass Green 25 Shoots per Bunch"
       },
       {
         "id": "vo_1_1382",
@@ -92,7 +92,7 @@
           "Wedding Ivy Green 10 Stem Bunches",
           "Wedding Ivy Variegated 10 Stem Bunches"
         ],
-        "defaultValue": "Aspidistras Green 5-8 Stem Bunches"
+        "defaultValue": "Eucalyptus baby 5-8 Stem Bunches"
       },
       {
         "id": "vo_2_1383",
@@ -291,7 +291,7 @@
           },
           "White Daisy 10 Stem Bunches"
         ],
-        "defaultValue": "Peach Spray Roses 8 Stem Bunches"
+        "defaultValue": "Pink Medium Lisianthus 10 Stem Bunches"
       },
       {
         "id": "vo_4_1385",
@@ -339,7 +339,7 @@
           "White",
           "Yellow"
         ],
-        "defaultValue": "Bicolor White with Pink Tips"
+        "defaultValue": "Creamy White"
       }
     ],
     "quantitySelector": "#quantity-8173251297420-2",
@@ -377,5 +377,148 @@
       "20 Bunches"
     ],
     "defaultVariant": "5 Bunches"
+  },
+  {
+    "id": "wholesale-euonymus-greenery",
+    "name": "Wholesale Euonymus Greenery",
+    "url": "https://bloom-brain-dev.myshopify.com/products/wholesale-euonymus-greenery",
+    "quantitySelector": "#quantity-9411614310540-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 bunches - $139.99",
+      "10 bunches - $194.99",
+      "15 bunches - $274.99"
+    ],
+    "defaultVariant": "5 bunches - $139.99"
+  },
+  {
+    "id": "ivory-white-hydrangea-flower",
+    "name": "Ivory White Hydrangea Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/ivory-white-hydrangea-flower",
+    "quantitySelector": "#quantity-9411550445708-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+      "30 Stems - $139.99",
+      "40 Stems - $174.99"
+    ],
+    "defaultVariant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99"
+  },
+  {
+    "id": "giant-pale-green-hydrangea-flower",
+    "name": "Giant Pale Green Hydrangea Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/giant-pale-green-hydrangea-flower",
+    "quantitySelector": "#quantity-9411504996492-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "15 Stems - $209.99",
+      "30 Stems - $324.99"
+    ],
+    "defaultVariant": "15 Stems - $209.99"
+  },
+  {
+    "id": "magnolia-greenery-garland",
+    "name": "Magnolia Greenery Garland",
+    "url": "https://bloom-brain-dev.myshopify.com/products/magnolia-greenery-garland",
+    "quantitySelector": "#quantity-9411480060044-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 Foot Garland - $184.99",
+      "10 Foot Garland - $264.99",
+      "15 Foot Garland - $339.99",
+      "20 Foot Garland - $429.99",
+      "25 Foot Garland - $509.99",
+      "50 Foot Garland - $889.99",
+      "75 Foot Garland - $1,294.99",
+      "100 Foot Garland - $1,659.99",
+      "200 Foot Garland - $3,114.99"
+    ],
+    "defaultVariant": "5 Foot Garland - $184.99"
+  },
+  {
+    "id": "gunnii-eucalyptus-greens",
+    "name": "Gunnii Eucalyptus Greens",
+    "url": "https://bloom-brain-dev.myshopify.com/products/gunnii-eucalyptus-greens",
+    "quantitySelector": "#quantity-9411472359564-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 bunches - $149.99",
+      "10 bunches - $254.99",
+      "15 bunches - $324.99"
+    ],
+    "defaultVariant": "5 bunches - $149.99"
+  },
+  {
+    "id": "magnolia-greenery",
+    "name": "Magnolia Greenery",
+    "url": "https://bloom-brain-dev.myshopify.com/products/magnolia-greenery",
+    "quantitySelector": "#quantity-9411700981900-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "8 bunches - $209.99",
+      "16 bunches - $289.99",
+      "25 bunches - $394.99"
+    ],
+    "defaultVariant": "8 bunches - $209.99"
+  },
+  {
+    "id": "feverfew-daisy-wholesale-cut-flower",
+    "name": "Feverfew Daisy Wholesale Cut Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/feverfew-daisy-wholesale-cut-flower",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 bunches - $149.99",
+      "10 bunches - $214.99",
+      "15 Bunches - $264.99",
+      "20 bunches - $304.99"
+    ],
+    "defaultVariant": "5 bunches - $149.99",
+    "quantitySelector": "#quantity-8391740555404-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "purplish-blue-veronica-flowers",
+    "name": "Purplish Blue Veronica Flowers",
+    "url": "https://bloom-brain-dev.myshopify.com/products/purplish-blue-veronica-flowers",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 Bunches - $244.99",
+      "10 Bunches - $304.99",
+      "15 Bunches - $364.99",
+      "20 Bunches - $404.99"
+    ],
+    "defaultVariant": "5 Bunches - $244.99",
+    "quantitySelector": "#quantity-9411544252556-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "snapdragon-white-flower",
+    "name": "Snapdragon White Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/snapdragon-white-flower",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "50 Stems - $129.99",
+      "100 Stems - $164.99",
+      "150 Stems - $234.99",
+      "200 Stems - $339.99"
+    ],
+    "defaultVariant": "50 Stems - $129.99",
+    "quantitySelector": "#quantity-8293791105164-2",
+    "defaultQuantity": 1
   }
 ]

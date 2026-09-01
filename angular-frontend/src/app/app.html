@@ -24,6 +24,7 @@
         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 py-1 self-center">Shared</span>
         <button (click)="showTab('customer')" [class.active]="activeTab === 'customer'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Customer Info</button>
         <button (click)="showTab('history')" [class.active]="activeTab === 'history'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">History</button>
+        <button (click)="showTab('logs')" [class.active]="activeTab === 'logs'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">📊 Logs</button>
 
       </nav>
     </div>
@@ -50,6 +51,9 @@
       }
       @case ('history') {
         <app-history></app-history>
+      }
+      @case ('logs') {
+        <app-logs></app-logs>
       }
     }
   </div>

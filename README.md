@@ -75,6 +75,16 @@ Ejecutar test manualmente:
 npx playwright test tests/place-order.spec.js --headed
 ```
 
+Ejecutar la regresión segura de variantes/cantidad:
+```bash
+npm run test:product-form
+```
+
+Ejecutar el proceso de Peach Sorbet con su propia orden:
+```bash
+npm run test:peach-sorbet -- --headed
+```
+
 Ver reporte de errores:
 ```bash
 npx playwright show-report

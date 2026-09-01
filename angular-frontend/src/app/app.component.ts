@@ -5,11 +5,12 @@ import { OrdersComponent } from './orders/orders';
 import { CustomerComponent } from './customer/customer';
 import { HistoryComponent } from './history/history';
 import { StagingOrdersComponent } from './staging-orders/staging-orders';
+import { LogsComponent } from './logs/logs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ProductsComponent, OrdersComponent, CustomerComponent, HistoryComponent, StagingOrdersComponent],
+  imports: [CommonModule, ProductsComponent, OrdersComponent, CustomerComponent, HistoryComponent, StagingOrdersComponent, LogsComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

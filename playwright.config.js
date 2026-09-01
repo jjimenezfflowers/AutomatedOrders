@@ -4,6 +4,10 @@
 
 // @ts-ignore
 const { devices } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+// Authentication state handling removed - not needed for this project
 
 const config = {
 
@@ -71,8 +75,6 @@ const config = {
 
     video: 'retain-on-failure',
 
-
-
   },
 
   /* Configure projects for major browsers */
@@ -87,7 +89,18 @@ const config = {
         ...(process.platform !== 'linux' ? { channel: 'chrome' } : {}),
         viewport: null,
         launchOptions: {
-          args: ['--start-maximized', ...(process.platform === 'linux' ? ['--no-sandbox', '--disable-setuid-sandbox'] : [])]
+          args: [
+            '--start-maximized',
+            '--disable-blink-features=AutomationControlled',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins,site-per-process',
+            ...(process.platform === 'linux' ? ['--no-sandbox', '--disable-setuid-sandbox'] : [])
+          ]
+        },
+        // Make browser appear more human-like
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        extraHTTPHeaders: {
+          'Accept-Language': 'en-US,en;q=0.9',
         }
       },
 

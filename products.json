@@ -12,7 +12,9 @@
     ],
     "defaultVariant": "20 stems (2 Bunches)",
     "quantitySelector": "#quantity-8293790941324-2",
-    "defaultQuantity": 1
+    "defaultQuantity": 1,
+    "origin": "EC",
+    "type": ""
   },
   {
     "id": "babys-breath-flower-new-love-3",
@@ -30,7 +32,11 @@
     "defaultVariant": "2 Bunches",
     "quantitySelector": "#quantity-9196556419212-2",
     "defaultQuantity": 1,
-    "type": ""
+    "type": "",
+    "origin": [
+      "US",
+      "EC"
+    ]
   },
   {
     "id": "eskimo-white-rose-1",
@@ -38,16 +44,20 @@
     "url": "https://bloom-brain-dev.myshopify.com/products/eskimo-white-rose-1",
     "variantSelector": "#option-0",
     "variants": [
-      "25 Roses (Please allow 5 Business days for delivery)",
-      "50 Roses",
-      "75 Roses",
+      "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+      "50 Roses - $139.99",
+      "75 Roses - $174.99",
       "100 Roses",
-      "125 Roses",
-      "150 Roses"
+      "125 Roses - $264.99",
+      "150 Roses - $314.99"
     ],
-    "defaultVariant": "25 Roses (Please allow 5 Business days for delivery)",
+    "defaultVariant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
     "quantitySelector": "#quantity-8354963456140-2",
-    "defaultQuantity": 1
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ],
+    "type": ""
   },
   {
     "id": "wedding-flower-kit",
@@ -71,7 +81,7 @@
           "Lily Grass Variegated 25 Shoots per Bunch",
           "Plumosa 8-10 Stem Bunches"
         ],
-        "defaultValue": "Bear Grass 40 shoots per Bunch"
+        "defaultValue": "Lily Grass Green 25 Shoots per Bunch"
       },
       {
         "id": "vo_1_1382",
@@ -92,7 +102,7 @@
           "Wedding Ivy Green 10 Stem Bunches",
           "Wedding Ivy Variegated 10 Stem Bunches"
         ],
-        "defaultValue": "Aspidistras Green 5-8 Stem Bunches"
+        "defaultValue": "Eucalyptus baby 5-8 Stem Bunches"
       },
       {
         "id": "vo_2_1383",
@@ -291,7 +301,7 @@
           },
           "White Daisy 10 Stem Bunches"
         ],
-        "defaultValue": "Peach Spray Roses 8 Stem Bunches"
+        "defaultValue": "Pink Medium Lisianthus 10 Stem Bunches"
       },
       {
         "id": "vo_4_1385",
@@ -339,7 +349,7 @@
           "White",
           "Yellow"
         ],
-        "defaultValue": "Bicolor White with Pink Tips"
+        "defaultValue": "Creamy White"
       }
     ],
     "quantitySelector": "#quantity-8173251297420-2",
@@ -376,6 +386,472 @@
       "10 Bunches",
       "20 Bunches"
     ],
-    "defaultVariant": "5 Bunches"
+    "defaultVariant": "5 Bunches",
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "wholesale-euonymus-greenery",
+    "name": "Wholesale Euonymus Greenery",
+    "url": "https://bloom-brain-dev.myshopify.com/products/wholesale-euonymus-greenery",
+    "quantitySelector": "#quantity-9411614310540-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 bunches - $139.99",
+      "10 bunches - $194.99",
+      "15 bunches - $274.99"
+    ],
+    "defaultVariant": "5 bunches - $139.99",
+    "origin": [
+      "US"
+    ]
+  },
+  {
+    "id": "ivory-white-hydrangea-flower",
+    "name": "Ivory White Hydrangea Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/ivory-white-hydrangea-flower",
+    "quantitySelector": "#quantity-9411550445708-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+      "30 Stems - $139.99",
+      "40 Stems - $174.99"
+    ],
+    "defaultVariant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+    "origin": [
+      "CO"
+    ]
+  },
+  {
+    "id": "giant-pale-green-hydrangea-flower",
+    "name": "Giant Pale Green Hydrangea Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/giant-pale-green-hydrangea-flower",
+    "quantitySelector": "#quantity-9411504996492-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "15 Stems - $209.99",
+      "30 Stems - $324.99"
+    ],
+    "defaultVariant": "15 Stems - $209.99",
+    "origin": [
+      "CO"
+    ]
+  },
+  {
+    "id": "magnolia-greenery-garland",
+    "name": "Magnolia Greenery Garland",
+    "url": "https://bloom-brain-dev.myshopify.com/products/magnolia-greenery-garland",
+    "quantitySelector": "#quantity-9411480060044-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 Foot Garland - $184.99",
+      "10 Foot Garland - $264.99",
+      "15 Foot Garland - $339.99",
+      "20 Foot Garland - $429.99",
+      "25 Foot Garland - $509.99",
+      "50 Foot Garland - $889.99",
+      "75 Foot Garland - $1,294.99",
+      "100 Foot Garland - $1,659.99",
+      "200 Foot Garland - $3,114.99"
+    ],
+    "defaultVariant": "5 Foot Garland - $184.99",
+    "origin": [
+      "US"
+    ]
+  },
+  {
+    "id": "gunnii-eucalyptus-greens",
+    "name": "Gunnii Eucalyptus Greens",
+    "url": "https://bloom-brain-dev.myshopify.com/products/gunnii-eucalyptus-greens",
+    "quantitySelector": "#quantity-9411472359564-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "5 bunches - $149.99",
+      "10 bunches - $254.99",
+      "15 bunches - $324.99"
+    ],
+    "defaultVariant": "5 bunches - $149.99",
+    "origin": [
+      "US"
+    ]
+  },
+  {
+    "id": "magnolia-greenery",
+    "name": "Magnolia Greenery",
+    "url": "https://bloom-brain-dev.myshopify.com/products/magnolia-greenery",
+    "quantitySelector": "#quantity-9411700981900-2",
+    "defaultQuantity": 1,
+    "variantSelector": "#option-0",
+    "type": "",
+    "variants": [
+      "8 bunches - $209.99",
+      "16 bunches - $289.99",
+      "25 bunches - $394.99"
+    ],
+    "defaultVariant": "8 bunches - $209.99",
+    "origin": [
+      "US"
+    ]
+  },
+  {
+    "id": "feverfew-daisy-wholesale-cut-flower",
+    "name": "Feverfew Daisy Wholesale Cut Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/feverfew-daisy-wholesale-cut-flower",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 bunches - $149.99",
+      "10 bunches - $214.99",
+      "15 Bunches - $264.99",
+      "20 bunches - $304.99"
+    ],
+    "defaultVariant": "5 bunches - $149.99",
+    "quantitySelector": "#quantity-8391740555404-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "purplish-blue-veronica-flowers",
+    "name": "Purplish Blue Veronica Flowers",
+    "url": "https://bloom-brain-dev.myshopify.com/products/purplish-blue-veronica-flowers",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 Bunches - $244.99",
+      "10 Bunches - $304.99",
+      "15 Bunches - $364.99",
+      "20 Bunches - $404.99"
+    ],
+    "defaultVariant": "5 Bunches - $244.99",
+    "quantitySelector": "#quantity-9411544252556-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "snapdragon-white-flower",
+    "name": "Snapdragon White Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/snapdragon-white-flower",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "50 Stems - $129.99",
+      "100 Stems - $164.99",
+      "150 Stems - $234.99",
+      "200 Stems - $339.99"
+    ],
+    "defaultVariant": "50 Stems - $129.99",
+    "quantitySelector": "#quantity-8293791105164-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "US",
+      "EC"
+    ]
+  },
+  {
+    "id": "peach-sorbet-diy-flower-kit",
+    "name": "Peach Sorbet DIY Flower Kit",
+    "url": "https://bloom-brain-dev.myshopify.com/products/peach-sorbet-diy-flower-kit",
+    "type": "",
+    "variantSelector": "variant-radios input[name=\"Variants\"]",
+    "variants": [
+      "Small Package 111 Stems $269.99",
+      "Medium Package 230 Stems $449.99",
+      "Large Package 351 Stems $674.99"
+    ],
+    "defaultVariant": "Small Package 111 Stems $269.99",
+    "quantitySelector": "#quantity-9601477836940-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "snapdragon-yellow-flower",
+    "name": "Snapdragon Yellow Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/snapdragon-yellow-flower",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "50 Stems - $129.99",
+      "100 Stems - $164.99",
+      "150 Stems - $234.99",
+      "200 Stems - $339.99"
+    ],
+    "defaultVariant": "50 Stems - $129.99",
+    "quantitySelector": "#quantity-9411531374732-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "cream-juliet-garden-rose",
+    "name": "Cream Juliet Garden Rose",
+    "url": "https://bloom-brain-dev.myshopify.com/products/cream-juliet-garden-rose",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "24 Garden Roses - $154.99",
+      "36 Garden Roses - $209.99",
+      "48 Garden Roses - $259.99",
+      "60 Garden Roses - $304.99",
+      "72 Garden Roses - $339.99",
+      "144 Garden Roses - $624.99"
+    ],
+    "defaultVariant": "24 Garden Roses - $154.99",
+    "quantitySelector": "#quantity-9411513286796-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "pink-paradise-diy-flower-kit",
+    "name": "Pink Paradise DIY Flower Kit",
+    "url": "https://bloom-brain-dev.myshopify.com/products/pink-paradise-diy-flower-kit",
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "Small Pack - $144.99",
+      "Medium Pack - $234.99",
+      "Large Pack - $439.99"
+    ],
+    "defaultVariant": "Small Pack - $144.99",
+    "quantitySelector": "#quantity-9411641049228-2",
+    "defaultQuantity": 1,
+    "origin": [
+      "EC"
+    ]
+  },
+  {
+    "id": "green-hanging-amaranthus-bulk-fall-greens",
+    "name": "Green Hanging Amaranthus Bulk Fall Greens",
+    "url": "https://bloom-brain-dev.myshopify.com/products/green-hanging-amaranthus-bulk-fall-greens",
+    "origin": [
+      "EC"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 bunches - $144.99",
+      "10 bunches - $204.99",
+      "15 bunches - $264.99",
+      "20 bunches - $329.99"
+    ],
+    "defaultVariant": "5 bunches - $144.99",
+    "quantitySelector": "#quantity-9411495952524-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "ivory-mini-calla-lily-flower",
+    "name": "Ivory Mini Calla Lily Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/ivory-mini-calla-lily-flower",
+    "origin": [
+      "CO"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "50 Stems - $164.99",
+      "100 Stems - $259.99",
+      "150 Stems - $374.99",
+      "200 Stems - $519.99"
+    ],
+    "defaultVariant": "50 Stems - $164.99",
+    "quantitySelector": "#quantity-9411522461836-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "choose-your-color-mini-calla-lilies",
+    "name": "Choose Your Color Mini Calla Lilies",
+    "url": "https://bloom-brain-dev.myshopify.com/products/choose-your-color-mini-calla-lilies",
+    "origin": [
+      "US"
+    ],
+    "type": "product-options",
+    "variantSelector": "#option-0",
+    "variants": [
+      "50 Stems (5 Bunches) - $179.99"
+    ],
+    "defaultVariant": "50 Stems (5 Bunches) - $179.99",
+    "productOptions": [
+      {
+        "id": "vo_0_24804",
+        "label": "Mini Callas Bunch 1",
+        "selector": "select[name=\"vo_0_24804\"]",
+        "options": [
+          "White",
+          "Cream/Off-White",
+          "Blush",
+          "Pink",
+          "Pink Dark",
+          {
+            "value": "Enhanced Orange",
+            "label": "Enhanced Orange Add $19.00",
+            "price": 19
+          },
+          "Yellow Pale",
+          "Yellow Bright",
+          "Peach",
+          "Cream with Purple",
+          "Lavender/Purple",
+          "Black/Burgundy"
+        ],
+        "defaultValue": "White"
+      },
+      {
+        "id": "vo_1_24805",
+        "label": "Mini Callas Bunch 2",
+        "selector": "select[name=\"vo_1_24805\"]",
+        "options": [
+          "White",
+          "Cream/Off-White",
+          "Blush",
+          "Pink",
+          "Pink Dark",
+          {
+            "value": "Enhanced Orange",
+            "label": "Enhanced Orange Add $19.00",
+            "price": 19
+          },
+          "Yellow Pale",
+          "Yellow Bright",
+          "Peach",
+          "Cream with Purple",
+          "Lavender/Purple",
+          "Black/Burgundy"
+        ],
+        "defaultValue": "White"
+      },
+      {
+        "id": "vo_2_24806",
+        "label": "Mini Callas Bunch 3",
+        "selector": "select[name=\"vo_2_24806\"]",
+        "options": [
+          "White",
+          "Cream/Off-White",
+          "Blush",
+          "Pink",
+          "Pink Dark",
+          {
+            "value": "Enhanced Orange",
+            "label": "Enhanced Orange Add $19.00",
+            "price": 19
+          },
+          "Yellow Pale",
+          "Yellow Bright",
+          "Peach",
+          "Cream with Purple",
+          "Lavender/Purple",
+          "Black/Burgundy"
+        ],
+        "defaultValue": "White"
+      },
+      {
+        "id": "vo_3_24807",
+        "label": "Mini Callas Bunch 4",
+        "selector": "select[name=\"vo_3_24807\"]",
+        "options": [
+          "White",
+          "Cream/Off-White",
+          "Blush",
+          "Pink",
+          "Pink Dark",
+          {
+            "value": "Enhanced Orange",
+            "label": "Enhanced Orange Add $19.00",
+            "price": 19
+          },
+          "Yellow Pale",
+          "Yellow Bright",
+          "Peach",
+          "Cream with Purple",
+          "Lavender/Purple",
+          "Black/Burgundy"
+        ],
+        "defaultValue": "White"
+      },
+      {
+        "id": "vo_4_24808",
+        "label": "Mini Callas Bunch 5",
+        "selector": "select[name=\"vo_4_24808\"]",
+        "options": [
+          "White",
+          "Cream/Off-White",
+          "Blush",
+          "Pink",
+          "Pink Dark",
+          {
+            "value": "Enhanced Orange",
+            "label": "Enhanced Orange Add $19.00",
+            "price": 19
+          },
+          "Yellow Pale",
+          "Yellow Bright",
+          "Peach",
+          "Cream with Purple",
+          "Lavender/Purple",
+          "Black/Burgundy"
+        ],
+        "defaultValue": "White"
+      }
+    ],
+    "quantitySelector": "#quantity-9781850374284-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "eucalyptus-wedding-diy-greenery-box",
+    "name": "Eucalyptus Wedding DIY Greenery Box",
+    "url": "https://bloom-brain-dev.myshopify.com/products/eucalyptus-wedding-diy-greenery-box",
+    "origin": [
+      "US"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 Bunches - $139.99",
+      "10 Bunches - $199.99",
+      "15 Bunches - $264.99",
+      "20 Bunches - $324.99"
+    ],
+    "defaultVariant": "5 Bunches - $139.99",
+    "quantitySelector": "#quantity-8178913247372-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "silver-dollar-eucalyptus-greens",
+    "name": "Silver Dollar Eucalyptus Greens",
+    "url": "https://bloom-brain-dev.myshopify.com/products/silver-dollar-eucalyptus-greens",
+    "origin": [
+      "US",
+      "CO",
+      "EC"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "5 Bunches - $139.99",
+      "10 Bunches - $189.99",
+      "15 Bunches - $254.99",
+      "20 Bunches - $294.99"
+    ],
+    "defaultVariant": "5 Bunches - $139.99",
+    "quantitySelector": "#quantity-9411421012108-2",
+    "defaultQuantity": 1
   }
 ]

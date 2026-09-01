@@ -62,7 +62,6 @@ export class StagingOrdersComponent implements OnInit {
   stagingBaseUrl: string = '';
   stagingOrderConfig: StagingOrderConfig = { stagingBaseUrl: '', deliveryDate: '', orders: [] };
 
-  isRunning = false;
   testOutput = '';
   testSuccess: boolean | null = null;
 
@@ -160,19 +159,35 @@ export class StagingOrdersComponent implements OnInit {
       alert('Please set a Staging Base URL before running the test.');
       return;
     }
-    this.isRunning = true;
+    if (this.orderItems.length === 0) {
+      alert('Please select at least one product before placing an order');
+      return;
+    }
+    if (!this.deliveryDate) {
+      alert('Please select a delivery date');
+      return;
+    }
+    
     this.testOutput = '';
     this.testSuccess = null;
+    console.log('Starting staging Playwright test...');
+    
     this.http.post<RunTestResponse>('/api/run-test', { staging: true }).subscribe({
       next: response => {
-        this.isRunning = false;
         this.testSuccess = response.success;
         this.testOutput = response.output || '';
+        
+        if (response.success) {
+          alert('✅ Staging order placed successfully!');
+        } else {
+          alert('❌ Staging order failed. Check output below or the Logs tab for details.');
+        }
       },
       error: err => {
-        this.isRunning = false;
         this.testSuccess = false;
         this.testOutput = err.message || 'Request failed';
+        console.error('Staging test error:', err);
+        alert('❌ Failed to run staging test. Check the Logs tab for details.');
       }
     });
   }

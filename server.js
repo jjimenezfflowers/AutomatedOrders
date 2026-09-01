@@ -5,26 +5,83 @@ const { spawn } = require('child_process');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// In-memory log storage (keep last 500 entries)
+const logs = [];
+const MAX_LOGS = 500;
+
+function addLog(level, message, metadata = {}) {
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    level,
+    message,
+    ...metadata
+  };
+  logs.push(logEntry);
+  if (logs.length > MAX_LOGS) {
+    logs.shift();
+  }
+  
+  // Also log to console
+  const prefix = level === 'error' ? '❌' : level === 'warn' ? '⚠️' : 'ℹ️';
+  console.log(`[${logEntry.timestamp}] ${prefix} ${message}`);
+}
+
+// Request logging middleware
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${req.method} ${req.path}`);
+  addLog('info', `${req.method} ${req.path}`, { 
+    method: req.method, 
+    path: req.path,
+    ip: req.ip 
+  });
+  next();
+});
+
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static('angular-frontend/dist/angular-frontend/browser'));
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  const uptime = process.uptime();
+  console.log(`[HEALTH CHECK] Server is running. Uptime: ${Math.floor(uptime)}s`);
+  res.json({ 
+    status: 'ok', 
+    uptime: Math.floor(uptime),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Get logs
+app.get('/api/logs', (req, res) => {
+  const limit = parseInt(req.query.limit) || 100;
+  const recentLogs = logs.slice(-limit);
+  res.json({ logs: recentLogs, total: logs.length });
+});
 
 // Get products
 app.get('/api/products', async (req, res) => {
   try {
     const data = await fs.readFile('products.json', 'utf8');
+    addLog('info', 'Products retrieved successfully');
     res.json(JSON.parse(data));
   } catch (error) {
+    addLog('error', `Failed to get products: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Save products
 app.post('/api/products', async (req, res) => {
-  console.log('Received products:', req.body); // Debug
+  const count = req.body.length;
+  addLog('info', `Saving ${count} products`);
   try {
     await fs.writeFile('products.json', JSON.stringify(req.body, null, 2));
+    addLog('info', 'Products saved successfully');
     res.json({ success: true });
   } catch (error) {
+    addLog('error', `Failed to save products: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
 });
@@ -144,6 +201,7 @@ app.post('/api/run-test', async (req, res) => {
   console.log('\n' + '='.repeat(60));
   console.log('🧪 INICIANDO TEST DE PLAYWRIGHT');
   console.log('='.repeat(60) + '\n');
+  addLog('info', '🧪 Starting Playwright test', { staging: req.body?.staging || false });
 
   // Resolve staging base URL if requested
   let stagingBaseUrl = '';
@@ -201,12 +259,18 @@ app.post('/api/run-test', async (req, res) => {
       const text = data.toString();
       output += text;
       console.log('📝 OUTPUT:', text);
+      // Log each line to the in-memory logs
+      const lines = text.trim().split('\n').filter(line => line.trim());
+      lines.forEach(line => addLog('info', `[TEST] ${line.trim()}`));
     });
     
     testProcess.stderr.on('data', (data) => {
       const text = data.toString();
       errorOutput += text;
       console.log('⚠️  ERROR:', text);
+      // Log each error line to the in-memory logs
+      const lines = text.trim().split('\n').filter(line => line.trim());
+      lines.forEach(line => addLog('warn', `[TEST ERROR] ${line.trim()}`));
     });
     
     testProcess.on('close', (code) => {
@@ -217,8 +281,10 @@ app.post('/api/run-test', async (req, res) => {
       console.log('='.repeat(60) + '\n');
       
       if (code === 0) {
+        addLog('info', `✅ Test completed successfully (exit code: ${code})`);
         res.json({ success: true, output: output });
       } else {
+        addLog('error', `❌ Test failed (exit code: ${code})`);
         res.json({ success: false, output: errorOutput || output });
       }
     });
@@ -229,12 +295,14 @@ app.post('/api/run-test', async (req, res) => {
       console.log('\n' + '='.repeat(60));
       console.log('❌ ERROR EN EL PROCESO:', error.message);
       console.log('='.repeat(60) + '\n');
+      addLog('error', `Process error: ${error.message}`);
       res.json({ success: false, output: error.message });
     });
   } catch (error) {
     console.log('\n' + '='.repeat(60));
     console.log('❌ ERROR AL INICIAR TEST:', error.message);
     console.log('='.repeat(60) + '\n');
+    addLog('error', `Failed to start test: ${error.message}`);
     res.json({ success: false, output: 'Error al iniciar test: ' + error.message });
   }
 });
@@ -247,10 +315,30 @@ app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, 'angular-frontend/dist/angular-frontend/browser/index.html'));
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('[ERROR]', err.stack);
+  res.status(500).json({ error: 'Internal server error', message: err.message });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
-  console.log('='.repeat(50));
+  const timestamp = new Date().toISOString();
+  console.log('\n' + '='.repeat(50));
   console.log(`🚀 Server running at http://0.0.0.0:${PORT}`);
   console.log(`   Local:   http://localhost:${PORT}`);
   console.log(`   Port:    ${PORT} (via ${process.env.PORT ? 'PORT env var' : 'default'})`);
+  console.log(`   Started: ${timestamp}`);
+  console.log(`   Platform: ${process.platform}`);
+  console.log(`   Node: ${process.version}`);
+  console.log(`   PID: ${process.pid}`);
   console.log('='.repeat(50));
+  console.log('📊 Server is ready to accept connections');
+  console.log('💡 Use /api/health endpoint to check server status');
+  console.log('='.repeat(50) + '\n');
+  
+  addLog('info', `🚀 Server started on port ${PORT}`, { 
+    port: PORT, 
+    platform: process.platform, 
+    nodeVersion: process.version 
+  });
 });

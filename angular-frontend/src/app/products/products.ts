@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ProductsCreation, NewProduct } from './products-creation/products-creation';
 
 interface ProductOption {
   id: string;
@@ -15,6 +16,7 @@ interface Product {
   id: string;
   name: string;
   url: string;
+  origin?: string | string[];
   type?: string;
   variantSelector?: string;
   variants?: string[];
@@ -27,7 +29,7 @@ interface Product {
 
 @Component({
   selector: 'app-products',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ProductsCreation],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -35,6 +37,9 @@ export class ProductsComponent implements OnInit {
   @Input() apiEndpoint: string = '/api/products';
 
   products: Product[] = [];
+  showCreation = false;
+  editingProduct: NewProduct | null = null;
+  editingIndex: number = -1;
 
   constructor(private http: HttpClient) {}
 
@@ -58,13 +63,38 @@ export class ProductsComponent implements OnInit {
   }
 
   addProduct() {
-    this.products.push({
-      id: '',
-      name: '',
-      url: '',
-      quantitySelector: '',
-      defaultQuantity: 1
-    });
+    this.editingProduct = null;
+    this.editingIndex = -1;
+    this.showCreation = true;
+  }
+
+  editProductAt(index: number) {
+    const p = this.products[index];
+    this.editingProduct = { ...p };
+    this.editingIndex = index;
+    this.showCreation = true;
+  }
+
+  onProductCreated(newProduct: NewProduct) {
+    this.products.push({ ...newProduct, variantsText: newProduct.variants?.join('\n') || '' });
+    this.showCreation = false;
+    this.saveProducts();
+  }
+
+  onProductUpdated(updatedProduct: NewProduct) {
+    if (this.editingIndex >= 0) {
+      this.products[this.editingIndex] = { ...this.products[this.editingIndex], ...updatedProduct, variantsText: updatedProduct.variants?.join('\n') || '' };
+    }
+    this.editingProduct = null;
+    this.editingIndex = -1;
+    this.showCreation = false;
+    this.saveProducts();
+  }
+
+  onCreationCancelled() {
+    this.editingProduct = null;
+    this.editingIndex = -1;
+    this.showCreation = false;
   }
 
   deleteProduct(index: number) {
@@ -78,14 +108,29 @@ export class ProductsComponent implements OnInit {
       .filter(line => line.length > 0);
   }
 
+  hasOrigin(origin: string | string[] | undefined): boolean {
+    return this.normalizeOrigins(origin).length > 0;
+  }
+
+  formatOrigin(origin: string | string[] | undefined): string {
+    return this.normalizeOrigins(origin).join(' - ');
+  }
+
   saveProducts() {
     const productsToSave = this.products.map(p => {
       const { variantsText, ...product } = p;
       return product;
     });
     
-    this.http.post(this.apiEndpoint, productsToSave).subscribe(() => {
-      alert('Products saved!');
+    this.http.post(this.apiEndpoint, productsToSave).subscribe({
+      next: () => alert('Products saved!'),
+      error: (err) => alert('Failed to save products: ' + (err?.message || err?.status || 'Unknown error'))
     });
+  }
+
+  private normalizeOrigins(origin: string | string[] | undefined): string[] {
+    const originOptions = ['US', 'CO', 'EC'];
+    const origins = Array.isArray(origin) ? origin : origin ? [origin] : [];
+    return originOptions.filter(option => origins.includes(option));
   }
 }

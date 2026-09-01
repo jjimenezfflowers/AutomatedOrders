@@ -89,13 +89,17 @@
 
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 mb-4">
-    <button (click)="saveConfig()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">💾 Save Order</button>
+    <button 
+      (click)="saveConfig()"
+      class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">
+      💾 Save Order
+    </button>
     <button
       (click)="runTest()"
-      [disabled]="isRunning || !stagingBaseUrl"
+      [disabled]="!stagingBaseUrl"
       class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {{ isRunning ? '⏳ Running...' : '🚀 Place Staging Order' }}
+      🚀 Place Staging Order
     </button>
   </div>
 

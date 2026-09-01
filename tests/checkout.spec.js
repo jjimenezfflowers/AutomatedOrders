@@ -1,10 +1,12 @@
 const { test, expect } = require("@playwright/test");
 
-test("Recording 2/10/2026 at 8:11:15 AM", async ({ page }) => {
+test("Recording 2/10/2026 at 8:11:15 AM", async ({ page, context }) => {
+  
   await page.setViewportSize({ width: 640, height: 539 });
   await page.goto(
     "https://bloom-brain-dev.myshopify.com/products/floreana-white-spray-roses-1",
   );
+  
   await page.locator("tr:nth-of-type(3) > td:nth-of-type(6) > button").click();
   await page.locator("#quantity-8293790941324-2").selectOption("4");
   await page.locator("#product-add-to-cart").click();

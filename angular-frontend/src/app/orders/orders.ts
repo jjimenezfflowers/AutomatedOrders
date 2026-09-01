@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 interface ProductOption {
   id: string;
   label: string;
+  selector: string;
   options: (string | { value: string; label: string; price?: number })[];
   defaultValue: string;
 }
@@ -14,6 +15,7 @@ interface Product {
   id: string;
   name: string;
   url: string;
+  origin?: string | string[];
   type?: string;
   variantSelector?: string;
   variants?: string[];
@@ -41,6 +43,7 @@ interface OrderConfig {
     variant?: string;
     quantity: number;
     deliveryDate?: string;
+    productOptions?: { [key: string]: string };
   }[];
 }
 
@@ -48,6 +51,8 @@ interface RunTestResponse {
   success: boolean;
   output?: string;
 }
+
+type ProductSortKey = 'entry' | 'origin' | 'name';
 
 @Component({
   selector: 'app-orders',
@@ -57,6 +62,12 @@ interface RunTestResponse {
 })
 export class OrdersComponent implements OnInit {
   products: Product[] = [];
+  productSort: ProductSortKey = 'entry';
+  readonly productSortOptions: { value: ProductSortKey; label: string }[] = [
+    { value: 'entry', label: 'Entry' },
+    { value: 'origin', label: 'Origin' },
+    { value: 'name', label: 'Name' }
+  ];
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];
   deliveryDate: string = '';
@@ -64,6 +75,10 @@ export class OrdersComponent implements OnInit {
     deliveryDate: '',
     orders: []
   };
+  isSavingOrder = false;
+  private readonly originOptions = ['US', 'CO', 'EC'];
+  private readonly collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+  private productEntryOrder = new Map<string, number>();
 
   constructor(private http: HttpClient) {}
 
@@ -94,8 +109,13 @@ export class OrdersComponent implements OnInit {
       }
 
       this.products = Array.from(uniqueProducts.values());
+      this.productEntryOrder = new Map(this.products.map((product, index) => [product.id, index]));
       this.syncOrderItemsFromSelection();
     });
+  }
+
+  get sortedProducts(): Product[] {
+    return [...this.products].sort((a, b) => this.compareProducts(a, b));
   }
 
   loadOrderConfig() {
@@ -148,7 +168,7 @@ export class OrdersComponent implements OnInit {
       if (product.type === 'product-options' && product.productOptions) {
         item.productOptions = {};
         product.productOptions.forEach(opt => {
-          item.productOptions![opt.id] = opt.defaultValue;
+          item.productOptions![opt.id] = savedOrder?.productOptions?.[opt.id] ?? opt.defaultValue;
         });
       }
 
@@ -190,9 +210,17 @@ export class OrdersComponent implements OnInit {
       orders: Array.from(uniqueOrders.values())
     };
 
-    this.http.post('/api/order-config', orderConfig).subscribe(() => {
-      this.orderConfig = orderConfig;
-      alert('Order saved!');
+    this.isSavingOrder = true;
+    this.http.post('/api/order-config', orderConfig).subscribe({
+      next: () => {
+        this.orderConfig = orderConfig;
+        this.isSavingOrder = false;
+        alert('Order saved successfully!');
+      },
+      error: (err) => {
+        this.isSavingOrder = false;
+        alert('Failed to save order: ' + (err.message || 'Unknown error'));
+      }
     });
   }
 
@@ -207,18 +235,45 @@ export class OrdersComponent implements OnInit {
   }
 
   runTest() {
-    this.http.post<RunTestResponse>('/api/run-test', {}).subscribe(response => {
-      if (response.success) {
-        alert('Test completed successfully!');
-        return;
-      }
+    if (this.orderItems.length === 0) {
+      alert('Please select at least one product before placing an order');
+      return;
+    }
+    
+    if (!this.deliveryDate) {
+      alert('Please select a delivery date');
+      return;
+    }
 
-      alert(`Test failed:\n\n${response.output || 'No output available'}`);
+    console.log('Starting Playwright test...');
+    
+    this.http.post<RunTestResponse>('/api/run-test', {}).subscribe({
+      next: (response) => {
+        if (response.success) {
+          alert('✅ Order placed successfully!\n\nThe test completed without errors.');
+          return;
+        }
+
+        const output = response.output || 'No output available';
+        alert(`❌ Order placement failed:\n\n${output.substring(0, 500)}${output.length > 500 ? '...' : ''}\n\nCheck the Logs tab for full details.`);
+      },
+      error: (err) => {
+        console.error('Test execution error:', err);
+        alert(`❌ Failed to run test:\n\n${err.message || 'Unknown error'}\n\nCheck the Logs tab for details.`);
+      }
     });
   }
 
   getProductById(id: string): Product | undefined {
     return this.products.find(p => p.id === id);
+  }
+
+  hasOrigin(origin: string | string[] | undefined): boolean {
+    return this.normalizeOrigins(origin).length > 0;
+  }
+
+  formatOrigin(origin: string | string[] | undefined): string {
+    return this.normalizeOrigins(origin).join(' - ');
   }
 
   isStringOption(opt: string | { value: string; label: string; price?: number }): opt is string {
@@ -235,6 +290,64 @@ export class OrdersComponent implements OnInit {
 
   hasPrice(opt: string | { value: string; label: string; price?: number }): boolean {
     return typeof opt !== 'string' && opt.price !== undefined;
+  }
+
+  private normalizeOrigins(origin: string | string[] | undefined): string[] {
+    const origins = Array.isArray(origin) ? origin : origin ? [origin] : [];
+    return this.originOptions.filter(option => origins.includes(option));
+  }
+
+  private compareProducts(a: Product, b: Product): number {
+    if (this.productSort === 'name') {
+      return this.compareByName(a, b) || this.compareByEntry(a, b);
+    }
+
+    if (this.productSort === 'origin') {
+      return this.compareByOrigin(a, b) || this.compareByName(a, b) || this.compareByEntry(a, b);
+    }
+
+    return this.compareByEntry(a, b);
+  }
+
+  private compareByName(a: Product, b: Product): number {
+    return this.compareText(a.name, b.name);
+  }
+
+  private compareByOrigin(a: Product, b: Product): number {
+    const aOrigins = this.normalizeOrigins(a.origin);
+    const bOrigins = this.normalizeOrigins(b.origin);
+
+    if (!aOrigins.length && bOrigins.length) return 1;
+    if (aOrigins.length && !bOrigins.length) return -1;
+
+    const firstOriginComparison = this.originIndex(aOrigins[0]) - this.originIndex(bOrigins[0]);
+    if (firstOriginComparison !== 0) return firstOriginComparison;
+
+    return this.compareText(aOrigins.join(' - '), bOrigins.join(' - '));
+  }
+
+  private compareByEntry(a: Product, b: Product): number {
+    return this.entryIndex(a) - this.entryIndex(b);
+  }
+
+  private compareText(a: string | undefined, b: string | undefined): number {
+    return this.collator.compare(a || '', b || '');
+  }
+
+  private entryIndex(product: Product): number {
+    return this.productEntryOrder.get(product.id) ?? Number.MAX_SAFE_INTEGER;
+  }
+
+  private originIndex(origin: string | undefined): number {
+    const index = origin ? this.originOptions.indexOf(origin) : -1;
+    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+  }
+
+  randomDateAndApply() {
+    this.generateRandomDate();
+    this.orderItems.forEach(item => {
+      item.deliveryDate = this.deliveryDate;
+    });
   }
 
   generateRandomDate() {

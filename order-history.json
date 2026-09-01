@@ -2644,5 +2644,5936 @@
     ],
     "customer": "jose@fiftyflowers.com",
     "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T16:45:03.565Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-07-17"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-07-13",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T16:59:05.152Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-07-14"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T17:01:09.865Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-07-14"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T19:26:32.956Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T19:29:10.180Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2746",
+    "date": "2026-07-06T19:30:48.128Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-16"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-06T19:32:01.825Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 5,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-16"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-10T22:07:11.811Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-10T22:07:16.983Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-18"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F2764",
+    "date": "2026-07-10T22:08:06.259Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-18"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-10T22:08:47.751Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-18"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-10T22:08:48.302Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-18"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-07-10T22:08:49.140Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-18"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T14:52:36.254Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T14:58:25.299Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T15:03:31.669Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T15:08:44.040Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T16:56:05.513Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 5,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T17:22:34.751Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T17:47:06.979Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T18:02:12.167Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-07-15T18:14:25.223Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-23"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-07-15T18:21:22.297Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T18:40:01.666Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-15T21:43:35.688Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-07-15T22:21:41.344Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:06:36.158Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:17:58.435Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:18:35.280Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:20:57.306Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 3,
+        "variant": "15 bunches - $274.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:24:09.526Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:26:52.158Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T17:33:53.468Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-07-25"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-07-25"
+      },
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 2,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T18:21:44.918Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T19:02:38.997Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-17T19:09:22.578Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-07-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T15:33:01.534Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-07-29"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T16:48:51.367Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-07-29"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-07-29"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T17:13:19.662Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T21:44:01.717Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-07-30"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-07-30"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T21:45:15.527Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "10 bunches - $254.99",
+        "deliveryDate": "2026-07-30"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 2,
+        "variant": "16 bunches - $289.99",
+        "deliveryDate": "2026-07-30"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T21:57:25.700Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 3,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-07-30"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "25 bunches - $394.99",
+        "deliveryDate": "2026-07-30"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T21:59:46.950Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "10 bunches - $254.99",
+        "deliveryDate": "2026-07-29"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-07-29"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T22:09:01.127Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "10 bunches - $254.99",
+        "deliveryDate": "2026-07-29"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-07-29"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-21T22:36:07.498Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "10 bunches - $254.99",
+        "deliveryDate": "2026-07-29"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-07-29"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T14:26:33.192Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "10 bunches - $254.99",
+        "deliveryDate": "2026-07-30"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-07-30"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T14:33:36.313Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 2,
+        "variant": "25 bunches - $394.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T15:03:07.771Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 2,
+        "variant": "25 bunches - $394.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T16:22:44.270Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 2,
+        "variant": "25 bunches - $394.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T16:30:18.022Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "25 bunches - $394.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T20:52:58.046Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-22T22:09:39.903Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 3,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-01"
+      },
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 3,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-01"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-23T16:22:18.356Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 2,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-07-30"
+      },
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-07-30"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-23T17:32:55.486Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 2,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-07-31"
+      },
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 2,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-23T17:41:17.133Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-07-31"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F3128",
+    "date": "2026-07-27T14:48:58.743Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T14:55:59.354Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 2,
+        "variant": "10 Bunches - $304.99",
+        "deliveryDate": "2026-08-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T14:58:23.432Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 2,
+        "variant": "10 Bunches - $304.99",
+        "deliveryDate": "2026-08-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:07:37.039Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 2,
+        "variant": "10 Bunches - $304.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:20:38.783Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:21:57.507Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-04",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:25:26.990Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:27:33.798Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "75 Roses",
+        "deliveryDate": "2026-08-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T15:30:35.219Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 3,
+        "variant": "20 Bunches",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T17:04:57.706Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T18:11:10.903Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T18:17:23.049Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T19:15:47.061Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-27T19:30:22.585Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T14:02:19.030Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-05",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T14:06:28.646Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-05",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T14:06:31.709Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-05",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T14:25:03.380Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-05"
+      },
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T15:42:15.640Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T18:11:27.475Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-07"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-07"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F3272",
+    "date": "2026-07-28T18:12:12.186Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-28T18:12:34.470Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T13:28:16.256Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T14:12:50.029Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T17:02:20.263Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T21:12:32.871Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-06"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T21:13:42.623Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-08-07"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-29T21:17:00.814Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-08-07"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses",
+        "deliveryDate": "2026-08-08"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches",
+        "deliveryDate": "2026-08-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-07-29T21:21:22.559Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-08-07"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T14:14:06.741Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-08-07"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T15:58:59.088Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "50 stems (5 Bunches)",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T16:05:15.157Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches",
+        "deliveryDate": "2026-08-10"
+      },
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "10 bunches - $194.99",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T16:07:16.936Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-08-10"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses",
+        "deliveryDate": "2026-08-10"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "10 Bunches",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T16:16:51.846Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T16:37:08.953Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-08"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T17:05:11.299Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T20:16:23.691Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "125 Roses",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-30T20:36:21.090Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "125 Roses",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-31T13:58:23.551Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-08",
+        "productOptions": {
+          "vo_0_1381": "Bear Grass 40 shoots per Bunch",
+          "vo_1_1382": "Aspidistras Green 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Peach Spray Roses 8 Stem Bunches",
+          "vo_4_1385": "Bicolor White with Pink Tips"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-31T21:13:25.477Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-10",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-07-31T23:05:15.768Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T13:39:44.077Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T13:40:13.084Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T13:55:41.941Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-10"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-10"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T13:56:59.461Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-11"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-11"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T14:45:03.079Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-11"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T14:45:08.369Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "15 bunches - $324.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T14:45:32.049Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "50 Roses",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 1,
+        "variant": "10 bunches - $214.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T14:45:35.870Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "20 Bunches",
+        "deliveryDate": "2026-08-11"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-08-11"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T14:46:40.611Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T15:21:17.279Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-03T16:03:33.247Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "20 Bunches",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 1,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T17:33:23.478Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T18:04:34.982Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T22:16:40.739Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T22:44:26.177Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T23:08:34.069Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-04T23:18:24.683Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-12"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-12"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-05T00:15:36.410Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-05T14:03:44.953Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-06T14:55:51.662Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-17"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-06T16:14:32.618Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-13"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-13"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-13"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Order summary",
+    "date": "2026-08-06T18:03:43.797Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-14"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-14"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-06T18:31:49.402Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-15"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-06T18:54:07.078Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-15"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-06T20:15:42.006Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-07T14:22:59.233Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-07T14:37:54.992Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-07T14:37:59.392Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-07T14:38:00.502Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-15"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-10T16:40:11.402Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-17"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-17",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-17"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-17"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-10T16:52:24.560Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-19"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-19",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-10T16:58:04.381Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-19"
+      },
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-19"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-10T16:58:20.502Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-20"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T15:01:22.132Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-20",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T17:54:23.589Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-21"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T17:55:24.814Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-21"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T17:56:32.369Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-20"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T18:22:08.302Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 1,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-11T21:21:36.636Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T14:15:43.115Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T14:18:23.473Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-19"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T14:26:11.368Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-19"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-19"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T15:54:15.780Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T16:08:26.529Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-19"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T16:18:05.912Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T17:56:01.644Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T18:01:22.328Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T18:11:34.932Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T18:11:35.343Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T18:45:06.047Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-12T21:32:17.100Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:27:08.238Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:27:32.646Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4212",
+    "date": "2026-08-13T15:28:01.613Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:28:01.710Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:38:03.787Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:51:07.603Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:51:41.581Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-20"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4217",
+    "date": "2026-08-13T15:53:57.222Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T15:56:59.332Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-24"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T16:11:52.148Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T16:40:37.476Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T16:41:11.965Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-20"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-20"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T16:41:20.313Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T16:41:57.359Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-21"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T17:58:58.843Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-21"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-21"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T21:19:54.578Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-24"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T21:20:30.318Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T21:26:52.941Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T21:36:07.152Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T21:39:50.694Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T23:05:27.084Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-13T23:16:39.070Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "200 Stems - $339.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T15:57:42.211Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T21:22:47.282Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T22:09:15.668Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T22:21:21.452Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T22:33:05.883Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:28:05.522Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-24"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:29:04.710Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:30:27.149Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-22"
+      },
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-22"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:31:15.678Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:32:02.084Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 1,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-24"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-14T23:32:02.597Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:28:20.792Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:29:24.306Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-24"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-24"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:40:11.876Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:47:35.790Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:49:19.447Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T13:52:44.191Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:09:07.543Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:20:10.956Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery)",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:20:20.805Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:20:56.493Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:58:27.842Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:58:36.107Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T14:58:57.961Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T15:13:31.687Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T15:20:12.508Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T15:29:45.399Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4588",
+    "date": "2026-08-17T15:33:17.264Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T16:34:54.184Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T17:02:09.059Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T17:21:04.680Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T17:30:46.920Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T17:34:58.542Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T17:35:50.927Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T18:29:21.867Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T20:45:00.881Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T21:33:15.884Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T21:35:22.960Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T21:36:48.170Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T22:44:51.188Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T23:06:44.645Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 2,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-17T23:44:43.762Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T14:32:34.618Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T14:36:24.836Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T14:36:42.890Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T14:42:44.716Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T14:48:47.158Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-25",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      },
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T15:02:11.996Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T16:49:15.442Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wedding-flower-kit",
+        "quantity": 1,
+        "variant": "Wedding Combo Box",
+        "deliveryDate": "2026-08-25",
+        "productOptions": {
+          "vo_0_1381": "Lily Grass Green 25 Shoots per Bunch",
+          "vo_1_1382": "Eucalyptus baby 5-8 Stem Bunches",
+          "vo_2_1383": "Cream",
+          "vo_3_1384": "Pink Medium Lisianthus 10 Stem Bunches",
+          "vo_4_1385": "Creamy White"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T16:50:29.352Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T16:52:16.724Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T16:53:54.580Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-08-25"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T16:58:03.636Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-08-25"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T17:29:13.480Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T17:43:34.366Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "100 Roses",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4680",
+    "date": "2026-08-18T17:44:52.920Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T19:37:18.643Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T19:43:07.720Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 1,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T19:52:57.440Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 3,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 3,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4687",
+    "date": "2026-08-18T19:53:19.841Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 3,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T19:54:15.929Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 2,
+        "variant": "15 Bunches - $264.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 2,
+        "variant": "144 Garden Roses - $624.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 2,
+        "variant": "15 bunches - $264.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T20:51:38.003Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Large Pack - $439.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 3,
+        "variant": "10 bunches - $204.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T20:52:26.417Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 1,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T23:21:03.797Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T23:21:14.700Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 4,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T23:21:55.721Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 5,
+        "variant": "150 Stems - $234.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4772",
+    "date": "2026-08-18T23:22:37.247Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "30 Stems - $139.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 2,
+        "variant": "150 Stems - $234.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T23:45:16.839Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "assorted-color-gerrondo-gerbera-daisy-flowers",
+        "quantity": 1,
+        "variant": "60 Gerrondo Gerberas - $219.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-18T23:56:16.193Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "200 Stems - $519.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:16:29.367Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:16:50.782Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:24:43.333Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "200 Stems - $519.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:32:31.175Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 1,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:32:46.480Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:33:08.575Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 3,
+        "variant": "150 Stems - $374.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F4838",
+    "date": "2026-08-19T00:37:24.285Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:45:34.127Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "50 Roses - $139.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 2,
+        "variant": "20 Bunches",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:46:43.734Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:48:13.317Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T00:48:20.136Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "15 bunches - $264.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T01:13:14.824Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T01:23:51.481Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $164.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T01:23:52.210Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $164.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:18:34.656Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "gunnii-eucalyptus-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:25:20.136Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "wholesale-euonymus-greenery",
+        "quantity": 5,
+        "variant": "5 bunches - $139.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:27:54.748Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:28:46.038Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 3,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:33:11.913Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T14:41:42.647Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Pack - $144.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T15:01:44.260Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 3,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T15:15:38.394Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-19T20:55:50.119Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-20T15:13:33.933Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-20T15:13:44.701Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-27"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-27"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-20T17:45:28.700Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-08-28"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-08-28"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-21T03:09:22.530Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-28"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-21T15:15:45.800Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-28"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F5089",
+    "date": "2026-08-21T15:24:59.164Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-28"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-21T15:28:30.124Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-08-28"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T01:43:12.670Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "150 Roses - $314.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:05:03.490Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "150 Roses - $314.99",
+        "deliveryDate": "2026-09-02"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:06:58.736Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-09-02"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:07:41.960Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "20 Bunches - $404.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:08:19.126Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-09-02"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $164.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:09:44.056Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-09-02"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $164.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order number is: DEV-BB-50F5137",
+    "date": "2026-08-25T15:12:00.003Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T15:33:52.174Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "choose-your-color-mini-calla-lilies",
+        "quantity": 1,
+        "variant": "50 Stems (5 Bunches) - $179.99",
+        "deliveryDate": "2026-09-01",
+        "productOptions": {
+          "vo_0_24804": "Enhanced Orange",
+          "vo_1_24805": "Cream/Off-White",
+          "vo_2_24806": "Pink",
+          "vo_3_24807": "Yellow Pale",
+          "vo_4_24808": "White"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-25T21:58:09.605Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "144 Garden Roses - $624.99",
+        "deliveryDate": "2026-09-02"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T16:12:05.401Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "eucalyptus-wedding-diy-greenery-box",
+        "quantity": 1,
+        "variant": "5 Bunches - $139.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T16:37:07.676Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 2,
+        "variant": "30 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "choose-your-color-mini-calla-lilies",
+        "quantity": 2,
+        "variant": "50 Stems (5 Bunches) - $179.99",
+        "deliveryDate": "2026-09-05",
+        "productOptions": {
+          "vo_0_24804": "Enhanced Orange",
+          "vo_1_24805": "White",
+          "vo_2_24806": "White",
+          "vo_3_24807": "White",
+          "vo_4_24808": "White"
+        }
+      },
+      {
+        "productId": "eucalyptus-wedding-diy-greenery-box",
+        "quantity": 2,
+        "variant": "20 Bunches - $324.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T18:20:29.092Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 2,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 2,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T18:21:04.303Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 2,
+        "variant": "200 Stems - $519.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T18:32:09.919Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 3,
+        "variant": "40 Stems - $174.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 3,
+        "variant": "30 Stems - $324.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 2,
+        "variant": "200 Stems - $519.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T20:18:11.671Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T20:26:46.363Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T20:27:16.671Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "eucalyptus-wedding-diy-greenery-box",
+        "quantity": 1,
+        "variant": "5 Bunches - $139.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T20:27:36.408Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T20:30:59.543Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "choose-your-color-mini-calla-lilies",
+        "quantity": 1,
+        "variant": "50 Stems (5 Bunches) - $179.99",
+        "deliveryDate": "2026-09-05",
+        "productOptions": {
+          "vo_0_24804": "Enhanced Orange",
+          "vo_1_24805": "White",
+          "vo_2_24806": "White",
+          "vo_3_24807": "White",
+          "vo_4_24808": "White"
+        }
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T22:53:48.545Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 2,
+        "variant": "144 Garden Roses - $624.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 2,
+        "variant": "20 bunches - $329.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T22:58:47.280Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-white-flower",
+        "quantity": 3,
+        "variant": "200 Stems - $339.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:03:25.492Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 4,
+        "variant": "20 bunches - $329.99",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:21:08.069Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "silver-dollar-eucalyptus-greens",
+        "quantity": 4,
+        "variant": "20 Bunches - $294.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:28:43.685Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "pink-paradise-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Large Pack - $439.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:30:07.286Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 3,
+        "variant": "150 Stems - $374.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:47:08.074Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 2,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 2,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "magnolia-greenery",
+        "quantity": 2,
+        "variant": "8 bunches - $209.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-26T23:48:32.322Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 2,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "giant-pale-green-hydrangea-flower",
+        "quantity": 2,
+        "variant": "15 Stems - $209.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "ivory-mini-calla-lily-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $164.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "silver-dollar-eucalyptus-greens",
+        "quantity": 2,
+        "variant": "5 Bunches - $139.99",
+        "deliveryDate": "2026-09-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T01:55:58.722Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "feverfew-daisy-wholesale-cut-flower",
+        "quantity": 3,
+        "variant": "5 bunches - $149.99",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 3,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T01:59:27.277Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-05"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T02:13:36.437Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "babys-breath-flower-new-love-3",
+        "quantity": 1,
+        "variant": "2 Bunches",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T02:33:36.417Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "200 Stems - $339.99",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T02:34:04.175Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "200 Stems - $339.99",
+        "deliveryDate": "2026-09-05"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T15:01:27.853Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "magnolia-greenery-garland",
+        "quantity": 1,
+        "variant": "5 Foot Garland - $184.99",
+        "deliveryDate": "2026-09-08"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T21:20:02.234Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "150 Roses - $314.99",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-27T21:22:37.068Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "200 stems (20 Bunches)",
+        "deliveryDate": "2026-09-08"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-28T02:59:05.178Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-28T03:11:01.469Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "eskimo-white-rose-1",
+        "quantity": 1,
+        "variant": "25 Roses (Please allow 5 Business days for delivery) - $94.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "light-blue-delphinium-flower",
+        "quantity": 1,
+        "variant": "5 Bunches",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "ivory-white-hydrangea-flower",
+        "quantity": 1,
+        "variant": "12 Stems (Allow 4 Business Days for Delivery) - $79.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "purplish-blue-veronica-flowers",
+        "quantity": 1,
+        "variant": "5 Bunches - $244.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "peach-sorbet-diy-flower-kit",
+        "quantity": 1,
+        "variant": "Small Package 111 Stems $269.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "cream-juliet-garden-rose",
+        "quantity": 1,
+        "variant": "24 Garden Roses - $154.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-28T03:59:32.745Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-28T03:59:33.296Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-04"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-04"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-31T16:03:14.461Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Your order is confirmed",
+    "date": "2026-08-31T16:06:22.842Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 2,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-08-31T17:42:58.083Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 1,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "-box",
+    "date": "2026-08-31T18:08:00.360Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "floreana-white-spray-roses",
+        "quantity": 3,
+        "variant": "20 stems (2 Bunches)",
+        "deliveryDate": "2026-09-09"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
+  },
+  {
+    "orderNumber": "Finalize order",
+    "date": "2026-08-31T18:10:31.190Z",
+    "environment": "dev",
+    "products": [
+      {
+        "productId": "snapdragon-yellow-flower",
+        "quantity": 1,
+        "variant": "50 Stems - $129.99",
+        "deliveryDate": "2026-09-09"
+      },
+      {
+        "productId": "green-hanging-amaranthus-bulk-fall-greens",
+        "quantity": 1,
+        "variant": "5 bunches - $144.99",
+        "deliveryDate": "2026-09-09"
+      }
+    ],
+    "customer": "jose@fiftyflowers.com",
+    "total": "N/A"
   }
 ]

@@ -1,4 +1,5 @@
-const { test, expect } = require("@playwright/test");
+const { test } = require("@playwright/test");
+const { clickAddToCart } = require("./helpers/product-form");
 const products = require("../products.json");
 const orderConfig = require("../order-config.json");
 
@@ -46,19 +47,19 @@ test("wedding: product-options (debug)", async ({ page }) => {
   const oneHundredRoseColorSelector = "#\\:ri\\:-form-item";
 
   // Select variant (if present) — use helper to handle either element type
-  await chooseOption(greenerySelector, "Bear Grass 40 shoots per Bunch");
+  await chooseOption(greenerySelector, "Lily Grass Green 25 Shoots per Bunch");
   await chooseOption(
     heartygreenerySelector,
-    "Aspidistras Green 5-8 Stem Bunches",
+    "Eucalyptus baby 5-8 Stem Bunches",
   );
   await chooseOption(threeHundredCarnationsColorSelector, "Cream");
   await chooseOption(
     tenFillerFlowerBunshesSelector,
-    "Pink Veronica 15 Stem Bunches",
+    "Pink Medium Lisianthus 10 Stem Bunches",
   );
   await chooseOption(
     oneHundredRoseColorSelector,
-    "Bicolor White with Pink Tips",
+    "Creamy White",
   );
 
   if (product.variantSelector && product.defaultVariant) {
@@ -209,14 +210,10 @@ test("wedding: product-options (debug)", async ({ page }) => {
     }
 
     // Add to cart
-  const addBtn = page.locator(
-    'button[name="add"], button:has-text("Add to cart"), button[type="submit"], #product-add-to-cart',
-  );
-  await expect(addBtn.first()).toBeVisible();
   console.log('\n🛒 Adding to cart...');
-  await addBtn.first().click();
+  const addToCartSelector = await clickAddToCart(page);
   await page.waitForTimeout(2000); // Wait for add to cart animation
-  console.log('✅ Clicked add to cart button');
+  console.log(`✅ Clicked add to cart button: ${addToCartSelector}`);
 
 
 });

@@ -77,4 +77,28 @@ export class CustomerComponent implements OnInit {
       });
     });
   }
+
+  setAddress(region: 'CT' | 'HI' | 'AK' | 'NJ') {
+    if (region === 'CT') {
+      this.customerInfo.address = '124 Ben St';
+      this.customerInfo.city = 'Bristol';
+      this.customerInfo.state = 'CT';
+      this.customerInfo.zipCode = '06830';
+    } else if (region === 'NJ') {
+      this.customerInfo.address = '179 Wall St';
+      this.customerInfo.city = 'West Long Branch';
+      this.customerInfo.state = 'NJ';
+      this.customerInfo.zipCode = '07764';
+    } else if (region === 'HI') {
+      this.customerInfo.address = '58 Kapuaimilia Place';
+      this.customerInfo.city = 'Maui County';
+      this.customerInfo.state = 'Hawaii';
+      this.customerInfo.zipCode = '96708';
+    } else if (region === 'AK') {
+      this.customerInfo.address = '5100 Whispering Spruce Drive';
+      this.customerInfo.city = 'Anchorage';
+      this.customerInfo.state = 'Alaska';
+      this.customerInfo.zipCode = '99516';
+    }
+  }
 }

@@ -16,6 +16,7 @@ interface Product {
   id: string;
   name: string;
   url: string;
+  origin?: string | string[];
   type?: string;
   variantSelector?: string;
   variants?: string[];
@@ -107,6 +108,14 @@ export class ProductsComponent implements OnInit {
       .filter(line => line.length > 0);
   }
 
+  hasOrigin(origin: string | string[] | undefined): boolean {
+    return this.normalizeOrigins(origin).length > 0;
+  }
+
+  formatOrigin(origin: string | string[] | undefined): string {
+    return this.normalizeOrigins(origin).join(' - ');
+  }
+
   saveProducts() {
     const productsToSave = this.products.map(p => {
       const { variantsText, ...product } = p;
@@ -117,5 +126,11 @@ export class ProductsComponent implements OnInit {
       next: () => alert('Products saved!'),
       error: (err) => alert('Failed to save products: ' + (err?.message || err?.status || 'Unknown error'))
     });
+  }
+
+  private normalizeOrigins(origin: string | string[] | undefined): string[] {
+    const originOptions = ['US', 'CO', 'EC'];
+    const origins = Array.isArray(origin) ? origin : origin ? [origin] : [];
+    return originOptions.filter(option => origins.includes(option));
   }
 }

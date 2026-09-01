@@ -1,6 +1,13 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("fs").promises;
 const path = require("path");
+const {
+  clickAddToCart,
+  selectDeliveryDate,
+  selectProductOptionsFromOrder,
+  selectVariantFromOrder,
+  setQuantityFromOrder,
+} = require("./helpers/product-form");
 
 // When STAGING_BASE_URL is set, rewrite product URLs to point at the staging store.
 const STAGING_BASE_URL = process.env.STAGING_BASE_URL
@@ -10,6 +17,8 @@ const STAGING_BASE_URL = process.env.STAGING_BASE_URL
 // Which environment config file to use (set by server when staging=true)
 const STAGING_CONFIG = process.env.STAGING_CONFIG || null;
 const ENVIRONMENT = STAGING_CONFIG ? 'staging' : 'dev';
+const ORDER_CONFIG = process.env.ORDER_CONFIG || null;
+const ORDER_CONFIG_FILE = STAGING_CONFIG || ORDER_CONFIG || 'order-config.json';
 
 const PRODUCTS_FILE = STAGING_CONFIG ? 'products-staging.json' : 'products.json';
 
@@ -27,12 +36,11 @@ function resolveProductUrl(url) {
 }
 
 async function loadOrderConfig() {
-  const configFile = STAGING_CONFIG || 'order-config.json';
-  const configData = await fs.readFile(path.join(__dirname, '..', configFile), 'utf8');
+  const configData = await fs.readFile(path.join(__dirname, '..', ORDER_CONFIG_FILE), 'utf8');
   const config = JSON.parse(configData);
 
-  // Merge customer info and payment from the main config if not present in staging config
-  if (STAGING_CONFIG && (!config.customerInfo || !config.payment)) {
+  // Merge customer info and payment from the main config when alternate configs keep only order data.
+  if (ORDER_CONFIG_FILE !== 'order-config.json' && (!config.customerInfo || !config.payment)) {
     const mainData = await fs.readFile(path.join(__dirname, '..', 'order-config.json'), 'utf8');
     const mainConfig = JSON.parse(mainData);
     config.customerInfo = config.customerInfo || mainConfig.customerInfo;
@@ -81,68 +89,11 @@ test("Place order from config", async ({ page, context }) => {
       console.log('  ✅ Sidebar closed');
     }
     
-    // Select variant FIRST if product has variant selector (this reloads the calendar)
-    if (product.variantSelector && order.variant) {
+    // Select variant FIRST if product has one configured (this can reload the calendar)
+    if (order.variant) {
       console.log(`\n🔧 Paso 1: Seleccionando variante...`);
-      console.log(`  Selector: ${product.variantSelector}`);
       console.log(`  Valor deseado: "${order.variant}"`);
-      
-      await page.waitForSelector(product.variantSelector, { state: 'visible', timeout: 1000 });
-      
-      // Verificar qué opciones están disponibles
-      const availableVariants = await page.locator(product.variantSelector).locator('option').allTextContents();
-      console.log(`  Opciones disponibles (${availableVariants.length}):`, availableVariants);
-
-      // Normalize helper: collapse whitespace and unify dashes (em dash, en dash → hyphen)
-      const norm = (s) => s.replace(/[—–]/g, '-').replace(/\s+/g, ' ').trim();
-      const targetNorm = norm(order.variant);
-
-      // Strategy 1: try direct value match (short timeout so we fall through fast)
-      let selected = false;
-      try {
-        await page.locator(product.variantSelector).selectOption(order.variant, { timeout: 3000 });
-        selected = true;
-      } catch (e) { /* fall through to fuzzy matching */ }
-
-      // Strategy 2: match by normalized option value or text content
-      if (!selected) {
-        const optionEls = await page.locator(product.variantSelector + ' option').all();
-        for (const opt of optionEls) {
-          const val  = (await opt.getAttribute('value')) || '';
-          const text = norm(await opt.textContent() || '');
-          const valNorm = norm(val);
-          if (valNorm === targetNorm || text === targetNorm ||
-              text.includes(targetNorm) || targetNorm.includes(valNorm)) {
-            console.log(`  → Fallback: seleccionando por value="${val}"`);
-            await page.locator(product.variantSelector).selectOption(val);
-            selected = true;
-            break;
-          }
-        }
-      }
-
-      // Strategy 3: match only on the name part before any dash
-      if (!selected) {
-        const targetName = targetNorm.split('-')[0].trim().toLowerCase();
-        const optionEls = await page.locator(product.variantSelector + ' option').all();
-        for (const opt of optionEls) {
-          const val  = (await opt.getAttribute('value')) || '';
-          const text = norm(await opt.textContent() || '').toLowerCase();
-          if (text.startsWith(targetName)) {
-            console.log(`  → Fallback parcial: seleccionando por value="${val}"`);
-            await page.locator(product.variantSelector).selectOption(val);
-            selected = true;
-            break;
-          }
-        }
-      }
-
-      if (!selected) {
-        throw new Error(`No se encontró la variante "${order.variant}" en el selector ${product.variantSelector}`);
-      }
-      
-      // Verificar que se seleccionó correctamente
-      const selectedVariant = await page.locator(product.variantSelector).inputValue();
+      const selectedVariant = await selectVariantFromOrder(page, product, order);
       console.log(`  ✅ Variante seleccionada: "${selectedVariant}"`);
       
       // Wait for product page to update after variant change
@@ -151,51 +102,9 @@ test("Place order from config", async ({ page, context }) => {
       console.log(`\n⏭️  Paso 1: Sin variante para seleccionar`);
     }
     
-    // Handle product options if this is a product-options type
-    if (product.type === 'product-options' && product.productOptions) {
-      console.log(`  Configuring ${product.productOptions.length} product options...`);
-      
-      for (const option of product.productOptions) {
-        try {
-          let optionValue = order.productOptions?.[option.id] || option.defaultValue;
-          
-          // Find the actual value to use for selection
-          // Options can be strings or objects with {value, label, price}
-          const matchingOption = option.options.find(opt => {
-            if (typeof opt === 'string') {
-              return opt === optionValue;
-            } else {
-              return opt.value === optionValue;
-            }
-          });
-          
-          // Use the value field for selection (works for both string and object)
-          const valueToSelect = typeof matchingOption === 'string' ? matchingOption : matchingOption?.value || optionValue;
-          
-          console.log(`    - ${option.label}: selecting "${valueToSelect}" (from config: "${optionValue}")`);
-          console.log(`      Selector: ${option.selector}`);
-          
-          const optionLocator = page.locator(option.selector);
-          await optionLocator.waitFor({ state: 'visible', timeout: 10000 });
-          const tagName = await optionLocator.evaluate(el => el.tagName.toLowerCase());
-          if (tagName === 'select') {
-            await optionLocator.selectOption(valueToSelect);
-          } else {
-            await optionLocator.click();
-            const optionItem = page.locator('[role="option"]').filter({ hasText: valueToSelect }).first();
-            await optionItem.waitFor({ state: 'visible', timeout: 5000 });
-            await optionItem.click();
-          }
-          console.log(`      ✓ Selected: "${valueToSelect}"`);
-          await page.waitForTimeout(500);
-        } catch (e) {
-          console.log(`    ⚠️  Could not set option ${option.label}:`, e.message);
-        }
-      }
-      
-      // Wait for product page to update after options change
-      await page.waitForTimeout(500);
-    }
+    await selectProductOptionsFromOrder(page, product, order, {
+      log: (message) => console.log(message),
+    });
     
     // Set delivery date from config (per-product or global)
     const deliveryDate = order.deliveryDate || orderConfig.deliveryDate;
@@ -205,93 +114,10 @@ test("Place order from config", async ({ page, context }) => {
       console.log(`  Fecha deseada: ${deliveryDate}${order.deliveryDate ? ' (per-product)' : ' (global)'}`);
       
       try {
-        // Wait for date selector to appear — extra time for slow DEV page loads
-        await page.waitForTimeout(2000);
-        
-        // Try method 1: Direct input[type="date"] (simpler products)
-        const dateInput = page.locator('input[type="date"]').first();
-        const dateInputExists = await dateInput.count() > 0;
-        
-        console.log(`  Buscando input[type="date"]: ${dateInputExists ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-        
-        if (dateInputExists) {
-          console.log(`  → Usando método directo (input date)`);
-          await dateInput.fill(deliveryDate);
-          await page.waitForTimeout(500);
-          await dateInput.dispatchEvent('change');
-          await page.waitForTimeout(500);
-          console.log(`  ✅ Fecha establecida: ${deliveryDate}`);
-        } else {
-          // Method 2: Calendar with comboboxes (more complex products)
-          console.log(`  → Usando método de calendario`);
-          
-          const [year, month, day] = deliveryDate.split('-');
-          const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                              'July', 'August', 'September', 'October', 'November', 'December'];
-          const monthName = monthNames[parseInt(month, 10) - 1];
-          const dayNumber = parseInt(day, 10);
-          
-          console.log(`  Navegando a: ${monthName} ${dayNumber}, ${year}`);
-          
-          // Wait for calendar to fully render (staging needs more time)
-          await page.waitForTimeout(ENVIRONMENT === 'staging' ? 6000 : 1500);
-          
-          // Click on month selector button (button:nth-child(2) in the calendar controls)
-          const monthButton = page.locator('button[role="combobox"]').filter({ hasText: /january|february|march|april|may|june|july|august|september|october|november|december/i }).first();
-          const monthButtonCount = await monthButton.count();
-          console.log(`  Buscando botón del mes: ${monthButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-          
-          if (monthButtonCount > 0) {
-            const monthButtonText = await monthButton.first().textContent();
-            console.log(`    Texto actual del botón: "${monthButtonText?.trim()}"`);
-            console.log(`    Haciendo click en botón del mes...`);
-            await monthButton.first().click();
-            await page.waitForTimeout(1000);
-            console.log(`    ✓ Click realizado, buscando mes "${monthName}"...`);
-            
-            let monthOption = page.locator('[role="option"]').filter({ hasText: new RegExp(`^${monthName}$`, 'i') }).first();
-            let monthOptionCount = await monthOption.count();
-            
-            console.log(`    Buscando opción "${monthName}": ${monthOptionCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-            
-            if (monthOptionCount > 0) {
-              console.log(`    Haciendo click en "${monthName}"...`);
-              await monthOption.click();
-              await page.waitForTimeout(1500);
-              console.log(`    ✅ Mes "${monthName}" seleccionado`);
-              
-              // Now find and click the day
-              console.log(`  Buscando día ${dayNumber}...`);
-              
-              // Look for day button in the calendar tbody
-              const dayButton = page.locator(`.calendar-container button[name="day"]`).filter({ hasText: new RegExp(`^${dayNumber}$`) }).first();
-              const dayButtonCount = await dayButton.count();
-              
-              console.log(`    Día ${dayNumber}: ${dayButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-              
-              if (dayButtonCount > 0) {
-                // Check if button is disabled
-                const isDisabled = await dayButton.getAttribute('disabled');
-                console.log(`    Estado del botón: ${isDisabled !== null ? 'DISABLED' : 'ENABLED'}`);
-                
-                if (isDisabled !== null) {
-                  throw new Error(`FECHA NO DISPONIBLE: El día ${dayNumber} de ${monthName} ${year} no está disponible (está deshabilitado). Elige otra fecha de entrega.`);
-                } else {
-                  console.log(`    Haciendo click en día ${dayNumber}...`);
-                  await dayButton.click();
-                  await page.waitForTimeout(500);
-                  console.log(`    ✅ Día ${dayNumber} seleccionado`);
-                }
-              } else {
-                throw new Error(`❌ No se encontró el día ${dayNumber} en el calendario`);
-              }
-            } else {
-              throw new Error(`❌ No se encontró la opción del mes "${monthName}" en el calendario`);
-            }
-          } else {
-            throw new Error(`❌ No se encontró el botón del mes en el calendario`);
-          }
-        }
+        await selectDeliveryDate(page, deliveryDate, {
+          environment: ENVIRONMENT,
+          log: (message) => console.log(message),
+        });
       } catch (e) {
         console.error(`\n❌ ERROR CRÍTICO DE FECHA:`);
         console.error(`  ${e.message}`);
@@ -302,13 +128,13 @@ test("Place order from config", async ({ page, context }) => {
       console.log(`\n⏭️  Paso 2: Sin fecha para seleccionar`);
     }
     
-    // Wait for quantity selector to be ready
-    await page.waitForSelector(product.quantitySelector, { state: 'visible', timeout: 5000 });
-    
-    await page
-      .locator(product.quantitySelector)
-      .selectOption(order.quantity.toString());
-    await page.locator("#product-add-to-cart").click();
+    console.log(`\n🔢 Seleccionando cantidad: ${order.quantity}`);
+    const selectedQuantity = await setQuantityFromOrder(page, product, order);
+    console.log(`  ✅ Cantidad seleccionada: ${selectedQuantity}`);
+
+    console.log(`\n🛒 Esperando boton Add to Cart...`);
+    const addToCartSelector = await clickAddToCart(page);
+    console.log(`  ✅ Add to Cart presionado: ${addToCartSelector}`);
     // Wait for cart count to update (faster signal than waiting for full sidebar)
     await page.waitForSelector('#cart-sidebar-checkout, .halo-sidebar-close, a[data-close-cart-sidebar], .cart-count', { state: 'visible', timeout: 6000 }).catch(() => {});
     console.log(`\n🛒 Producto "${product.name}" agregado al carrito correctamente`);

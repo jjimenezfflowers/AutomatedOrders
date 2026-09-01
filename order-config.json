@@ -1,5 +1,5 @@
 {
-  "deliveryDate": "2026-08-15",
+  "deliveryDate": "2026-09-09",
   "customerInfo": {
     "email": "jose@fiftyflowers.com",
     "phone": "(208) 391-2924",
@@ -15,12 +15,5 @@
     "cvv": "123",
     "expiry": "1226"
   },
-  "orders": [
-    {
-      "productId": "snapdragon-white-flower",
-      "quantity": 1,
-      "variant": "50 Stems - $129.99",
-      "deliveryDate": "2026-08-15"
-    }
-  ]
+  "orders": []
 }

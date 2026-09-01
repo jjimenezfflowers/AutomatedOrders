@@ -1,0 +1,11 @@
+{
+  "deliveryDate": "2026-08-20",
+  "orders": [
+    {
+      "productId": "peach-sorbet-diy-flower-kit",
+      "quantity": 3,
+      "variant": "Medium Package 230 Stems $449.99",
+      "deliveryDate": "2026-08-20"
+    }
+  ]
+}

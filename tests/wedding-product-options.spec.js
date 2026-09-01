@@ -1,4 +1,5 @@
-const { test, expect } = require("@playwright/test");
+const { test } = require("@playwright/test");
+const { clickAddToCart } = require("./helpers/product-form");
 const products = require("../products.json");
 const orderConfig = require("../order-config.json");
 
@@ -209,14 +210,10 @@ test("wedding: product-options (debug)", async ({ page }) => {
     }
 
     // Add to cart
-  const addBtn = page.locator(
-    'button[name="add"], button:has-text("Add to cart"), button[type="submit"], #product-add-to-cart',
-  );
-  await expect(addBtn.first()).toBeVisible();
   console.log('\n🛒 Adding to cart...');
-  await addBtn.first().click();
+  const addToCartSelector = await clickAddToCart(page);
   await page.waitForTimeout(2000); // Wait for add to cart animation
-  console.log('✅ Clicked add to cart button');
+  console.log(`✅ Clicked add to cart button: ${addToCartSelector}`);
 
 
 });

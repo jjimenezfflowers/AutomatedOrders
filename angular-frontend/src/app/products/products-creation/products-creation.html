@@ -69,6 +69,23 @@
           }
         </div>
 
+        <!-- Origin -->
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-slate-700">Origin</label>
+          <div class="flex flex-wrap gap-2 rounded border border-slate-300 px-3 py-2">
+            @for (origin of originOptions; track origin) {
+              <label class="inline-flex items-center gap-2 rounded bg-slate-50 px-2 py-1 text-sm text-slate-700">
+                <input
+                  type="checkbox"
+                  [checked]="isOriginSelected(origin)"
+                  (change)="toggleOrigin(origin, $any($event.target).checked)"
+                  class="rounded border-slate-300 text-slate-800 focus:ring-slate-300" />
+                <span>{{ origin }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
         <!-- Type -->
         <div class="flex flex-col gap-1">
           <label class="text-sm font-medium text-slate-700">Type</label>

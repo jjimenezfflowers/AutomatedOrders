@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 
 import { ProductsComponent } from '../../products/products';
 import { UiPageComponent } from '../../ui';
@@ -13,7 +13,9 @@ import { SECTION_COPY } from '../navigation';
   selector: 'app-products-page',
   standalone: true,
   imports: [ProductsComponent, UiPageComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Not OnPush: the feature components assign plain fields inside HTTP subscriptions
+  // without marking themselves dirty, so an OnPush wrapper blocks change detection from
+  // reaching them and their lists render empty. Revisit once they are signal-based.
   template: `
     <ui-page [title]="copy.title" [description]="copy.description">
       <app-products [apiEndpoint]="endpoint()" />

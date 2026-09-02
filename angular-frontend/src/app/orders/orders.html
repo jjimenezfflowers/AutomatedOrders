@@ -1,35 +1,5 @@
-<div class="max-w-[1100px] mx-auto">
-  <ui-card>
+<ui-card>
 
-    <!-- Header -->
-    <ui-card-header>
-      <div class="flex items-center justify-between gap-4">
-        <div class="flex flex-col gap-1.5">
-          <ui-card-title class="text-lg">Create Order</ui-card-title>
-          <ui-card-description>Select products and configure delivery details</ui-card-description>
-        </div>
-        <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-          <ui-button
-            variant="outline"
-            size="sm"
-            (click)="saveOrder()"
-            [loading]="isSavingOrder">
-            Save Order
-          </ui-button>
-          <ui-button
-            variant="default"
-            size="sm"
-            testId="place-order"
-            (click)="runTest()"
-            [loading]="isPlacingOrder">
-            @if (!isPlacingOrder) {
-              <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-            }
-            Place Order
-          </ui-button>
-        </div>
-      </div>
-    </ui-card-header>
 
     <!-- Body -->
     <ui-card-content class="flex flex-col gap-6">
@@ -208,4 +178,3 @@
     </ui-card-footer>
 
   </ui-card>
-</div>

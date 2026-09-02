@@ -343,19 +343,21 @@ describe('OrdersComponent', () => {
       expect(window.alert).not.toHaveBeenCalled();
     });
 
-    it('disables both Place Order buttons while a run is in flight', () => {
+    it('disables the Place Order button while a run is in flight', () => {
       completeInit();
 
+      // The second Place Order button now lives in the page header; see
+      // shell/pages/orders-page.spec.ts for that one.
       const buttons = (): HTMLButtonElement[] =>
         Array.from(fixture.nativeElement.querySelectorAll('button[data-testid="place-order"]'));
 
-      expect(buttons().length).toBe(2);
+      expect(buttons().length).toBe(1);
       expect(buttons().every(b => b.disabled)).toBeFalse();
 
       component.runTest();
       detect();
 
-      expect(buttons().length).toBe(2);
+      expect(buttons().length).toBe(1);
       expect(buttons().every(b => b.disabled)).toBeTrue();
       // ui-button keeps the label static and signals the in-flight run with a
       // spinner plus aria-busy, instead of swapping the text to 'Placing Order...'.
@@ -423,14 +425,14 @@ describe('OrdersComponent', () => {
       input.dispatchEvent(new Event('input'));
     }
 
-    it('renders both Place Order buttons through ui-button, enabled while idle', () => {
+    it('renders the Place Order button through ui-button, enabled while idle', () => {
       completeInit();
 
       const buttons: HTMLButtonElement[] = Array.from(
         fixture.nativeElement.querySelectorAll('ui-button button[data-testid="place-order"]')
       );
 
-      expect(buttons.length).toBe(2);
+      expect(buttons.length).toBe(1);
       expect(buttons.every(b => b.disabled)).toBeFalse();
       expect(buttons.every(b => b.getAttribute('aria-busy') === null)).toBeTrue();
     });
@@ -445,7 +447,8 @@ describe('OrdersComponent', () => {
 
       expect(all.length).toBeGreaterThan(0);
       expect(owned.length).toBe(all.length);
-      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(2);
+      // One Save Order remains in the card footer; the other moved to the page header.
+      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(1);
     });
 
     it('round-trips the main delivery date through ui-input', async () => {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { HistoryComponent } from '../../history/history';
 import { UiPageComponent } from '../../ui';
@@ -9,7 +9,9 @@ import { SECTION_COPY } from '../navigation';
   selector: 'app-history-page',
   standalone: true,
   imports: [HistoryComponent, UiPageComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Not OnPush: the feature components assign plain fields inside HTTP subscriptions
+  // without marking themselves dirty, so an OnPush wrapper blocks change detection from
+  // reaching them and their lists render empty. Revisit once they are signal-based.
   template: `
     <ui-page [title]="copy.title" [description]="copy.description">
       <app-history />

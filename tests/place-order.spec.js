@@ -8,6 +8,7 @@ const {
   selectVariantFromOrder,
   setQuantityFromOrder,
 } = require("./helpers/product-form");
+const { readCheckoutError } = require("./helpers/checkout");
 
 // When STAGING_BASE_URL is set, rewrite product URLs to point at the staging store.
 const STAGING_BASE_URL = process.env.STAGING_BASE_URL
@@ -228,22 +229,18 @@ test("Place order from config", async ({ page, context }) => {
     console.log('⚠️  Browser may have closed, but order was likely placed');
   }
 
-  try {
-    // Check for checkout error (ignore Shopify rate limiting)
-    const errorText = await page
-      .locator("text=/There was a problem|error|failed/i")
-      .first()
-      .textContent({ timeout: 3000 })
-      .catch(() => null);
-    if (errorText && !errorText.includes("There was a problem with our checkout")) {
-      await page.screenshot({
+  // readCheckoutError never throws, so this throw cannot be swallowed by a
+  // "browser may have closed" guard the way the previous inline version was.
+  const checkoutError = await readCheckoutError(page);
+
+  if (checkoutError) {
+    await page
+      .screenshot({
         path: `test-results/checkout-error-${Date.now()}.png`,
         fullPage: true,
-      });
-      throw new Error(`Checkout error detected: ${errorText}`);
-    }
-  } catch (e) {
-    console.log('⚠️  Could not check for errors, browser may have closed');
+      })
+      .catch(() => {});
+    throw new Error(`Checkout error detected: ${checkoutError}`);
   }
 
   try {

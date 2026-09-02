@@ -73,3 +73,84 @@ describe('parseDeliveryDate', () => {
     }
   });
 });
+
+describe('parseDeliveryDate relative offsets', () => {
+  // Regression: mini-calla-product-options.spec.js pinned "2026-09-02" (the day it
+  // was written) and three checked-in order configs pointed at dates already in the
+  // past, so `npm run test:peach-sorbet` failed on day one.
+  const now = new Date(2026, 8, 2); // 2026-09-02
+
+  test('+14d resolves two weeks out', () => {
+    assert.equal(parseDeliveryDate('+14d', { now }).iso, '2026-09-16');
+  });
+
+  test('+0d resolves to today', () => {
+    assert.equal(parseDeliveryDate('+0d', { now }).iso, '2026-09-02');
+  });
+
+  test('rolls over into the next month', () => {
+    assert.equal(parseDeliveryDate('+30d', { now }).iso, '2026-10-02');
+  });
+
+  test('rolls over into the next year', () => {
+    assert.equal(parseDeliveryDate('+180d', { now: new Date(2026, 10, 15) }).iso, '2027-05-14');
+  });
+
+  test('returns month and day as numbers, matching the absolute formats', () => {
+    const parsed = parseDeliveryDate('+14d', { now });
+
+    assert.equal(parsed.year, '2026');
+    assert.equal(parsed.month, 9);
+    assert.equal(parsed.day, 16);
+  });
+
+  test('is case insensitive', () => {
+    assert.equal(parseDeliveryDate('+7D', { now }).iso, parseDeliveryDate('+7d', { now }).iso);
+  });
+
+  test('rejects malformed offsets', () => {
+    for (const input of ['+d', '14d', '+14', '+14w', '-14d']) {
+      assert.throws(() => parseDeliveryDate(input, { now }), /Formato de fecha no soportado/);
+    }
+  });
+
+  test('defaults to the real clock when now is not injected', () => {
+    const today = new Date();
+    const expected = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    const pad = (n) => String(n).padStart(2, '0');
+
+    assert.equal(
+      parseDeliveryDate('+1d').iso,
+      `${expected.getFullYear()}-${pad(expected.getMonth() + 1)}-${pad(expected.getDate())}`,
+    );
+  });
+});
+
+describe('checked-in order configs stay valid over time', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+
+  const configs = [
+    'order-config-peach-sorbet.json',
+    'order-config-staging.json',
+    'order-config-example-with-options.json',
+  ];
+
+  for (const file of configs) {
+    test(`${file} does not pin a date that can expire`, () => {
+      const config = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8'),
+      );
+
+      const dates = [config.deliveryDate, ...(config.orders || []).map((o) => o.deliveryDate)]
+        .filter(Boolean);
+
+      assert.ok(dates.length > 0, 'expected at least one delivery date');
+      for (const date of dates) {
+        assert.match(date, /^\+\d+d$/, `${file} still pins the absolute date ${date}`);
+        // And it must actually resolve to a future date.
+        assert.ok(new Date(parseDeliveryDate(date).iso) > new Date());
+      }
+    });
+  }
+});

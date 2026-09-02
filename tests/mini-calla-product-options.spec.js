@@ -2,6 +2,8 @@ const { test, expect } = require("@playwright/test");
 const {
   clickAddToCart,
   escapeRegExp,
+  findAvailableDeliveryDays,
+  MONTH_NAMES,
   selectDeliveryDate,
   selectProductOptionsFromOrder,
   selectVariantFromOrder,
@@ -16,7 +18,6 @@ const order = {
   productId: PRODUCT_ID,
   quantity: 2,
   variant: "50 Stems (5 Bunches) - $179.99",
-  deliveryDate: "2026-09-02",
   productOptions: {
     vo_0_24804: "Peach",
     vo_1_24805: "Blush",
@@ -25,6 +26,28 @@ const order = {
     vo_4_24808: "Cream/Off-White",
   },
 };
+
+// Looks a couple of months ahead for a day the storefront will accept.
+async function pickAvailableDeliveryDate(page, monthsToTry = 3) {
+  const today = new Date();
+
+  for (let offset = 0; offset < monthsToTry; offset++) {
+    const cursor = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+    const month = MONTH_NAMES[cursor.getMonth()];
+    const year = cursor.getFullYear();
+
+    const days = await findAvailableDeliveryDays(page, { month, year, timeout: 15000 });
+    // Skip days that have already passed in the current month.
+    const usable = offset === 0 ? days.filter((day) => day > today.getDate()) : days;
+
+    if (usable.length > 0) {
+      const day = String(usable[0]).padStart(2, "0");
+      return `${year}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${day}`;
+    }
+  }
+
+  throw new Error(`No hay fechas de entrega disponibles en los proximos ${monthsToTry} meses`);
+}
 
 test("mini calla: product-options add to cart", async ({ page }) => {
   if (!product) throw new Error(`Product not found: ${PRODUCT_ID}`);
@@ -61,7 +84,12 @@ test("mini calla: product-options add to cart", async ({ page }) => {
     );
   }
 
-  await selectDeliveryDate(page, order.deliveryDate, {
+  // Pinning an absolute date makes this spec expire: it used to hardcode a date
+  // that was only valid on the day it was written. Ask the storefront instead.
+  const deliveryDate = await pickAvailableDeliveryDate(page);
+  console.log(`📅 Fecha de entrega elegida: ${deliveryDate}`);
+
+  await selectDeliveryDate(page, deliveryDate, {
     environment: "dev",
     log: (message) => console.log(message),
   });

@@ -429,8 +429,29 @@ async function selectProductOptionsFromOrder(page, product, order, options = {})
   return selections;
 }
 
-function parseDeliveryDate(deliveryDate) {
+// Configs and specs used to pin absolute delivery dates, which go stale: several
+// checked-in order configs already pointed at dates in the past. "+14d" keeps a
+// config valid indefinitely. `now` is injectable so the behaviour is testable.
+function parseDeliveryDate(deliveryDate, { now = new Date() } = {}) {
   const value = String(deliveryDate || '').trim();
+
+  const relativeMatch = value.match(/^\+(\d+)d$/i);
+  if (relativeMatch) {
+    const target = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    target.setDate(target.getDate() + Number(relativeMatch[1]));
+
+    const year = String(target.getFullYear());
+    const month = target.getMonth() + 1;
+    const day = target.getDate();
+
+    return {
+      year,
+      month,
+      day,
+      iso: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+    };
+  }
+
   const isoMatch = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (isoMatch) {
     const month = Number(isoMatch[2]);
@@ -470,7 +491,9 @@ function parseDeliveryDate(deliveryDate) {
     };
   }
 
-  throw new Error(`Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD.`);
+  throw new Error(
+    `Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD o un offset relativo como "+14d".`,
+  );
 }
 
 const CALENDAR_ROOT_SELECTORS = [

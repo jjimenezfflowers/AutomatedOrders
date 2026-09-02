@@ -34,102 +34,77 @@
       </div>
     </ui-card-header>
 
-    <ui-card-content class="overflow-x-auto">
-      <table class="w-full text-left table-auto min-w-max" data-testid="products-table">
-        <thead>
-          <tr>
-            <th class="p-4 transition-colors cursor-pointer border-y border-border bg-muted hover:bg-muted/70">
-              <p class="flex items-center justify-between gap-2 text-sm font-normal leading-none text-muted-foreground">
-                Product
-                <lucide-angular [img]="icons.sort" class="size-4" aria-hidden="true" />
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-border bg-muted hover:bg-muted/70">
-              <p class="flex items-center justify-between gap-2 text-sm font-normal leading-none text-muted-foreground">
-                Type
-                <lucide-angular [img]="icons.sort" class="size-4" aria-hidden="true" />
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-border bg-muted hover:bg-muted/70">
-              <p class="flex items-center justify-between gap-2 text-sm font-normal leading-none text-muted-foreground">
-                Variants
-                <lucide-angular [img]="icons.sort" class="size-4" aria-hidden="true" />
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-border bg-muted hover:bg-muted/70">
-              <p class="flex items-center justify-between gap-2 text-sm font-normal leading-none text-muted-foreground">
-                Qty
-                <lucide-angular [img]="icons.sort" class="size-4" aria-hidden="true" />
-              </p>
-            </th>
-            <th class="sticky right-0 z-20 p-4 transition-colors cursor-pointer border-y border-border bg-muted hover:bg-muted/70 shadow-[-8px_0_12px_-12px_rgba(15,23,42,0.35)]">
-              <p class="flex items-center justify-between gap-2 text-sm font-normal leading-none text-muted-foreground"></p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (product of products; track product.id; let i = $index) {
-            <tr data-testid="product-row">
-              <td class="p-4 border-b border-border">
-                <div class="flex items-center gap-3">
-                  <div class="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-muted text-foreground font-semibold text-sm shrink-0">
-                    {{ (product.name || product.id || '?').charAt(0).toUpperCase() }}
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-sm font-semibold text-foreground">{{ product.name || '(unnamed)' }}</p>
-                    <p class="text-sm text-muted-foreground">{{ product.id || '(no id)' }}</p>
-                    @if (hasOrigin(product.origin)) {
-                      <p class="text-xs text-muted-foreground">Origin: {{ formatOrigin(product.origin) }}</p>
-                    }
-                  </div>
-                </div>
-              </td>
-              <td class="p-4 border-b border-border">
-                <div class="flex flex-col">
-                  <p class="text-sm font-semibold text-foreground">
-                    {{ product.type === 'product-options' ? 'Product with Options' : 'Simple Product' }}
-                  </p>
-                  <p class="text-sm text-muted-foreground truncate max-w-[160px]">{{ product.url || '—' }}</p>
-                </div>
-              </td>
-              <td class="p-4 border-b border-border">
-                <div class="w-max">
-                  @if (product.variants && product.variants.length > 0) {
-                    <ui-badge variant="success" class="uppercase">
-                      <span>{{ product.variants.length }} variant{{ product.variants.length !== 1 ? 's' : '' }}</span>
-                    </ui-badge>
-                  } @else {
-                    <ui-badge variant="secondary" class="uppercase">
-                      <span>none</span>
-                    </ui-badge>
-                  }
-                </div>
-              </td>
-              <td class="p-4 border-b border-border">
-                <p class="text-sm text-muted-foreground">{{ product.defaultQuantity }}</p>
-              </td>
-              <td class="sticky right-0 z-10 p-4 border-b border-border bg-card whitespace-nowrap shadow-[-8px_0_12px_-12px_rgba(15,23,42,0.35)]">
-                <ui-button
-                  variant="ghost"
-                  size="icon"
-                  (click)="editProductAt(i)"
-                  [testId]="'edit-product-' + i"
-                  title="Edit product">
-                  <lucide-angular [img]="icons.edit" class="size-4" aria-hidden="true" />
-                </ui-button>
-                <ui-button
-                  variant="destructive"
-                  size="icon"
-                  (click)="deleteProduct(i)"
-                  [testId]="'delete-product-' + i"
-                  title="Delete product">
-                  <lucide-angular [img]="icons.delete" class="size-4" aria-hidden="true" />
-                </ui-button>
-              </td>
-            </tr>
+    <ui-card-content>
+      <ui-data-table
+        testId="products"
+        searchPlaceholder="Search products..."
+        emptyMessage="No products yet"
+        [data]="products"
+        [columns]="columns"
+        [initialPageSize]="10">
+
+        <ng-template uiDataTableCell="product" let-product>
+          <div class="flex items-center gap-3">
+            <div class="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-muted text-foreground font-semibold text-sm shrink-0">
+              {{ (product.name || product.id || '?').charAt(0).toUpperCase() }}
+            </div>
+            <div class="flex min-w-0 flex-col">
+              <p class="truncate text-sm font-semibold text-foreground">{{ product.name || '(unnamed)' }}</p>
+              <p class="truncate text-sm text-muted-foreground">{{ product.id || '(no id)' }}</p>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template uiDataTableCell="type" let-product let-type="value">
+          <div class="flex min-w-0 flex-col">
+            <p class="truncate text-sm font-semibold text-foreground">{{ type }}</p>
+            <p class="truncate text-sm text-muted-foreground">{{ product.url || '—' }}</p>
+          </div>
+        </ng-template>
+
+        <ng-template uiDataTableCell="origin" let-origin="value">
+          @if (origin) {
+            <p class="truncate text-sm text-foreground">{{ origin }}</p>
+          } @else {
+            <p class="text-sm text-muted-foreground">—</p>
           }
-        </tbody>
-      </table>
+        </ng-template>
+
+        <ng-template uiDataTableCell="variants" let-product>
+          <div class="w-max">
+            @if (product.variants && product.variants.length > 0) {
+              <ui-badge variant="success" class="uppercase">
+                <span>{{ product.variants.length }} variant{{ product.variants.length !== 1 ? 's' : '' }}</span>
+              </ui-badge>
+            } @else {
+              <ui-badge variant="secondary" class="uppercase">
+                <span>none</span>
+              </ui-badge>
+            }
+          </div>
+        </ng-template>
+
+        <ng-template uiDataTableCell="actions" let-product>
+          <div class="flex items-center justify-end gap-1 whitespace-nowrap">
+            <ui-button
+              variant="ghost"
+              size="icon"
+              (click)="editRow(product)"
+              [testId]="'edit-product-' + product.id"
+              title="Edit product">
+              <lucide-angular [img]="icons.edit" class="size-4" aria-hidden="true" />
+            </ui-button>
+            <ui-button
+              variant="destructive"
+              size="icon"
+              (click)="deleteRow(product)"
+              [testId]="'delete-product-' + product.id"
+              title="Delete product">
+              <lucide-angular [img]="icons.delete" class="size-4" aria-hidden="true" />
+            </ui-button>
+          </div>
+        </ng-template>
+      </ui-data-table>
     </ui-card-content>
 
     <ui-card-footer class="justify-between">

@@ -48,6 +48,34 @@ export const ENVIRONMENTS: { id: Environment; label: string; store: string }[] =
   { id: 'staging', label: 'STAGING', store: 'bloom-brain-stage' },
 ];
 
+/** Page title and the one-line description under it, following the admin's page header. */
+export const SECTION_COPY: Record<SectionId, { title: string; description: string }> = {
+  products: {
+    title: 'Products',
+    description: 'Catalogue the automated runs order from, with their selectors and variants.',
+  },
+  orders: {
+    title: 'Orders',
+    description: 'Build an order and place it against the storefront.',
+  },
+  customer: {
+    title: 'Customer Info',
+    description: 'Customer and payment details used by every run, in both environments.',
+  },
+  history: {
+    title: 'History',
+    description: 'Orders placed by automated runs.',
+  },
+  logs: {
+    title: 'Logs',
+    description: 'Server activity and Playwright output, held in memory.',
+  },
+};
+
 export function sectionById(id: SectionId): NavItem | undefined {
   return NAV_GROUPS.flatMap((group) => group.items).find((item) => item.id === id);
+}
+
+export function isEnvironment(value: string | undefined): value is Environment {
+  return ENVIRONMENTS.some((item) => item.id === value);
 }

@@ -82,11 +82,13 @@
           <ul class="flex w-full min-w-0 flex-col gap-1">
             @for (item of group.items; track item.id) {
               <li>
-                <button
-                  type="button"
-                  (click)="showSection(item.id)"
-                  [class]="navItemClasses(item.id)"
-                  [attr.aria-current]="activeSection() === item.id ? 'page' : null"
+                <a
+                  [routerLink]="linkFor(item.id)"
+                  routerLinkActive
+                  #link="routerLinkActive"
+                  [routerLinkActiveOptions]="{ exact: false }"
+                  [class]="navItemClasses(link.isActive)"
+                  [attr.aria-current]="link.isActive ? 'page' : null"
                   [attr.title]="!sidebarOpen() ? item.label : null"
                   [attr.data-testid]="'nav-' + item.id"
                 >
@@ -94,7 +96,7 @@
                   @if (sidebarOpen()) {
                     <span class="truncate">{{ item.label }}</span>
                   }
-                </button>
+                </a>
               </li>
             }
           </ul>
@@ -150,48 +152,25 @@
     <nav class="flex gap-1 overflow-x-auto border-b bg-card px-2 py-1.5 md:hidden" aria-label="Sections">
       @for (group of groups; track group.label) {
         @for (item of group.items; track item.id) {
-          <button
-            type="button"
-            (click)="showSection(item.id)"
+          <a
+            [routerLink]="linkFor(item.id)"
+            routerLinkActive
+            #mobileLink="routerLinkActive"
             class="flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium"
-            [class.bg-accent]="activeSection() === item.id"
-            [class.text-muted-foreground]="activeSection() !== item.id"
+            [class.bg-accent]="mobileLink.isActive"
+            [class.text-muted-foreground]="!mobileLink.isActive"
             [attr.data-testid]="'nav-mobile-' + item.id"
           >
             <lucide-angular [img]="item.icon" class="size-3.5" aria-hidden="true" />
             {{ item.label }}
-          </button>
+          </a>
         }
       }
     </nav>
 
     <main class="min-h-0 flex-1 bg-muted/30">
       <div class="flex flex-col gap-y-2 px-4 py-6 tracking-tight sm:px-8 lg:px-10 lg:py-10">
-        @switch (activeSection()) {
-          @case ('products') {
-            @if (environment() === 'staging') {
-              <app-products apiEndpoint="/api/staging-products" />
-            } @else {
-              <app-products />
-            }
-          }
-          @case ('orders') {
-            @if (environment() === 'staging') {
-              <app-staging-orders />
-            } @else {
-              <app-orders />
-            }
-          }
-          @case ('customer') {
-            <app-customer />
-          }
-          @case ('history') {
-            <app-history />
-          }
-          @case ('logs') {
-            <app-logs />
-          }
-        }
+        <router-outlet />
       </div>
     </main>
   </div>

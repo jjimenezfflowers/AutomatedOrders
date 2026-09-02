@@ -2,7 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, ChevronsUpDown, Plus, SquarePen, Trash2 } from 'lucide-angular';
+
 import { ProductsCreation, NewProduct } from './products-creation/products-creation';
+import { UI_CARD, UiBadgeComponent, UiButtonComponent } from '../ui';
 
 interface ProductOption {
   id: string;
@@ -29,7 +32,15 @@ interface Product {
 
 @Component({
   selector: 'app-products',
-  imports: [FormsModule, CommonModule, ProductsCreation],
+  imports: [
+    FormsModule,
+    CommonModule,
+    ProductsCreation,
+    LucideAngularModule,
+    UiButtonComponent,
+    UiBadgeComponent,
+    ...UI_CARD,
+  ],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -40,6 +51,8 @@ export class ProductsComponent implements OnInit {
   showCreation = false;
   editingProduct: NewProduct | null = null;
   editingIndex: number = -1;
+
+  readonly icons = { add: Plus, sort: ChevronsUpDown, edit: SquarePen, delete: Trash2 };
 
   constructor(private http: HttpClient) {}
 

@@ -62,6 +62,7 @@ export class StagingOrdersComponent implements OnInit {
   stagingBaseUrl: string = '';
   stagingOrderConfig: StagingOrderConfig = { stagingBaseUrl: '', deliveryDate: '', orders: [] };
 
+  isRunning = false;
   testOutput = '';
   testSuccess: boolean | null = null;
 
@@ -74,11 +75,11 @@ export class StagingOrdersComponent implements OnInit {
 
   loadProducts() {
     this.http.get<Product[]>('/api/staging-products').subscribe(data => {
+      // Deduplicate by id only. Distinct products are allowed to share a name, and
+      // dropping one makes it unselectable and erases any saved order for it.
       const uniqueProducts = new Map<string, Product>();
-      const names = new Set<string>();
       for (const p of data) {
-        if (uniqueProducts.has(p.id) || names.has(p.name)) continue;
-        names.add(p.name);
+        if (uniqueProducts.has(p.id)) continue;
         uniqueProducts.set(p.id, p);
       }
       this.products = Array.from(uniqueProducts.values());
@@ -168,12 +169,14 @@ export class StagingOrdersComponent implements OnInit {
       return;
     }
     
+    this.isRunning = true;
     this.testOutput = '';
     this.testSuccess = null;
     console.log('Starting staging Playwright test...');
-    
+
     this.http.post<RunTestResponse>('/api/run-test', { staging: true }).subscribe({
       next: response => {
+        this.isRunning = false;
         this.testSuccess = response.success;
         this.testOutput = response.output || '';
         
@@ -184,6 +187,7 @@ export class StagingOrdersComponent implements OnInit {
         }
       },
       error: err => {
+        this.isRunning = false;
         this.testSuccess = false;
         this.testOutput = err.message || 'Request failed';
         console.error('Staging test error:', err);

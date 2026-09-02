@@ -99,6 +99,7 @@ export class ProductsComponent implements OnInit {
 
   deleteProduct(index: number) {
     this.products.splice(index, 1);
+    this.saveProducts();
   }
 
   updateVariants(product: Product) {

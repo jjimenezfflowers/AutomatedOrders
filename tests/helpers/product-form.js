@@ -17,6 +17,14 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+// Product option labels, variant names and month names come from products.json and
+// from the storefront, so they can contain regex metacharacters ("Choose Color
+// (Premium)"). Interpolating them raw either silently fails to match or throws a
+// SyntaxError out of the locator call.
+function escapeRegExp(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function scoreMatch(target, candidate) {
   const targetNorm = normalizeText(target);
   const candidateNorm = normalizeText(candidate);
@@ -349,7 +357,10 @@ async function getProductOptionLocator(page, option) {
 
   if (!option.label) return null;
 
-  const label = page.locator('label').filter({ hasText: new RegExp(`^\\s*${option.label}\\s*$`, 'i') }).first();
+  const label = page
+    .locator('label')
+    .filter({ hasText: new RegExp(`^\\s*${escapeRegExp(option.label)}\\s*$`, 'i') })
+    .first();
   if ((await label.count().catch(() => 0)) === 0) return null;
 
   const labelledControl = label.locator('xpath=following-sibling::*[@role="combobox" or self::select or self::input][1]');
@@ -418,14 +429,42 @@ async function selectProductOptionsFromOrder(page, product, order, options = {})
   return selections;
 }
 
-function parseDeliveryDate(deliveryDate) {
+// Configs and specs used to pin absolute delivery dates, which go stale: several
+// checked-in order configs already pointed at dates in the past. "+14d" keeps a
+// config valid indefinitely. `now` is injectable so the behaviour is testable.
+function parseDeliveryDate(deliveryDate, { now = new Date() } = {}) {
   const value = String(deliveryDate || '').trim();
+
+  const relativeMatch = value.match(/^\+(\d+)d$/i);
+  if (relativeMatch) {
+    const target = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    target.setDate(target.getDate() + Number(relativeMatch[1]));
+
+    const year = String(target.getFullYear());
+    const month = target.getMonth() + 1;
+    const day = target.getDate();
+
+    return {
+      year,
+      month,
+      day,
+      iso: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+    };
+  }
+
   const isoMatch = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (isoMatch) {
+    const month = Number(isoMatch[2]);
+    const day = Number(isoMatch[3]);
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      throw new Error(`Fecha invalida: "${deliveryDate}". Usa YYYY-MM-DD.`);
+    }
+
     return {
       year: isoMatch[1],
-      month: Number(isoMatch[2]),
-      day: Number(isoMatch[3]),
+      month,
+      day,
       iso: `${isoMatch[1]}-${isoMatch[2].padStart(2, '0')}-${isoMatch[3].padStart(2, '0')}`,
     };
   }
@@ -434,9 +473,15 @@ function parseDeliveryDate(deliveryDate) {
   if (slashMatch) {
     const first = Number(slashMatch[1]);
     const second = Number(slashMatch[2]);
-    const isMonthFirst = second > 12;
-    const day = isMonthFirst ? second : first;
-    const month = isMonthFirst ? first : second;
+    // The storefront is US-locale, so slash dates are MM/DD/YYYY. Only fall back to
+    // day-first when the first component cannot be a month (e.g. 25/12/2026).
+    const isDayFirst = first > 12;
+    const month = isDayFirst ? second : first;
+    const day = isDayFirst ? first : second;
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      throw new Error(`Fecha invalida: "${deliveryDate}". Usa YYYY-MM-DD.`);
+    }
 
     return {
       year: slashMatch[3],
@@ -446,27 +491,43 @@ function parseDeliveryDate(deliveryDate) {
     };
   }
 
-  throw new Error(`Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD.`);
+  throw new Error(
+    `Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD o un offset relativo como "+14d".`,
+  );
 }
 
-async function getCalendarRoot(page) {
-  const selectors = [
-    '[data-ff-product-calendar][calendar-location="product-template"]',
-    '.calendar-container',
-  ];
+const CALENDAR_ROOT_SELECTORS = [
+  '[data-ff-product-calendar][calendar-location="product-template"]',
+  '.calendar-container',
+];
 
-  for (const selector of selectors) {
-    const roots = page.locator(selector);
-    const count = await roots.count().catch(() => 0);
+// Falling back to page.locator('body') used to hide a missing calendar: every
+// downstream lookup then ran against the whole document, so clickAvailableCalendarDay
+// could pick a day cell from an unrelated calendar or an adjacent month and the run
+// would carry on with the wrong delivery date. The calendar can also just be slow to
+// render, so wait for it, then fail loudly.
+async function getCalendarRoot(page, timeout = 5000) {
+  const deadline = Date.now() + timeout;
 
-    for (let index = 0; index < count; index++) {
-      const root = roots.nth(index);
-      const hasDayButtons = (await root.locator('button[name="day"]').count().catch(() => 0)) > 0;
-      if (hasDayButtons) return root;
+  for (;;) {
+    for (const selector of CALENDAR_ROOT_SELECTORS) {
+      const roots = page.locator(selector);
+      const count = await roots.count().catch(() => 0);
+
+      for (let index = 0; index < count; index++) {
+        const root = roots.nth(index);
+        const hasDayButtons = (await root.locator('button[name="day"]').count().catch(() => 0)) > 0;
+        if (hasDayButtons) return root;
+      }
     }
+
+    if (Date.now() >= deadline) break;
+    await page.waitForTimeout(250);
   }
 
-  return page.locator('body');
+  throw new Error(
+    `No se encontro el calendario de entrega (${CALENDAR_ROOT_SELECTORS.join(', ')}) con dias disponibles en ${timeout}ms`,
+  );
 }
 
 async function getCalendarDayState(dayButton) {
@@ -501,13 +562,16 @@ async function getCalendarDayState(dayButton) {
 
 async function selectCalendarOption(page, root, buttonLocator, expectedText, optionLabel, log) {
   const currentText = ((await buttonLocator.textContent().catch(() => '')) || '').trim();
-  if (new RegExp(`^\\s*${expectedText}\\s*$`, 'i').test(currentText)) return;
+  if (new RegExp(`^\\s*${escapeRegExp(expectedText)}\\s*$`, 'i').test(currentText)) return;
 
   log(`    Haciendo click en botón de ${optionLabel}...`);
   await buttonLocator.click();
   await page.waitForTimeout(1000);
 
-  const option = page.locator('[role="option"]').filter({ hasText: new RegExp(`^${expectedText}$`, 'i') }).first();
+  const option = page
+    .locator('[role="option"]')
+    .filter({ hasText: new RegExp(`^${escapeRegExp(expectedText)}$`, 'i') })
+    .first();
   if ((await option.count()) === 0) {
     throw new Error(`❌ No se encontró la opción de ${optionLabel} "${expectedText}" en el calendario`);
   }
@@ -515,6 +579,21 @@ async function selectCalendarOption(page, root, buttonLocator, expectedText, opt
   await option.click();
   await page.waitForTimeout(1500);
   await root.locator('button[name="day"]').first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+}
+
+async function listAvailableCalendarDays(root) {
+  const dayButtons = root.locator('button[name="day"]');
+  const count = await dayButtons.count().catch(() => 0);
+  const availableDays = [];
+
+  for (let index = 0; index < count; index++) {
+    const state = await getCalendarDayState(dayButtons.nth(index));
+    if (state.visible && state.day && !state.disabled) {
+      availableDays.push(state.day);
+    }
+  }
+
+  return [...new Set(availableDays)].sort((a, b) => a - b);
 }
 
 async function clickAvailableCalendarDay(root, dayNumber) {
@@ -536,44 +615,84 @@ async function clickAvailableCalendarDay(root, dayNumber) {
     return available.state;
   }
 
+  const availableDays = await listAvailableCalendarDays(root);
+  const suffix = availableDays.length > 0
+    ? `. Días disponibles visibles: ${availableDays.join(', ')}`
+    : '';
+
   if (matches.length > 0) {
     const details = matches.map((match) => match.state.text || String(dayNumber)).join(' | ');
-    throw new Error(`FECHA NO DISPONIBLE: El día ${dayNumber} está marcado como no disponible (${details}). Elige otra fecha de entrega.`);
+    throw new Error(`FECHA NO DISPONIBLE: El día ${dayNumber} está marcado como no disponible (${details}). Elige otra fecha de entrega${suffix}`);
   }
 
-  const availableDays = [];
-  for (let index = 0; index < count; index++) {
-    const state = await getCalendarDayState(dayButtons.nth(index));
-    if (state.visible && state.day && !state.disabled) {
-      availableDays.push(state.day);
-    }
-  }
-
-  const suffix = availableDays.length > 0
-    ? `. Días disponibles visibles: ${unique(availableDays.map(String)).join(', ')}`
-    : '';
   throw new Error(`❌ No se encontró el día ${dayNumber} en el calendario${suffix}`);
+}
+
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const MONTH_NAME_PATTERN = new RegExp(MONTH_NAMES.join('|'), 'i');
+
+// Points the calendar at a month/year. Shared by selectDeliveryDate and by the
+// available-day lookup so both drive the widget the same way.
+async function navigateCalendarTo(page, root, { monthName, year }, log = () => {}) {
+  const monthButton = root
+    .locator('button[role="combobox"]')
+    .filter({ hasText: MONTH_NAME_PATTERN })
+    .first();
+  const monthButtonCount = await monthButton.count().catch(() => 0);
+  log(`  Buscando botón del mes: ${monthButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
+  if (monthButtonCount === 0) {
+    throw new Error(`❌ No se encontró el botón del mes en el calendario`);
+  }
+
+  const monthButtonText = ((await monthButton.textContent().catch(() => '')) || '').trim();
+  log(`    Texto actual del botón: "${monthButtonText}"`);
+  await selectCalendarOption(page, root, monthButton, monthName, 'mes', log);
+  log(`    ✅ Mes "${monthName}" seleccionado`);
+
+  if (!year) return;
+
+  const yearButton = root
+    .locator('button[role="combobox"]')
+    .filter({ hasText: /^\s*\d{4}\s*$/ })
+    .first();
+  if ((await yearButton.count().catch(() => 0)) > 0) {
+    await selectCalendarOption(page, root, yearButton, String(year), 'año', log);
+  }
+}
+
+// Lists the days the storefront offers for a given month, so callers can pick a
+// real date instead of pinning a literal that goes stale.
+async function findAvailableDeliveryDays(page, { month, year, timeout = 5000 } = {}) {
+  const monthName = typeof month === 'number' ? MONTH_NAMES[month - 1] : month;
+  if (!monthName) {
+    throw new Error(`Mes no soportado: "${month}"`);
+  }
+
+  const root = await getCalendarRoot(page, timeout);
+  await navigateCalendarTo(page, root, { monthName, year });
+
+  return listAvailableCalendarDays(root);
 }
 
 async function selectDeliveryDate(page, deliveryDate, options = {}) {
   const log = options.log || (() => {});
   const environment = options.environment || 'dev';
   const parsed = parseDeliveryDate(deliveryDate);
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const monthName = monthNames[parsed.month - 1];
+  const monthName = MONTH_NAMES[parsed.month - 1];
   if (!monthName || !parsed.day || Number.isNaN(parsed.day)) {
     throw new Error(`Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD.`);
   }
@@ -599,28 +718,7 @@ async function selectDeliveryDate(page, deliveryDate, options = {}) {
   await page.waitForTimeout(environment === 'staging' ? 6000 : 1500);
 
   const root = await getCalendarRoot(page);
-  const monthButton = root
-    .locator('button[role="combobox"]')
-    .filter({ hasText: /january|february|march|april|may|june|july|august|september|october|november|december/i })
-    .first();
-  const monthButtonCount = await monthButton.count().catch(() => 0);
-  log(`  Buscando botón del mes: ${monthButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-  if (monthButtonCount === 0) {
-    throw new Error(`❌ No se encontró el botón del mes en el calendario`);
-  }
-
-  const monthButtonText = ((await monthButton.textContent().catch(() => '')) || '').trim();
-  log(`    Texto actual del botón: "${monthButtonText}"`);
-  await selectCalendarOption(page, root, monthButton, monthName, 'mes', log);
-  log(`    ✅ Mes "${monthName}" seleccionado`);
-
-  const yearButton = root
-    .locator('button[role="combobox"]')
-    .filter({ hasText: /^\s*\d{4}\s*$/ })
-    .first();
-  if ((await yearButton.count().catch(() => 0)) > 0) {
-    await selectCalendarOption(page, root, yearButton, parsed.year, 'año', log);
-  }
+  await navigateCalendarTo(page, root, { monthName, year: parsed.year }, log);
 
   log(`  Buscando día ${parsed.day}...`);
   const selectedDay = await clickAvailableCalendarDay(root, parsed.day);
@@ -667,31 +765,48 @@ async function setQuantityFromOrder(page, product, order) {
   return quantityText;
 }
 
+// The storefront keeps Add to Cart blocked for a moment after a delivery date is
+// picked, and marks that specific block with aria-describedby="product-add-to-cart-hint".
+// Clearing THAT block is a legitimate workaround for the lag. Clearing any other
+// block is not: a button disabled because the item is sold out, the date is
+// unavailable, or a required option is unset must stay disabled, otherwise we place
+// a real order for a combination the store deliberately refused.
+const ADD_TO_CART_DELIVERY_HINT = 'product-add-to-cart-hint';
+
 async function syncAddToCartAvailabilityFromDeliveryDate(page) {
   return page
-    .evaluate(() => {
-      const button = document.querySelector(
-        '#product-add-to-cart, button[name="add"], button[type="submit"]',
-      );
-      const deliveryInput = document.querySelector(
-        '[data-ff-product-calendar][calendar-location="product-template"] input[name="delivery_date_input"], input[name="delivery_date_input"]',
-      );
+    .evaluate(
+      ({ hintId }) => {
+        const button = document.querySelector(
+          '#product-add-to-cart, button[name="add"], button[type="submit"]',
+        );
+        const deliveryInput = document.querySelector(
+          '[data-ff-product-calendar][calendar-location="product-template"] input[name="delivery_date_input"], input[name="delivery_date_input"]',
+        );
 
-      if (!button || !deliveryInput?.value?.trim()) return false;
-      if (!/add\s*to\s*cart/i.test(button.textContent || '')) return false;
+        if (!button || !deliveryInput) return false;
 
-      const isGiftCard = document.getElementById('isGiftCard')?.value === 'true';
-      const isSubscription = Number(document.getElementById('is_subscription')?.value || 0) > 0;
-      if (isGiftCard || isSubscription) return false;
+        // The store writes the accepted date here; an empty value means it has
+        // not taken one yet.
+        if (!String(deliveryInput.value || '').trim()) return false;
 
-      button.disabled = false;
-      button.setAttribute('aria-disabled', 'false');
-      if (button.getAttribute('aria-describedby') === 'product-add-to-cart-hint') {
+        if (!/add\s*to\s*cart/i.test(button.textContent || '')) return false;
+
+        // The delivery-date hint is the only block we are allowed to clear.
+        if (button.getAttribute('aria-describedby') !== hintId) return false;
+
+        const isGiftCard = document.getElementById('isGiftCard')?.value === 'true';
+        const isSubscription = Number(document.getElementById('is_subscription')?.value || 0) > 0;
+        if (isGiftCard || isSubscription) return false;
+
+        button.disabled = false;
+        button.setAttribute('aria-disabled', 'false');
         button.removeAttribute('aria-describedby');
-      }
 
-      return true;
-    })
+        return true;
+      },
+      { hintId: ADD_TO_CART_DELIVERY_HINT },
+    )
     .catch(() => false);
 }
 
@@ -747,6 +862,13 @@ async function clickAddToCart(page, options = {}) {
 module.exports = {
   clickAddToCart,
   compactText,
+  escapeRegExp,
+  findAvailableDeliveryDays,
+  getCalendarDayState,
+  getCalendarRoot,
+  listAvailableCalendarDays,
+  MONTH_NAMES,
+  navigateCalendarTo,
   findAddToCartButton,
   normalizeText,
   parseDeliveryDate,

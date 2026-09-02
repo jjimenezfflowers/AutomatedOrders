@@ -8,9 +8,13 @@ const PORT = process.env.PORT || 3000;
 // In-memory log storage (keep last 500 entries)
 const logs = [];
 const MAX_LOGS = 500;
+// A Playwright run emits many lines within the same millisecond, so the ISO
+// timestamp is not a usable identity for an entry. Each one gets its own id.
+let nextLogId = 1;
 
 function addLog(level, message, metadata = {}) {
   const logEntry = {
+    id: nextLogId++,
     timestamp: new Date().toISOString(),
     level,
     message,
@@ -26,8 +30,22 @@ function addLog(level, message, metadata = {}) {
   console.log(`[${logEntry.timestamp}] ${prefix} ${message}`);
 }
 
+// The Logs tab polls /api/logs every 2s and health checks hit /api/health on their
+// own schedule. Recording those requests let the log viewer flood the very ring
+// buffer it displays: at 30 entries/min an idle open tab overwrote all MAX_LOGS
+// entries in ~17 minutes, discarding the Playwright output the tab exists to show.
+const LOG_EXCLUDED_PATHS = new Set(['/api/logs', '/api/health']);
+
+function shouldLogRequest(requestPath) {
+  return !LOG_EXCLUDED_PATHS.has(requestPath);
+}
+
 // Request logging middleware
 app.use((req, res, next) => {
+  if (!shouldLogRequest(req.path)) {
+    return next();
+  }
+
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] ${req.method} ${req.path}`);
   addLog('info', `${req.method} ${req.path}`, { 
@@ -321,24 +339,35 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  const timestamp = new Date().toISOString();
-  console.log('\n' + '='.repeat(50));
-  console.log(`🚀 Server running at http://0.0.0.0:${PORT}`);
-  console.log(`   Local:   http://localhost:${PORT}`);
-  console.log(`   Port:    ${PORT} (via ${process.env.PORT ? 'PORT env var' : 'default'})`);
-  console.log(`   Started: ${timestamp}`);
-  console.log(`   Platform: ${process.platform}`);
-  console.log(`   Node: ${process.version}`);
-  console.log(`   PID: ${process.pid}`);
-  console.log('='.repeat(50));
-  console.log('📊 Server is ready to accept connections');
-  console.log('💡 Use /api/health endpoint to check server status');
-  console.log('='.repeat(50) + '\n');
-  
-  addLog('info', `🚀 Server started on port ${PORT}`, { 
-    port: PORT, 
-    platform: process.platform, 
-    nodeVersion: process.version 
+// Guarded so tests can require this module without binding a port.
+function start(port = PORT) {
+  return app.listen(port, '0.0.0.0', function onListening() {
+    const boundPort = this.address().port;
+    const timestamp = new Date().toISOString();
+
+    console.log('\n' + '='.repeat(50));
+    console.log(`🚀 Server running at http://0.0.0.0:${boundPort}`);
+    console.log(`   Local:   http://localhost:${boundPort}`);
+    console.log(`   Port:    ${boundPort} (via ${process.env.PORT ? 'PORT env var' : 'default'})`);
+    console.log(`   Started: ${timestamp}`);
+    console.log(`   Platform: ${process.platform}`);
+    console.log(`   Node: ${process.version}`);
+    console.log(`   PID: ${process.pid}`);
+    console.log('='.repeat(50));
+    console.log('📊 Server is ready to accept connections');
+    console.log('💡 Use /api/health endpoint to check server status');
+    console.log('='.repeat(50) + '\n');
+
+    addLog('info', `🚀 Server started on port ${boundPort}`, {
+      port: boundPort,
+      platform: process.platform,
+      nodeVersion: process.version,
+    });
   });
-});
+}
+
+if (require.main === module) {
+  start();
+}
+
+module.exports = { app, start, shouldLogRequest, LOG_EXCLUDED_PATHS };

@@ -96,10 +96,11 @@
     </button>
     <button
       (click)="runTest()"
-      [disabled]="!stagingBaseUrl"
+      [disabled]="isRunning || !stagingBaseUrl"
+      data-testid="place-staging-order"
       class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      🚀 Place Staging Order
+      {{ isRunning ? '⏳ Running...' : '🚀 Place Staging Order' }}
     </button>
   </div>
 

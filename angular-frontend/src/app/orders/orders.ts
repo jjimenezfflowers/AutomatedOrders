@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Observable, map, switchMap, tap } from 'rxjs';
 
 interface ProductOption {
   id: string;
@@ -38,13 +39,15 @@ interface OrderConfig {
   deliveryDate: string;
   customerInfo?: Record<string, string>;
   payment?: Record<string, string>;
-  orders: {
-    productId: string;
-    variant?: string;
-    quantity: number;
-    deliveryDate?: string;
-    productOptions?: { [key: string]: string };
-  }[];
+  orders: OrderConfigEntry[];
+}
+
+interface OrderConfigEntry {
+  productId: string;
+  variant?: string;
+  quantity: number;
+  deliveryDate?: string;
+  productOptions?: { [key: string]: string };
 }
 
 interface RunTestResponse {
@@ -76,6 +79,8 @@ export class OrdersComponent implements OnInit {
     orders: []
   };
   isSavingOrder = false;
+  isPlacingOrder = false;
+  configLoaded = false;
   private readonly originOptions = ['US', 'CO', 'EC'];
   private readonly collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
   private productEntryOrder = new Map<string, number>();
@@ -89,22 +94,15 @@ export class OrdersComponent implements OnInit {
 
   loadProducts() {
     this.http.get<Product[]>('/api/products').subscribe(data => {
-      // Deduplicate products by ID first. If you have two products with the same name
-      // (same item being imported twice) we also keep one copy by name.
+      // Deduplicate by ID only. Distinct products are allowed to share a name, and dropping
+      // one of them would make it unselectable and erase any saved order for it on the next save.
       const uniqueProducts = new Map<string, Product>();
-      const names = new Set<string>();
 
       for (const p of data) {
         if (uniqueProducts.has(p.id)) {
           continue; // exact duplicate by ID
         }
 
-        if (names.has(p.name)) {
-          console.warn(`Skipping duplicate product name: ${p.name} (id=${p.id})`);
-          continue; // avoid “2 Baby's Breath” if duplicates exist by name
-        }
-
-        names.add(p.name);
         uniqueProducts.set(p.id, p);
       }
 
@@ -119,23 +117,31 @@ export class OrdersComponent implements OnInit {
   }
 
   loadOrderConfig() {
-    this.http.get<Partial<OrderConfig>>('/api/order-config').subscribe(data => {
-      const orders = Array.isArray(data.orders) ? data.orders : [];
+    this.http.get<Partial<OrderConfig>>('/api/order-config').subscribe({
+      next: data => {
+        const orders = Array.isArray(data.orders) ? data.orders : [];
 
-      this.orderConfig = {
-        deliveryDate: data.deliveryDate || '',
-        customerInfo: data.customerInfo || {},
-        payment: data.payment || {},
-        orders
-      };
+        this.orderConfig = {
+          deliveryDate: data.deliveryDate || '',
+          customerInfo: data.customerInfo || {},
+          payment: data.payment || {},
+          orders
+        };
 
-      this.deliveryDate = this.orderConfig.deliveryDate;
-      this.selectedProducts = {};
-      for (const order of orders) {
-        this.selectedProducts[order.productId] = true;
+        this.deliveryDate = this.orderConfig.deliveryDate;
+        this.selectedProducts = {};
+        for (const order of orders) {
+          this.selectedProducts[order.productId] = true;
+        }
+
+        this.configLoaded = true;
+        this.syncOrderItemsFromSelection();
+      },
+      error: err => {
+        // Leave configLoaded false so saving cannot overwrite a config we never read.
+        console.error('Failed to load order config:', err);
+        alert('Failed to load the saved order: ' + (err.message || 'Unknown error'));
       }
-
-      this.syncOrderItemsFromSelection();
     });
   }
 
@@ -181,13 +187,32 @@ export class OrdersComponent implements OnInit {
   }
 
   saveOrder() {
-    const uniqueOrders = new Map<string, any>();
+    if (!this.configLoaded) {
+      alert('The saved order has not loaded yet. Please wait a moment and try again.');
+      return;
+    }
+
+    this.isSavingOrder = true;
+    this.persistOrderConfig().subscribe({
+      next: () => {
+        this.isSavingOrder = false;
+        alert('Order saved successfully!');
+      },
+      error: (err) => {
+        this.isSavingOrder = false;
+        alert('Failed to save order: ' + (err.message || 'Unknown error'));
+      }
+    });
+  }
+
+  private buildOrders(): OrderConfigEntry[] {
+    const uniqueOrders = new Map<string, OrderConfigEntry>();
     for (const item of this.orderItems) {
       if (uniqueOrders.has(item.id)) {
         continue;
       }
 
-      const order: any = {
+      const order: OrderConfigEntry = {
         productId: item.id,
         quantity: Number(item.quantity) || 1
       };
@@ -204,24 +229,28 @@ export class OrdersComponent implements OnInit {
       uniqueOrders.set(item.id, order);
     }
 
-    const orderConfig: OrderConfig = {
-      ...this.orderConfig,
-      deliveryDate: this.deliveryDate,
-      orders: Array.from(uniqueOrders.values())
-    };
+    return Array.from(uniqueOrders.values());
+  }
 
-    this.isSavingOrder = true;
-    this.http.post('/api/order-config', orderConfig).subscribe({
-      next: () => {
+  // The server rewrites order-config.json wholesale, so re-read it and merge on top of the
+  // current contents. Otherwise a stale cached config would drop customerInfo/payment.
+  private persistOrderConfig(): Observable<OrderConfig> {
+    const orders = this.buildOrders();
+
+    return this.http.get<Partial<OrderConfig>>('/api/order-config').pipe(
+      switchMap(currentConfig => {
+        const orderConfig: OrderConfig = {
+          ...currentConfig,
+          deliveryDate: this.deliveryDate,
+          orders
+        };
+
+        return this.http.post('/api/order-config', orderConfig).pipe(map(() => orderConfig));
+      }),
+      tap(orderConfig => {
         this.orderConfig = orderConfig;
-        this.isSavingOrder = false;
-        alert('Order saved successfully!');
-      },
-      error: (err) => {
-        this.isSavingOrder = false;
-        alert('Failed to save order: ' + (err.message || 'Unknown error'));
-      }
-    });
+      })
+    );
   }
 
   applyDateToAll() {
@@ -235,20 +264,36 @@ export class OrdersComponent implements OnInit {
   }
 
   runTest() {
+    if (this.isPlacingOrder) {
+      return;
+    }
+
+    if (!this.configLoaded) {
+      alert('The saved order has not loaded yet. Please wait a moment and try again.');
+      return;
+    }
+
     if (this.orderItems.length === 0) {
       alert('Please select at least one product before placing an order');
       return;
     }
-    
+
     if (!this.deliveryDate) {
       alert('Please select a delivery date');
       return;
     }
 
     console.log('Starting Playwright test...');
-    
-    this.http.post<RunTestResponse>('/api/run-test', {}).subscribe({
+
+    this.isPlacingOrder = true;
+    // The Playwright run reads order-config.json from disk, so the on-screen state has to be
+    // persisted first; only run the test once the save has actually succeeded.
+    this.persistOrderConfig().pipe(
+      switchMap(() => this.http.post<RunTestResponse>('/api/run-test', {}))
+    ).subscribe({
       next: (response) => {
+        this.isPlacingOrder = false;
+
         if (response.success) {
           alert('✅ Order placed successfully!\n\nThe test completed without errors.');
           return;
@@ -258,6 +303,7 @@ export class OrdersComponent implements OnInit {
         alert(`❌ Order placement failed:\n\n${output.substring(0, 500)}${output.length > 500 ? '...' : ''}\n\nCheck the Logs tab for full details.`);
       },
       error: (err) => {
+        this.isPlacingOrder = false;
         console.error('Test execution error:', err);
         alert(`❌ Failed to run test:\n\n${err.message || 'Unknown error'}\n\nCheck the Logs tab for details.`);
       }

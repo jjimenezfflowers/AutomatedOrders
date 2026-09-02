@@ -8,6 +8,8 @@ const {
   selectVariantFromOrder,
   setQuantityFromOrder,
 } = require("./helpers/product-form");
+const { extractOrderNumber } = require("./helpers/order-number");
+const { readCheckoutError } = require("./helpers/checkout");
 
 // When STAGING_BASE_URL is set, rewrite product URLs to point at the staging store.
 const STAGING_BASE_URL = process.env.STAGING_BASE_URL
@@ -228,22 +230,18 @@ test("Place order from config", async ({ page, context }) => {
     console.log('⚠️  Browser may have closed, but order was likely placed');
   }
 
-  try {
-    // Check for checkout error (ignore Shopify rate limiting)
-    const errorText = await page
-      .locator("text=/There was a problem|error|failed/i")
-      .first()
-      .textContent({ timeout: 3000 })
-      .catch(() => null);
-    if (errorText && !errorText.includes("There was a problem with our checkout")) {
-      await page.screenshot({
+  // readCheckoutError never throws, so this throw cannot be swallowed by a
+  // "browser may have closed" guard the way the previous inline version was.
+  const checkoutError = await readCheckoutError(page);
+
+  if (checkoutError) {
+    await page
+      .screenshot({
         path: `test-results/checkout-error-${Date.now()}.png`,
         fullPage: true,
-      });
-      throw new Error(`Checkout error detected: ${errorText}`);
-    }
-  } catch (e) {
-    console.log('⚠️  Could not check for errors, browser may have closed');
+      })
+      .catch(() => {});
+    throw new Error(`Checkout error detected: ${checkoutError}`);
   }
 
   try {
@@ -266,10 +264,10 @@ test("Place order from config", async ({ page, context }) => {
           .locator(selector)
           .first()
           .textContent({ timeout: 3000 });
-        if (element && element.trim()) {
-          orderNumber = element.trim();
-          break;
-        }
+        // These selectors also match headings like "Order summary", so keep
+        // looking until one yields something shaped like an order number.
+        orderNumber = extractOrderNumber(element);
+        if (orderNumber) break;
       } catch (e) {
         continue;
       }
@@ -279,44 +277,38 @@ test("Place order from config", async ({ page, context }) => {
       // Try to get text from the entire page and extract order number
       try {
         const pageText = await page.textContent("body");
-        const match = pageText.match(/(Order|#)\s*([A-Z0-9\-]+)/i);
-        if (match) {
-          orderNumber = match[2];
-        }
+        orderNumber = extractOrderNumber(pageText);
       } catch (e) {
         console.log('⚠️  Could not read page content, browser may have closed');
       }
     }
 
-    if (orderNumber) {
-      // Save to history
-      const historyEntry = {
-        orderNumber: orderNumber,
-        date: new Date().toISOString(),
-        environment: ENVIRONMENT,
-        products: orderConfig.orders,
-        customer: customer.email,
-        total: 'N/A' // Can't get total if browser closed
-      };
-
-      let history = [];
-      try {
-        const data = await fs.readFile("order-history.json", "utf8");
-        history = JSON.parse(data);
-      } catch (e) {
-        // File doesn't exist yet
-      }
-
-      history.push(historyEntry);
-      await fs.writeFile(
-        "order-history.json",
-        JSON.stringify(history, null, 2),
-      );
-
-      console.log("✅ Order placed successfully! Order #:", orderNumber);
-    } else {
-      console.log("⚠️  Order placed but could not capture order number");
+    if (!orderNumber) {
+      console.log("⚠️  Could not capture a valid order number; recording the order without one");
     }
+
+    // Save to history
+    const historyEntry = {
+      orderNumber: orderNumber || null,
+      date: new Date().toISOString(),
+      environment: ENVIRONMENT,
+      products: orderConfig.orders,
+      customer: customer.email,
+      total: 'N/A' // Can't get total if browser closed
+    };
+
+    let history = [];
+    try {
+      const data = await fs.readFile("order-history.json", "utf8");
+      history = JSON.parse(data);
+    } catch (e) {
+      // File doesn't exist yet
+    }
+
+    history.push(historyEntry);
+    await fs.writeFile("order-history.json", JSON.stringify(history, null, 2));
+
+    console.log("✅ Order placed successfully! Order #:", orderNumber || "(not captured)");
   } catch (error) {
     console.log(
       "⚠️  Order may have been placed but could not capture order number:",

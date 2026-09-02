@@ -1,6 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const {
   clickAddToCart,
+  getCalendarRoot,
+  listAvailableCalendarDays,
   selectDeliveryDate,
   selectProductOptionsFromOrder,
   selectVariantFromOrder,
@@ -315,4 +317,152 @@ test("unblocks Shopify add button when delivery date input already has a value",
   await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "false");
   await expect(page.locator("#product-add-to-cart")).not.toHaveAttribute("aria-describedby", "product-add-to-cart-hint");
   await expect.poll(() => page.evaluate(() => window.addClicked)).toBe(true);
+});
+
+// Regression: the helper used to force-enable Add to Cart whenever a delivery
+// date input was non-empty, which also cleared blocks the store applied for
+// sold-out items, unavailable dates and unset required options — placing real
+// orders for combinations the storefront had deliberately refused.
+
+function blockedAddToCartPage({ hint, disabledAttr }) {
+  return `
+    <input id="isGiftCard" value="false">
+    <input id="is_subscription" value="0">
+    <div data-ff-product-calendar calendar-location="product-template">
+      <input type="hidden" name="delivery_date_input" value="09/10/2026">
+    </div>
+    <form action="/cart/add">
+      <button
+        type="submit"
+        name="add"
+        id="product-add-to-cart"
+        ${disabledAttr}
+        aria-disabled="true"
+        ${hint ? `aria-describedby="${hint}"` : ''}
+      >
+        Add To Cart
+      </button>
+    </form>
+    <script>
+      window.addClicked = false;
+      document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
+      document.querySelector("#product-add-to-cart").addEventListener("click", () => {
+        window.addClicked = true;
+      });
+    </script>
+  `;
+}
+
+test("does not unblock an add button the store disabled for a reason other than the delivery date", async ({ page }) => {
+  // No delivery-date hint: the block is sold out / unavailable date / missing option.
+  await page.setContent(blockedAddToCartPage({ hint: null, disabledAttr: '' }));
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "true");
+  expect(await page.evaluate(() => window.addClicked)).toBe(false);
+});
+
+test("does not unblock a natively disabled add button without the delivery hint", async ({ page }) => {
+  await page.setContent(blockedAddToCartPage({ hint: null, disabledAttr: 'disabled' }));
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  expect(await page.evaluate(() => document.querySelector("#product-add-to-cart").disabled)).toBe(true);
+  expect(await page.evaluate(() => window.addClicked)).toBe(false);
+});
+
+test("does not unblock when the store has not accepted a delivery date yet", async ({ page }) => {
+  await page.setContent(`
+    <input id="isGiftCard" value="false">
+    <input id="is_subscription" value="0">
+    <div data-ff-product-calendar calendar-location="product-template">
+      <input type="hidden" name="delivery_date_input" value="">
+    </div>
+    <form action="/cart/add">
+      <button type="submit" name="add" id="product-add-to-cart"
+              aria-disabled="true" aria-describedby="product-add-to-cart-hint">
+        Add To Cart
+      </button>
+    </form>
+  `);
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "true");
+});
+
+test("still unblocks the delivery-date hint block, which is the lag it exists for", async ({ page }) => {
+  await page.setContent(blockedAddToCartPage({ hint: 'product-add-to-cart-hint', disabledAttr: 'disabled' }));
+
+  const selector = await clickAddToCart(page, { timeout: 2000 });
+
+  expect(selector).toBe("#product-add-to-cart");
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "false");
+  await expect.poll(() => page.evaluate(() => window.addClicked)).toBe(true);
+});
+
+function calendarPage(dayCells) {
+  return `
+    <div data-ff-product-calendar calendar-location="product-template">
+      <button role="combobox">September</button>
+      <button role="combobox">2026</button>
+      ${dayCells}
+    </div>
+  `;
+}
+
+test("lists only the days the storefront actually offers", async ({ page }) => {
+  await page.setContent(
+    calendarPage(`
+      <button name="day">8 unavailable</button>
+      <button name="day">9</button>
+      <button name="day" disabled>10</button>
+      <button name="day" aria-disabled="true">11</button>
+      <button name="day" class="cursor-not-allowed">12</button>
+      <button name="day">13</button>
+      <button name="day">13</button>
+    `),
+  );
+
+  const root = await getCalendarRoot(page);
+
+  // 8 is text-unavailable, 10 native-disabled, 11 aria-disabled, 12 class-disabled,
+  // and the duplicate 13 is collapsed.
+  expect(await listAvailableCalendarDays(root)).toEqual([9, 13]);
+});
+
+test("reports an empty list when every day is blocked", async ({ page }) => {
+  await page.setContent(
+    calendarPage('<button name="day" disabled>1</button><button name="day" disabled>2</button>'),
+  );
+
+  expect(await listAvailableCalendarDays(await getCalendarRoot(page))).toEqual([]);
+});
+
+test("an unavailable requested day is reported with the days that are available", async ({ page }) => {
+  await page.setContent(
+    calendarPage(`
+      <button name="day" disabled>9</button>
+      <button name="day">10</button>
+      <button name="day">11</button>
+    `),
+  );
+
+  // Regression: the error used to name only the rejected day, so every failed run
+  // needed a separate script to discover a usable date.
+  await expect(
+    selectDeliveryDate(page, "2026-09-09", { environment: "dev" }),
+  ).rejects.toThrow(/FECHA NO DISPONIBLE.*Días disponibles visibles: 10, 11/s);
+});
+
+test("getCalendarRoot throws instead of returning the document body", async ({ page }) => {
+  await page.setContent("<div><button name='day'>9</button></div>");
+
+  await expect(getCalendarRoot(page, 0)).rejects.toThrow(
+    /No se encontro el calendario de entrega/,
+  );
 });

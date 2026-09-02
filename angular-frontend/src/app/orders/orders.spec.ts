@@ -357,7 +357,10 @@ describe('OrdersComponent', () => {
 
       expect(buttons().length).toBe(2);
       expect(buttons().every(b => b.disabled)).toBeTrue();
-      expect(buttons().every(b => b.textContent!.includes('Placing Order...'))).toBeTrue();
+      // ui-button keeps the label static and signals the in-flight run with a
+      // spinner plus aria-busy, instead of swapping the text to 'Placing Order...'.
+      expect(buttons().every(b => b.getAttribute('aria-busy') === 'true')).toBeTrue();
+      expect(buttons().every(b => b.textContent!.includes('Place Order'))).toBeTrue();
 
       httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
       httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
@@ -404,6 +407,113 @@ describe('OrdersComponent', () => {
       component.applyDateToAll();
 
       expect(component.orderItems.every(i => i.deliveryDate === '2026-01-10')).toBeTrue();
+    });
+  });
+
+  // --- Design-system migration ------------------------------------------------------
+
+  describe('design-system markup', () => {
+    function query<T extends Element>(selector: string): T {
+      return fixture.nativeElement.querySelector(selector) as T;
+    }
+
+    /** Types into a control the way a user would, so the CVA reports back to ngModel. */
+    function type(input: HTMLInputElement, value: string) {
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+    }
+
+    it('renders both Place Order buttons through ui-button, enabled while idle', () => {
+      completeInit();
+
+      const buttons: HTMLButtonElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('ui-button button[data-testid="place-order"]')
+      );
+
+      expect(buttons.length).toBe(2);
+      expect(buttons.every(b => b.disabled)).toBeFalse();
+      expect(buttons.every(b => b.getAttribute('aria-busy') === null)).toBeTrue();
+    });
+
+    it('leaves no hand-written <button> outside ui-button', () => {
+      completeInit();
+
+      const all: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+      const owned: HTMLButtonElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('ui-button button')
+      );
+
+      expect(all.length).toBeGreaterThan(0);
+      expect(owned.length).toBe(all.length);
+      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(2);
+    });
+
+    it('round-trips the main delivery date through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#order-delivery-date');
+      expect(input.type).toBe('date');
+      expect(input.value).toBe('2026-01-10');
+
+      type(input, '2026-06-06');
+
+      expect(component.deliveryDate).toBe('2026-06-06');
+    });
+
+    it('round-trips a per-product delivery date through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#delivery-date-roses');
+      expect(input.type).toBe('date');
+      expect(input.value).toBe('2026-01-10');
+
+      type(input, '2026-07-07');
+
+      expect(component.orderItems[0].deliveryDate).toBe('2026-07-07');
+    });
+
+    it('round-trips a per-product quantity through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#quantity-roses');
+      expect(input.type).toBe('number');
+      expect(input.value).toBe('3');
+
+      type(input, '9');
+
+      expect(component.orderItems[0].quantity).toBe(9);
+    });
+
+    it('selects products through ui-checkbox and resyncs the order items', () => {
+      completeInit();
+
+      const checkbox = query<HTMLInputElement>(
+        'ui-checkbox input#product-babys-breath-flower-new-love'
+      );
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change'));
+
+      expect(component.selectedProducts['babys-breath-flower-new-love']).toBeTrue();
+      expect(component.orderItems.map(i => i.id)).toContain('babys-breath-flower-new-love');
+    });
+
+    it('renders no hardcoded surface colours, which is what would break dark mode', () => {
+      completeInit();
+
+      const html: string = fixture.nativeElement.innerHTML;
+
+      expect(html).not.toContain('bg-white');
+      expect(html).not.toMatch(/bg-yellow-/);
+      // Variant-prefixed utilities (`disabled:border-gray-600`) belong to the
+      // primitives' own disabled treatment; only unprefixed palette classes are
+      // migration leftovers.
+      expect(html).not.toMatch(/(?:^|[\s"])(?:bg|text|border)-(?:gray|slate)-\d/);
     });
   });
 });

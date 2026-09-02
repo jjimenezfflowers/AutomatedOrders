@@ -2,7 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, CalendarDays, Dices, Play } from 'lucide-angular';
 import { Observable, map, switchMap, tap } from 'rxjs';
+
+import {
+  UI_CARD,
+  UiBadgeComponent,
+  UiButtonComponent,
+  UiCheckboxComponent,
+  UiFieldComponent,
+  UiInputComponent,
+  UiLabelComponent,
+  UiSelectComponent,
+} from '../ui';
 
 interface ProductOption {
   id: string;
@@ -59,11 +71,24 @@ type ProductSortKey = 'entry' | 'origin' | 'name';
 
 @Component({
   selector: 'app-orders',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    LucideAngularModule,
+    ...UI_CARD,
+    UiBadgeComponent,
+    UiButtonComponent,
+    UiCheckboxComponent,
+    UiFieldComponent,
+    UiInputComponent,
+    UiLabelComponent,
+    UiSelectComponent,
+  ],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
 export class OrdersComponent implements OnInit {
+  readonly icons = { place: Play, random: Dices, calendar: CalendarDays };
   products: Product[] = [];
   productSort: ProductSortKey = 'entry';
   readonly productSortOptions: { value: ProductSortKey; label: string }[] = [

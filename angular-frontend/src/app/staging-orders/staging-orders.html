@@ -1,116 +1,151 @@
-<div class="bg-white rounded-lg shadow-md p-6 mb-6">
-  <h2 class="text-2xl font-semibold mb-1">🟡 Staging — Orders</h2>
-  <p class="text-sm text-gray-500 mb-5">Configure and place orders against the staging store. Customer info &amp; payment are shared from the Shared → Customer Info tab.</p>
+<ui-card class="mb-6">
+  <ui-card-header>
+    <ui-card-title class="flex items-center gap-2 text-2xl">
+      <lucide-angular [img]="icons.staging" class="size-4 fill-warning text-warning" aria-hidden="true" />
+      Staging — Orders
+    </ui-card-title>
+    <ui-card-description>Configure and place orders against the staging store. Customer info &amp; payment are shared from the Shared → Customer Info tab.</ui-card-description>
+  </ui-card-header>
 
-  <!-- Staging URL -->
-  <div class="mb-5 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-    <label class="block text-sm font-semibold text-yellow-800 mb-1">Staging Base URL</label>
-    <input
-      type="url"
-      [(ngModel)]="stagingBaseUrl"
-      class="w-full px-3 py-2 border border-yellow-300 rounded bg-white"
-      placeholder="https://staging-store.myshopify.com"
-    >
-    <p class="text-xs text-yellow-700 mt-1">Product URLs will have their domain replaced with this value at test run time.</p>
-  </div>
-
-  <!-- Delivery Date -->
-  <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Date</label>
-    <input type="date" [(ngModel)]="deliveryDate" class="w-full px-3 py-2 border border-gray-300 rounded" title="Select delivery date">
-  </div>
-
-  <!-- Available Products -->
-  <div class="mb-4">
-    <h3 class="text-lg font-medium mb-2">Available Products</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-gray-50 rounded-lg">
-      @for (product of products; track product.id) {
-        <div class="flex items-center">
-          <input type="checkbox" [id]="'staging-product-' + product.id" [(ngModel)]="selectedProducts[product.id]" (change)="updateOrderItems()" class="mr-2" title="Select product">
-          <label [for]="'staging-product-' + product.id" class="text-sm">{{ product.name }}</label>
-        </div>
-      }
+  <ui-card-content>
+    <!-- Staging URL -->
+    <div class="mb-5 flex flex-col gap-1 rounded-lg border border-warning/30 bg-warning/10 p-4">
+      <ui-label for="staging-base-url" class="text-warning">Staging Base URL</ui-label>
+      <ui-input
+        type="url"
+        inputId="staging-base-url"
+        [(ngModel)]="stagingBaseUrl"
+        placeholder="https://staging-store.myshopify.com" />
+      <p class="mt-1 text-xs text-warning">Product URLs will have their domain replaced with this value at test run time.</p>
     </div>
 
-    <h3 class="text-lg font-medium mb-2">Selected Products</h3>
-    <div class="space-y-3">
-      @for (item of orderItems; track item.id) {
-        <div class="p-3 bg-gray-50 rounded">
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-medium">{{ item.name }}</span>
-            @if (getProductById(item.id)?.type === 'product-options') {
-              <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Product Options</span>
-            }
-          </div>
+    <!-- Delivery Date -->
+    <div class="mb-4">
+      <ui-field label="Delivery Date" controlId="staging-delivery-date">
+        <ui-input
+          type="date"
+          inputId="staging-delivery-date"
+          [(ngModel)]="deliveryDate"
+          title="Select delivery date" />
+      </ui-field>
+    </div>
 
-          @if (item.variant) {
-            <div class="mb-2">
-              <label class="block text-xs text-gray-600 mb-1">Variant</label>
-              @if (getProductById(item.id)?.variants?.length) {
-                <select [(ngModel)]="item.variant" class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
-                  @for (v of getProductById(item.id)?.variants; track v) {
-                    <option [value]="v">{{ v }}</option>
-                  }
-                </select>
-              } @else {
-                <input type="text" [(ngModel)]="item.variant" class="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="Variant">
+    <!-- Available Products -->
+    <div class="mb-4">
+      <h3 class="text-lg font-medium text-foreground mb-2">Available Products</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-muted rounded-lg">
+        @for (product of products; track product.id) {
+          <div class="flex items-center">
+            <ui-checkbox
+              [inputId]="'staging-product-' + product.id"
+              [label]="product.name"
+              [ngModel]="selectedProducts[product.id]"
+              (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()"
+              title="Select product" />
+          </div>
+        }
+      </div>
+
+      <h3 class="text-lg font-medium text-foreground mb-2">Selected Products</h3>
+      <div class="space-y-3">
+        @for (item of orderItems; track item.id) {
+          <div class="p-3 bg-muted rounded">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-foreground">{{ item.name }}</span>
+              @if (getProductById(item.id)?.type === 'product-options') {
+                <ui-badge variant="secondary">Product Options</ui-badge>
               }
             </div>
-          }
 
-          @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
-            <div class="mb-2">
-              <label class="block text-xs text-gray-600 mb-1 font-semibold">Product Options:</label>
-              <div class="space-y-2">
-                @for (option of getProductById(item.id)!.productOptions; track option.id) {
-                  <div>
-                    <label class="block text-xs text-gray-600 mb-1">{{ option.label }}</label>
-                    <select [(ngModel)]="item.productOptions![option.id]" class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
-                      @for (opt of option.options; track $index) {
-                        <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">
-                          {{ getOptionLabel(opt) }}
-                        </option>
-                      }
-                    </select>
-                  </div>
+            @if (item.variant) {
+              <div class="mb-2 flex flex-col gap-1">
+                <ui-label [for]="'staging-variant-' + item.id" class="text-muted-foreground">Variant</ui-label>
+                @if (getProductById(item.id)?.variants?.length) {
+                  <ui-select size="sm" [inputId]="'staging-variant-' + item.id" [(ngModel)]="item.variant">
+                    @for (v of getProductById(item.id)?.variants; track v) {
+                      <option [value]="v">{{ v }}</option>
+                    }
+                  </ui-select>
+                } @else {
+                  <ui-input
+                    type="text"
+                    [inputId]="'staging-variant-' + item.id"
+                    [(ngModel)]="item.variant"
+                    placeholder="Variant" />
                 }
               </div>
+            }
+
+            @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
+              <div class="mb-2">
+                <p class="text-xs font-semibold text-foreground mb-1">Product Options:</p>
+                <div class="space-y-2">
+                  @for (option of getProductById(item.id)!.productOptions; track option.id) {
+                    <div class="flex flex-col gap-1">
+                      <ui-label [for]="'staging-' + item.id + '-' + option.id" class="text-muted-foreground">{{ option.label }}</ui-label>
+                      <ui-select
+                        size="sm"
+                        [inputId]="'staging-' + item.id + '-' + option.id"
+                        [(ngModel)]="item.productOptions![option.id]">
+                        @for (opt of option.options; track $index) {
+                          <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">
+                            {{ getOptionLabel(opt) }}
+                          </option>
+                        }
+                      </ui-select>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="mt-2 w-24">
+              <ui-field label="Quantity" [controlId]="'staging-quantity-' + item.id">
+                <ui-input
+                  type="number"
+                  [inputId]="'staging-quantity-' + item.id"
+                  [(ngModel)]="item.quantity"
+                  min="1"
+                  placeholder="1" />
+              </ui-field>
             </div>
-          }
-
-          <div class="mt-2">
-            <label class="block text-xs text-gray-600 mb-1">Quantity</label>
-            <input type="number" [(ngModel)]="item.quantity" min="1" class="w-24 px-2 py-1 border border-gray-300 rounded" placeholder="1">
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
 
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-3 mb-4">
-    <button 
-      (click)="saveConfig()"
-      class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">
-      💾 Save Order
-    </button>
-    <button
-      (click)="runTest()"
-      [disabled]="isRunning || !stagingBaseUrl"
-      data-testid="place-staging-order"
-      class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {{ isRunning ? '⏳ Running...' : '🚀 Place Staging Order' }}
-    </button>
-  </div>
-
-  <!-- Inline output -->
-  @if (testOutput) {
-    <div>
-      <h3 class="text-sm font-semibold mb-2" [class.text-green-700]="testSuccess === true" [class.text-red-700]="testSuccess === false">
-        {{ testSuccess ? '✅ Test passed' : '❌ Test failed' }}
-      </h3>
-      <pre class="bg-gray-900 text-gray-100 p-4 rounded overflow-auto text-xs max-h-96 whitespace-pre-wrap">{{ testOutput }}</pre>
+    <!-- Actions -->
+    <div class="flex flex-wrap gap-3 mb-4">
+      <ui-button variant="outline" size="md" (click)="saveConfig()">
+        <lucide-angular [img]="icons.save" class="size-4" aria-hidden="true" />
+        Save Order
+      </ui-button>
+      <ui-button
+        variant="warning"
+        size="md"
+        testId="place-staging-order"
+        (click)="runTest()"
+        [loading]="isRunning"
+        [disabled]="!stagingBaseUrl">
+        @if (!isRunning) {
+          <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
+        }
+        Place Staging Order
+      </ui-button>
     </div>
-  }
-</div>
+
+    <!-- Inline output -->
+    @if (testOutput) {
+      <div>
+        <h3
+          class="flex items-center gap-1.5 text-sm font-semibold mb-2"
+          [class.text-success]="testSuccess === true"
+          [class.text-destructive]="testSuccess === false">
+          <lucide-angular [img]="testSuccess ? icons.passed : icons.failed" class="size-4" aria-hidden="true" />
+          {{ testSuccess ? 'Test passed' : 'Test failed' }}
+        </h3>
+        <pre class="bg-muted text-foreground border border-border p-4 rounded overflow-auto font-mono text-xs max-h-96 whitespace-pre-wrap">{{ testOutput }}</pre>
+      </div>
+    }
+  </ui-card-content>
+</ui-card>

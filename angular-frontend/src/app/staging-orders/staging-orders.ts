@@ -2,6 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Circle, CircleCheck, CircleX, Rocket, Save } from 'lucide-angular';
+
+import {
+  UI_CARD,
+  UiBadgeComponent,
+  UiButtonComponent,
+  UiCheckboxComponent,
+  UiFieldComponent,
+  UiInputComponent,
+  UiLabelComponent,
+  UiSelectComponent,
+} from '../ui';
 
 interface ProductOption {
   id: string;
@@ -50,11 +62,30 @@ interface RunTestResponse {
 
 @Component({
   selector: 'app-staging-orders',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    LucideAngularModule,
+    ...UI_CARD,
+    UiBadgeComponent,
+    UiButtonComponent,
+    UiCheckboxComponent,
+    UiFieldComponent,
+    UiInputComponent,
+    UiLabelComponent,
+    UiSelectComponent,
+  ],
   templateUrl: './staging-orders.html',
   styleUrl: './staging-orders.css',
 })
 export class StagingOrdersComponent implements OnInit {
+  readonly icons = {
+    staging: Circle,
+    save: Save,
+    place: Rocket,
+    passed: CircleCheck,
+    failed: CircleX,
+  };
   products: Product[] = [];
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];

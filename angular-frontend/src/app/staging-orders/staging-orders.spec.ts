@@ -74,7 +74,8 @@ describe('StagingOrdersComponent', () => {
 
     expect(component.isRunning).toBeFalse();
     expect(placeOrderButton().disabled).toBeFalse();
-    expect(placeOrderButton().textContent).toContain('🚀 Place Staging Order');
+    expect(placeOrderButton().textContent).toContain('Place Staging Order');
+    expect(placeOrderButton().getAttribute('aria-busy')).toBeNull();
   });
 
   it('disables the Place Staging Order button while a run is in flight', () => {
@@ -85,7 +86,9 @@ describe('StagingOrdersComponent', () => {
 
     expect(component.isRunning).toBeTrue();
     expect(placeOrderButton().disabled).toBeTrue();
-    expect(placeOrderButton().textContent).toContain('⏳ Running...');
+    // ui-button keeps the label static and signals the run with a spinner + aria-busy.
+    expect(placeOrderButton().getAttribute('aria-busy')).toBe('true');
+    expect(placeOrderButton().textContent).toContain('Place Staging Order');
 
     httpMock.expectOne('/api/run-test').flush({ success: true });
     detect();
@@ -172,6 +175,121 @@ describe('StagingOrdersComponent', () => {
       ]);
 
       expect(component.products.length).toBe(1);
+    });
+  });
+
+  // --- Design-system migration ------------------------------------------------------
+
+  describe('design-system markup', () => {
+    function query<T extends Element>(selector: string): T {
+      return fixture.nativeElement.querySelector(selector) as T;
+    }
+
+    /** Types into a control the way a user would, so the CVA reports back to ngModel. */
+    function type(input: HTMLInputElement, value: string) {
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+    }
+
+    it('leaves no hand-written <button> outside ui-button', () => {
+      completeInit();
+
+      const all: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+      const owned: HTMLButtonElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('ui-button button')
+      );
+
+      expect(all.length).toBeGreaterThan(0);
+      expect(owned.length).toBe(all.length);
+      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(1);
+    });
+
+    it('renders the Place Staging Order button through ui-button', () => {
+      completeInit();
+
+      expect(query('ui-button button[data-testid="place-staging-order"]')).toBeTruthy();
+    });
+
+    it('round-trips the delivery date through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#staging-delivery-date');
+      expect(input.type).toBe('date');
+      expect(input.value).toBe('2026-01-10');
+
+      type(input, '2026-08-08');
+
+      expect(component.deliveryDate).toBe('2026-08-08');
+    });
+
+    it('round-trips the staging base url through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#staging-base-url');
+      expect(input.value).toBe('https://staging.test');
+
+      type(input, 'https://other.test');
+
+      expect(component.stagingBaseUrl).toBe('https://other.test');
+    });
+
+    it('round-trips a per-product quantity through ui-input', async () => {
+      completeInit();
+      await fixture.whenStable();
+      detect();
+
+      const input = query<HTMLInputElement>('ui-input input#staging-quantity-roses');
+      expect(input.type).toBe('number');
+      expect(input.value).toBe('2');
+
+      type(input, '6');
+
+      expect(component.orderItems[0].quantity).toBe(6);
+    });
+
+    it('selects products through ui-checkbox and resyncs the order items', async () => {
+      completeInit();
+      // ngModel writes into the control on a microtask; without settling first the
+      // checkbox has not yet reflected the value loaded from the config.
+      await fixture.whenStable();
+      detect();
+
+      const checkbox = query<HTMLInputElement>('ui-checkbox input#staging-product-roses');
+      expect(checkbox.checked).toBeTrue();
+
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change'));
+
+      expect(component.selectedProducts['roses']).toBeFalse();
+      expect(component.orderItems.length).toBe(0);
+    });
+
+    it('renders no hardcoded surface colours, which is what would break dark mode', () => {
+      completeInit();
+
+      const html: string = fixture.nativeElement.innerHTML;
+
+      expect(html).not.toContain('bg-white');
+      expect(html).not.toMatch(/bg-yellow-/);
+      expect(html).not.toMatch(/text-yellow-/);
+      expect(html).not.toMatch(/border-yellow-/);
+      // Variant-prefixed utilities (`disabled:border-gray-600`) belong to the
+      // primitives' own disabled treatment; only unprefixed palette classes are
+      // migration leftovers.
+      expect(html).not.toMatch(/(?:^|[\s"])(?:bg|text|border)-(?:gray|slate)-\d/);
+    });
+
+    it('paints the staging accents with the warning token', () => {
+      completeInit();
+
+      const html: string = fixture.nativeElement.innerHTML;
+
+      expect(html).toContain('bg-warning');
+      expect(html).toContain('text-warning');
     });
   });
 });

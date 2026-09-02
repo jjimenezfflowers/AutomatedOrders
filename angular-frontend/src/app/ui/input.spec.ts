@@ -128,6 +128,38 @@ describe('UiInputComponent', () => {
     });
   });
 
+  describe('readonly', () => {
+    // A readonly field stays focusable, selectable and submittable; a disabled one
+    // is none of those. The product-id field in edit mode needs the former.
+    it('marks the native input readonly without disabling it', () => {
+      setInput('readonly', true);
+
+      expect(input().readOnly).toBeTrue();
+      expect(input().disabled).toBeFalse();
+    });
+
+    it('is editable by default', () => {
+      expect(input().readOnly).toBeFalse();
+    });
+
+    it('reads as inert without being disabled', () => {
+      setInput('readonly', true);
+
+      // bg-muted signals "not editable"; the dimming that disabled:opacity-50 would
+      // apply never kicks in, because the control is not actually disabled.
+      expect(input().className).toContain('bg-muted');
+      expect(input().disabled).toBeFalse();
+    });
+
+    it('still reflects a written value', () => {
+      setInput('readonly', true);
+      component.writeValue('locked-id');
+      detect();
+
+      expect(input().value).toBe('locked-id');
+    });
+  });
+
   describe('accessibility', () => {
     it('sets aria-invalid when invalid', () => {
       setInput('invalid', true);

@@ -43,6 +43,7 @@ export const inputClassName =
       [value]="value ?? ''"
       [placeholder]="placeholder"
       [disabled]="disabled"
+      [readOnly]="readonly"
       [attr.id]="inputId"
       [attr.name]="name"
       [attr.min]="min"
@@ -69,6 +70,8 @@ export class UiInputComponent implements ControlValueAccessor {
   @Input() describedBy?: string;
   @Input() testId?: string;
   @Input({ transform: booleanAttribute }) invalid = false;
+  /** Readonly, not disabled: the value stays focusable and selectable, and still submits. */
+  @Input({ transform: booleanAttribute }) readonly = false;
   @Input() class = '';
 
   protected value: string | number | null = '';
@@ -79,7 +82,7 @@ export class UiInputComponent implements ControlValueAccessor {
   protected onTouched: () => void = () => {};
 
   get classes(): string {
-    return cx(inputClassName, this.class);
+    return cx(inputClassName, this.readonly && 'bg-muted cursor-not-allowed', this.class);
   }
 
   writeValue(value: string | number | null): void {

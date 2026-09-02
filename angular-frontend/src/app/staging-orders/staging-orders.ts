@@ -62,6 +62,7 @@ export class StagingOrdersComponent implements OnInit {
   stagingBaseUrl: string = '';
   stagingOrderConfig: StagingOrderConfig = { stagingBaseUrl: '', deliveryDate: '', orders: [] };
 
+  isRunning = false;
   testOutput = '';
   testSuccess: boolean | null = null;
 
@@ -168,12 +169,14 @@ export class StagingOrdersComponent implements OnInit {
       return;
     }
     
+    this.isRunning = true;
     this.testOutput = '';
     this.testSuccess = null;
     console.log('Starting staging Playwright test...');
-    
+
     this.http.post<RunTestResponse>('/api/run-test', { staging: true }).subscribe({
       next: response => {
+        this.isRunning = false;
         this.testSuccess = response.success;
         this.testOutput = response.output || '';
         
@@ -184,6 +187,7 @@ export class StagingOrdersComponent implements OnInit {
         }
       },
       error: err => {
+        this.isRunning = false;
         this.testSuccess = false;
         this.testOutput = err.message || 'Request failed';
         console.error('Staging test error:', err);

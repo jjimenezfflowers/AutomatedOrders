@@ -13,3 +13,4 @@ export * from './page';
 export * from './select';
 export * from './textarea';
 export * from './theme.service';
+export * from './data-table';

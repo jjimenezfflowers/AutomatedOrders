@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface LogEntry {
+  id: number;
   timestamp: string;
   level: string;
   message: string;

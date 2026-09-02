@@ -8,9 +8,13 @@ const PORT = process.env.PORT || 3000;
 // In-memory log storage (keep last 500 entries)
 const logs = [];
 const MAX_LOGS = 500;
+// A Playwright run emits many lines within the same millisecond, so the ISO
+// timestamp is not a usable identity for an entry. Each one gets its own id.
+let nextLogId = 1;
 
 function addLog(level, message, metadata = {}) {
   const logEntry = {
+    id: nextLogId++,
     timestamp: new Date().toISOString(),
     level,
     message,

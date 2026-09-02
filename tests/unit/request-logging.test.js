@@ -107,3 +107,57 @@ describe('log buffer under polling (integration)', () => {
     );
   });
 });
+
+describe('log entry identity', () => {
+  let server;
+  let baseUrl;
+
+  before(async () => {
+    server = start(0);
+    await new Promise((resolve) => server.once('listening', resolve));
+    baseUrl = `http://127.0.0.1:${server.address().port}`;
+  });
+
+  after(async () => {
+    await new Promise((resolve) => server.close(resolve));
+  });
+
+  // Regression: the Logs tab tracked entries by `log.timestamp`, but a Playwright
+  // run emits many lines in the same millisecond — one real run produced 25 entries
+  // sharing the timestamp 2026-09-02T19:49:06.069Z. Duplicate track keys break the
+  // @for rendering exactly when the Logs tab matters most.
+  test('entries carry a unique id even when timestamps collide', async () => {
+    // Fire enough requests that several land in the same millisecond.
+    await Promise.all(Array.from({ length: 40 }, () => fetch(`${baseUrl}/api/products`)));
+
+    const { logs } = await (await fetch(`${baseUrl}/api/logs?limit=500`)).json();
+
+    const ids = logs.map((entry) => entry.id);
+    assert.ok(
+      ids.every((id) => typeof id === 'number'),
+      'every entry should have a numeric id',
+    );
+    assert.equal(new Set(ids).size, ids.length, 'ids must be unique');
+  });
+
+  test('ids increase monotonically', async () => {
+    const { logs } = await (await fetch(`${baseUrl}/api/logs?limit=500`)).json();
+    const ids = logs.map((entry) => entry.id);
+
+    assert.deepEqual(ids, [...ids].sort((a, b) => a - b));
+  });
+
+  test('timestamps alone are not a safe identity', async () => {
+    await Promise.all(Array.from({ length: 40 }, () => fetch(`${baseUrl}/api/products`)));
+
+    const { logs } = await (await fetch(`${baseUrl}/api/logs?limit=500`)).json();
+    const timestamps = logs.map((entry) => entry.timestamp);
+
+    // Not asserting a collision must happen (timing-dependent), but if one does,
+    // the ids must still disambiguate it.
+    if (new Set(timestamps).size !== timestamps.length) {
+      const ids = logs.map((entry) => entry.id);
+      assert.equal(new Set(ids).size, ids.length);
+    }
+  });
+});

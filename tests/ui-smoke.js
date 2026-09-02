@@ -27,7 +27,8 @@ const BASE_URL = process.argv[2] || 'http://localhost:3000';
   console.log('— shell —');
   ok('marca BloomBrain', (await page.textContent('body')).includes('BloomBrain'));
   ok('sin "Order Manager"', !(await page.textContent('body')).includes('Order Manager'));
-  ok('titulo de tab', (await page.title()) === 'Order Automation — BloomBrain');
+  // Each route sets its own title, so the landing page is the dev catalogue.
+  ok(`titulo de tab (${await page.title()})`, (await page.title()) === 'Products · DEV — BloomBrain');
   ok('sidebar visible', await page.locator('[data-testid="sidebar"]').isVisible());
   ok('badge de entorno DEV', (await page.locator('[data-testid="environment-badge"]').textContent()).trim() === 'DEV');
 
@@ -71,6 +72,53 @@ const BASE_URL = process.argv[2] || 'http://localhost:3000';
   await page.evaluate(() => localStorage.setItem('bb-order-automation.theme','dark'));
   await page.reload({ waitUntil: 'networkidle' }); await page.waitForTimeout(600);
   ok('el tema persiste al recargar', await isDark());
+
+  console.log('— routing —');
+  const path = () => new URL(page.url()).pathname;
+  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
+  ok('/ redirige a /dev/products', path() === '/dev/products');
+  await page.goto(`${BASE_URL}/basura`, { waitUntil: 'networkidle' });
+  ok('ruta desconocida no deja pagina en blanco', path() === '/dev/products');
+  await page.goto(`${BASE_URL}/staging/orders`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  ok('deep link a staging monta el componente correcto', await page.locator('app-staging-orders').count() > 0);
+  await page.click('[data-testid="nav-history"]'); await page.waitForTimeout(700);
+  ok('navegar cambia la URL', path() === '/history');
+  await page.goBack(); await page.waitForTimeout(700);
+  ok('el back del browser vuelve', path() === '/staging/orders');
+
+  console.log('— tablas: search, filtro, sort, paginado —');
+  await page.goto(`${BASE_URL}/history`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1200);
+  const historyRows = () => page.locator('[data-testid="history-row"]').count();
+  const firstPage = await historyRows();
+  ok(`History pagina (${firstPage} filas, no las 476)`, firstPage > 0 && firstPage <= 25);
+  await page.fill('input[data-testid="history-search"]', 'peach-sorbet');
+  await page.waitForTimeout(900);
+  const searched = await historyRows();
+  ok(`buscar por un id de producto oculto filtra (${searched})`, searched > 0 && searched < firstPage);
+  await page.fill('input[data-testid="history-search"]', 'zzz-no-existe');
+  await page.waitForTimeout(900);
+  ok('sin coincidencias muestra el estado vacio', await page.locator('[data-testid="history-empty"]').count() > 0);
+
+  await page.goto(`${BASE_URL}/dev/products`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1200);
+  const productRows = () => page.locator('[data-testid="products-row"]').count();
+  ok('Products renderiza filas', await productRows() > 0);
+  await page.fill('input[data-testid="products-search"]', 'eucalyptus');
+  await page.waitForTimeout(800);
+  ok('search de Products filtra', await productRows() < 24);
+  await page.fill('input[data-testid="products-search"]', '');
+  await page.waitForTimeout(600);
+  await page.click('[data-testid="products-sort-variants"]');
+  await page.waitForTimeout(700);
+  const counts = await page.locator('[data-testid="products-row"] [role="cell"]:nth-child(4)').allTextContents();
+  const nums = counts.map(t => parseInt(t)).filter(n => !isNaN(n));
+  ok(`sort de variantes es numerico (${nums.slice(0,4).join(',')})`, nums.length > 1 && nums.every((n,i) => i === 0 || nums[i-1] <= n));
+
+  console.log('— favicon —');
+  const fav = await page.request.get(`${BASE_URL}/favicon.ico`);
+  ok(`favicon servido (${fav.status()}, ${(await fav.body()).length} bytes)`, fav.status() === 200);
 
   console.log('— consola —');
   ok(`sin errores JS (${errors.length})`, errors.length === 0);

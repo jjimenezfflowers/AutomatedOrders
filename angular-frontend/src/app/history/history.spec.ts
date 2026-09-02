@@ -79,4 +79,53 @@ describe('HistoryComponent', () => {
       expect(text).toContain('#DEV-BB-50F2328');
     });
   });
+
+  describe('design-system migration', () => {
+    function html(): string {
+      return (fixture.nativeElement as HTMLElement).innerHTML;
+    }
+
+    function flushHistory(entries: unknown[]) {
+      httpMock.match(() => true).forEach(r => r.flush(entries));
+      detect();
+    }
+
+    const entry = (environment: string) => ({
+      orderNumber: 'DEV-BB-50F2327',
+      date: '2026-09-02T19:55:34.826Z',
+      environment,
+      products: [{ productId: 'floreana-white-spray-roses', quantity: 1 }],
+      customer: 'jose@fiftyflowers.com',
+      total: 'N/A'
+    });
+
+    it('drops the hardcoded surfaces that would stay light in dark mode', () => {
+      flushHistory([entry('dev')]);
+
+      expect(html()).not.toContain('bg-white');
+      expect(html()).not.toContain('bg-green-100');
+      expect(html()).not.toContain('bg-yellow-100');
+    });
+
+    it('marks a dev entry with the success token', () => {
+      flushHistory([entry('dev')]);
+
+      const badge = fixture.nativeElement.querySelector('ui-badge span, ui-badge div');
+      expect(badge.className).toContain('success');
+    });
+
+    it('marks a staging entry with the warning token', () => {
+      flushHistory([entry('staging')]);
+
+      const badge = fixture.nativeElement.querySelector('ui-badge span, ui-badge div');
+      expect(badge.className).toContain('warning');
+    });
+
+    it('shows a real empty state rather than a bare sentence', () => {
+      flushHistory([]);
+
+      expect(html()).toContain('No orders placed yet');
+      expect(fixture.nativeElement.querySelector('lucide-angular')).not.toBeNull();
+    });
+  });
 });

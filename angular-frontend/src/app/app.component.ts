@@ -4,7 +4,11 @@ import { LucideAngularModule, Menu, Moon, Sun, Monitor, Flower2, ChevronDown } f
 
 import { EnvironmentService } from './shell/environment.service';
 import { ENVIRONMENTS, Environment, NAV_GROUPS, SECTION_COPY } from './shell/navigation';
-import { ThemeService, cx } from './ui';
+// Imported from the files rather than the ui barrel: the barrel re-exports the
+// data table, and pulling it in here dragged TanStack into the initial bundle
+// even though the shell never renders a table.
+import { ThemeService } from './ui/theme.service';
+import { cx } from './ui/variants';
 
 const SIDEBAR_STORAGE_KEY = 'bb-order-automation.sidebar';
 

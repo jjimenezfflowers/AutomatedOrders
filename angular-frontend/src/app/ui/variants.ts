@@ -3,7 +3,13 @@
  * uses to keep a component's Tailwind strings in one place instead of scattered
  * across templates. Adding the real package would pull in a React-oriented
  * dependency for ~30 lines of string joining, so this is the same idea, typed.
+ *
+ * Merging goes through tailwind-merge, matching the admin's `cn()`. Plain
+ * concatenation is not enough: with `p-6` in a component's base string and `p-0`
+ * from a caller, the winner is whichever Tailwind emitted last, so a caller's
+ * override silently loses. twMerge drops the conflicting base utility instead.
  */
+import { twMerge } from 'tailwind-merge';
 
 export type VariantOptions = Record<string, Record<string, string>>;
 
@@ -14,13 +20,9 @@ interface Config<V extends VariantOptions> {
   defaultVariants?: Selected<V>;
 }
 
-/** Joins truthy class fragments, collapsing whitespace. */
+/** Joins truthy class fragments, with later utilities overriding conflicting earlier ones. */
 export function cx(...parts: (string | false | null | undefined)[]): string {
-  return parts
-    .filter(Boolean)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return twMerge(parts.filter(Boolean).join(' '));
 }
 
 /**

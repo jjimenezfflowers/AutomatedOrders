@@ -1,6 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const {
   clickAddToCart,
+  getCalendarRoot,
+  listAvailableCalendarDays,
   selectDeliveryDate,
   selectProductOptionsFromOrder,
   selectVariantFromOrder,
@@ -401,4 +403,66 @@ test("still unblocks the delivery-date hint block, which is the lag it exists fo
   expect(selector).toBe("#product-add-to-cart");
   await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "false");
   await expect.poll(() => page.evaluate(() => window.addClicked)).toBe(true);
+});
+
+function calendarPage(dayCells) {
+  return `
+    <div data-ff-product-calendar calendar-location="product-template">
+      <button role="combobox">September</button>
+      <button role="combobox">2026</button>
+      ${dayCells}
+    </div>
+  `;
+}
+
+test("lists only the days the storefront actually offers", async ({ page }) => {
+  await page.setContent(
+    calendarPage(`
+      <button name="day">8 unavailable</button>
+      <button name="day">9</button>
+      <button name="day" disabled>10</button>
+      <button name="day" aria-disabled="true">11</button>
+      <button name="day" class="cursor-not-allowed">12</button>
+      <button name="day">13</button>
+      <button name="day">13</button>
+    `),
+  );
+
+  const root = await getCalendarRoot(page);
+
+  // 8 is text-unavailable, 10 native-disabled, 11 aria-disabled, 12 class-disabled,
+  // and the duplicate 13 is collapsed.
+  expect(await listAvailableCalendarDays(root)).toEqual([9, 13]);
+});
+
+test("reports an empty list when every day is blocked", async ({ page }) => {
+  await page.setContent(
+    calendarPage('<button name="day" disabled>1</button><button name="day" disabled>2</button>'),
+  );
+
+  expect(await listAvailableCalendarDays(await getCalendarRoot(page))).toEqual([]);
+});
+
+test("an unavailable requested day is reported with the days that are available", async ({ page }) => {
+  await page.setContent(
+    calendarPage(`
+      <button name="day" disabled>9</button>
+      <button name="day">10</button>
+      <button name="day">11</button>
+    `),
+  );
+
+  // Regression: the error used to name only the rejected day, so every failed run
+  // needed a separate script to discover a usable date.
+  await expect(
+    selectDeliveryDate(page, "2026-09-09", { environment: "dev" }),
+  ).rejects.toThrow(/FECHA NO DISPONIBLE.*Días disponibles visibles: 10, 11/s);
+});
+
+test("getCalendarRoot throws instead of returning the document body", async ({ page }) => {
+  await page.setContent("<div><button name='day'>9</button></div>");
+
+  await expect(getCalendarRoot(page, 0)).rejects.toThrow(
+    /No se encontro el calendario de entrega/,
+  );
 });

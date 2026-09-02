@@ -558,6 +558,21 @@ async function selectCalendarOption(page, root, buttonLocator, expectedText, opt
   await root.locator('button[name="day"]').first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
 }
 
+async function listAvailableCalendarDays(root) {
+  const dayButtons = root.locator('button[name="day"]');
+  const count = await dayButtons.count().catch(() => 0);
+  const availableDays = [];
+
+  for (let index = 0; index < count; index++) {
+    const state = await getCalendarDayState(dayButtons.nth(index));
+    if (state.visible && state.day && !state.disabled) {
+      availableDays.push(state.day);
+    }
+  }
+
+  return [...new Set(availableDays)].sort((a, b) => a - b);
+}
+
 async function clickAvailableCalendarDay(root, dayNumber) {
   const dayButtons = root.locator('button[name="day"]');
   const count = await dayButtons.count().catch(() => 0);
@@ -577,44 +592,84 @@ async function clickAvailableCalendarDay(root, dayNumber) {
     return available.state;
   }
 
+  const availableDays = await listAvailableCalendarDays(root);
+  const suffix = availableDays.length > 0
+    ? `. Días disponibles visibles: ${availableDays.join(', ')}`
+    : '';
+
   if (matches.length > 0) {
     const details = matches.map((match) => match.state.text || String(dayNumber)).join(' | ');
-    throw new Error(`FECHA NO DISPONIBLE: El día ${dayNumber} está marcado como no disponible (${details}). Elige otra fecha de entrega.`);
+    throw new Error(`FECHA NO DISPONIBLE: El día ${dayNumber} está marcado como no disponible (${details}). Elige otra fecha de entrega${suffix}`);
   }
 
-  const availableDays = [];
-  for (let index = 0; index < count; index++) {
-    const state = await getCalendarDayState(dayButtons.nth(index));
-    if (state.visible && state.day && !state.disabled) {
-      availableDays.push(state.day);
-    }
-  }
-
-  const suffix = availableDays.length > 0
-    ? `. Días disponibles visibles: ${unique(availableDays.map(String)).join(', ')}`
-    : '';
   throw new Error(`❌ No se encontró el día ${dayNumber} en el calendario${suffix}`);
+}
+
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const MONTH_NAME_PATTERN = new RegExp(MONTH_NAMES.join('|'), 'i');
+
+// Points the calendar at a month/year. Shared by selectDeliveryDate and by the
+// available-day lookup so both drive the widget the same way.
+async function navigateCalendarTo(page, root, { monthName, year }, log = () => {}) {
+  const monthButton = root
+    .locator('button[role="combobox"]')
+    .filter({ hasText: MONTH_NAME_PATTERN })
+    .first();
+  const monthButtonCount = await monthButton.count().catch(() => 0);
+  log(`  Buscando botón del mes: ${monthButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
+  if (monthButtonCount === 0) {
+    throw new Error(`❌ No se encontró el botón del mes en el calendario`);
+  }
+
+  const monthButtonText = ((await monthButton.textContent().catch(() => '')) || '').trim();
+  log(`    Texto actual del botón: "${monthButtonText}"`);
+  await selectCalendarOption(page, root, monthButton, monthName, 'mes', log);
+  log(`    ✅ Mes "${monthName}" seleccionado`);
+
+  if (!year) return;
+
+  const yearButton = root
+    .locator('button[role="combobox"]')
+    .filter({ hasText: /^\s*\d{4}\s*$/ })
+    .first();
+  if ((await yearButton.count().catch(() => 0)) > 0) {
+    await selectCalendarOption(page, root, yearButton, String(year), 'año', log);
+  }
+}
+
+// Lists the days the storefront offers for a given month, so callers can pick a
+// real date instead of pinning a literal that goes stale.
+async function findAvailableDeliveryDays(page, { month, year, timeout = 5000 } = {}) {
+  const monthName = typeof month === 'number' ? MONTH_NAMES[month - 1] : month;
+  if (!monthName) {
+    throw new Error(`Mes no soportado: "${month}"`);
+  }
+
+  const root = await getCalendarRoot(page, timeout);
+  await navigateCalendarTo(page, root, { monthName, year });
+
+  return listAvailableCalendarDays(root);
 }
 
 async function selectDeliveryDate(page, deliveryDate, options = {}) {
   const log = options.log || (() => {});
   const environment = options.environment || 'dev';
   const parsed = parseDeliveryDate(deliveryDate);
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const monthName = monthNames[parsed.month - 1];
+  const monthName = MONTH_NAMES[parsed.month - 1];
   if (!monthName || !parsed.day || Number.isNaN(parsed.day)) {
     throw new Error(`Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD.`);
   }
@@ -640,28 +695,7 @@ async function selectDeliveryDate(page, deliveryDate, options = {}) {
   await page.waitForTimeout(environment === 'staging' ? 6000 : 1500);
 
   const root = await getCalendarRoot(page);
-  const monthButton = root
-    .locator('button[role="combobox"]')
-    .filter({ hasText: /january|february|march|april|may|june|july|august|september|october|november|december/i })
-    .first();
-  const monthButtonCount = await monthButton.count().catch(() => 0);
-  log(`  Buscando botón del mes: ${monthButtonCount > 0 ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
-  if (monthButtonCount === 0) {
-    throw new Error(`❌ No se encontró el botón del mes en el calendario`);
-  }
-
-  const monthButtonText = ((await monthButton.textContent().catch(() => '')) || '').trim();
-  log(`    Texto actual del botón: "${monthButtonText}"`);
-  await selectCalendarOption(page, root, monthButton, monthName, 'mes', log);
-  log(`    ✅ Mes "${monthName}" seleccionado`);
-
-  const yearButton = root
-    .locator('button[role="combobox"]')
-    .filter({ hasText: /^\s*\d{4}\s*$/ })
-    .first();
-  if ((await yearButton.count().catch(() => 0)) > 0) {
-    await selectCalendarOption(page, root, yearButton, parsed.year, 'año', log);
-  }
+  await navigateCalendarTo(page, root, { monthName, year: parsed.year }, log);
 
   log(`  Buscando día ${parsed.day}...`);
   const selectedDay = await clickAvailableCalendarDay(root, parsed.day);
@@ -806,8 +840,12 @@ module.exports = {
   clickAddToCart,
   compactText,
   escapeRegExp,
+  findAvailableDeliveryDays,
   getCalendarDayState,
   getCalendarRoot,
+  listAvailableCalendarDays,
+  MONTH_NAMES,
+  navigateCalendarTo,
   findAddToCartButton,
   normalizeText,
   parseDeliveryDate,

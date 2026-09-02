@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Save, Rocket, CircleCheck, CircleX } from 'lucide-angular';
+
+import { UI_CARD, UiButtonComponent, UiFieldComponent, UiInputComponent } from '../ui';
 
 interface StagingConfig {
   stagingBaseUrl: string;
@@ -14,15 +17,23 @@ interface RunTestResponse {
 
 @Component({
   selector: 'app-staging',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    LucideAngularModule,
+    ...UI_CARD,
+    UiButtonComponent,
+    UiFieldComponent,
+    UiInputComponent,
+  ],
   templateUrl: './staging.html',
-  styleUrl: './staging.css',
 })
 export class StagingComponent implements OnInit {
   stagingConfig: StagingConfig = { stagingBaseUrl: '' };
   isRunning = false;
   testOutput = '';
   testSuccess: boolean | null = null;
+  readonly icons = { save: Save, run: Rocket, passed: CircleCheck, failed: CircleX };
 
   constructor(private http: HttpClient) {}
 

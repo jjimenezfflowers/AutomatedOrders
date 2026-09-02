@@ -89,6 +89,21 @@ class CustomCellHostComponent {
   readonly columns = COLUMNS;
 }
 
+/*
+ * Deliberately a plain mutable field rather than a signal: an OnPush component
+ * fed from a caller that just reassigns an array is the case that renders stale
+ * if the inputs are not signal-based.
+ */
+@Component({
+  standalone: true,
+  imports: [UiDataTableComponent],
+  template: `<ui-data-table testId="tbl" [data]="rows" [columns]="columns" />`,
+})
+class PlainArrayHostComponent {
+  rows: Product[] = PRODUCTS.slice(0, 3);
+  readonly columns = COLUMNS;
+}
+
 describe('UiDataTableComponent', () => {
   let fixture: ComponentFixture<DataTableHostComponent>;
   let host: DataTableHostComponent;
@@ -393,6 +408,63 @@ describe('UiDataTableComponent', () => {
       expect(query('button[data-testid="tbl-sort-name"]').tagName).toBe('BUTTON');
       expect(queryAll('button[data-testid="tbl-sort-category"]').length).toBe(0);
     });
+  });
+});
+
+describe('UiDataTableComponent with a non-signal caller', () => {
+  let fixture: ComponentFixture<PlainArrayHostComponent>;
+  let host: PlainArrayHostComponent;
+
+  /*
+   * The host is marked dirty because a plain field mutation is invisible to a
+   * zoneless TestBed, which only refreshes dirty views — the app itself is
+   * zone-based, where any event ticks the host and re-evaluates its bindings.
+   * What is under test here is what happens next: whether an OnPush
+   * ui-data-table picks up the new array reference, or renders stale.
+   */
+  async function settle(): Promise<void> {
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  function rowText(): string[] {
+    return Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="tbl-row"]') as NodeListOf<HTMLElement>,
+    ).map((row) => (row.querySelector('[role="cell"]')?.textContent ?? '').trim());
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PlainArrayHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PlainArrayHostComponent);
+    host = fixture.componentInstance;
+    await settle();
+  });
+
+  it('re-renders when the caller reassigns a plain array', async () => {
+    expect(rowText()).toEqual(['Product 1', 'Product 2', 'Product 3']);
+
+    host.rows = PRODUCTS.slice(3, 6);
+    await settle();
+
+    expect(rowText()).toEqual(['Product 4', 'Product 5', 'Product 6']);
+  });
+
+  it('empties when the caller reassigns an empty array', async () => {
+    host.rows = [];
+    await settle();
+
+    expect(rowText()).toEqual([]);
+    expect(
+      (
+        fixture.nativeElement.querySelector('[data-testid="tbl-empty"]') as HTMLElement
+      ).textContent?.trim(),
+    ).toBe('No results found');
   });
 });
 

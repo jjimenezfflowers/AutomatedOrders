@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
 
-import { CustomerPageComponent } from './shell/pages/customer-page';
-import { HistoryPageComponent } from './shell/pages/history-page';
-import { LogsPageComponent } from './shell/pages/logs-page';
-import { OrdersPageComponent } from './shell/pages/orders-page';
-import { ProductsPageComponent } from './shell/pages/products-page';
 import { ENVIRONMENTS, SECTION_COPY } from './shell/navigation';
 
 const BRAND = 'BloomBrain';
 
 /*
+ * Sections are lazy so a page only costs what it uses. Products and History pull in
+ * TanStack Table, which on its own pushed the initial bundle past its budget; loading
+ * them on navigation keeps the shell small and the table's weight on the two pages
+ * that need it.
+ *
  * Environment-scoped sections live under /dev or /staging so a link carries both the
  * section and the store it targets; shared sections have no prefix because the data
  * is the same either way. Anything unrecognised falls back to the dev catalogue.
@@ -17,12 +17,12 @@ const BRAND = 'BloomBrain';
 const environmentRoutes: Routes = ENVIRONMENTS.flatMap((environment) => [
   {
     path: `${environment.id}/products`,
-    component: ProductsPageComponent,
+    loadComponent: () => import('./shell/pages/products-page').then((m) => m.ProductsPageComponent),
     title: `${SECTION_COPY.products.title} · ${environment.label} — ${BRAND}`,
   },
   {
     path: `${environment.id}/orders`,
-    component: OrdersPageComponent,
+    loadComponent: () => import('./shell/pages/orders-page').then((m) => m.OrdersPageComponent),
     title: `${SECTION_COPY.orders.title} · ${environment.label} — ${BRAND}`,
   },
   // Bare /dev or /staging lands on that store's catalogue.
@@ -34,14 +34,18 @@ export const routes: Routes = [
   ...environmentRoutes,
   {
     path: 'customer',
-    component: CustomerPageComponent,
+    loadComponent: () => import('./shell/pages/customer-page').then((m) => m.CustomerPageComponent),
     title: `${SECTION_COPY.customer.title} — ${BRAND}`,
   },
   {
     path: 'history',
-    component: HistoryPageComponent,
+    loadComponent: () => import('./shell/pages/history-page').then((m) => m.HistoryPageComponent),
     title: `${SECTION_COPY.history.title} — ${BRAND}`,
   },
-  { path: 'logs', component: LogsPageComponent, title: `${SECTION_COPY.logs.title} — ${BRAND}` },
+  {
+    path: 'logs',
+    loadComponent: () => import('./shell/pages/logs-page').then((m) => m.LogsPageComponent),
+    title: `${SECTION_COPY.logs.title} — ${BRAND}`,
+  },
   { path: '**', redirectTo: 'dev/products' },
 ];

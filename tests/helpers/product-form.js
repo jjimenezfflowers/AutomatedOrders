@@ -473,24 +473,38 @@ function parseDeliveryDate(deliveryDate) {
   throw new Error(`Formato de fecha no soportado: "${deliveryDate}". Usa YYYY-MM-DD.`);
 }
 
-async function getCalendarRoot(page) {
-  const selectors = [
-    '[data-ff-product-calendar][calendar-location="product-template"]',
-    '.calendar-container',
-  ];
+const CALENDAR_ROOT_SELECTORS = [
+  '[data-ff-product-calendar][calendar-location="product-template"]',
+  '.calendar-container',
+];
 
-  for (const selector of selectors) {
-    const roots = page.locator(selector);
-    const count = await roots.count().catch(() => 0);
+// Falling back to page.locator('body') used to hide a missing calendar: every
+// downstream lookup then ran against the whole document, so clickAvailableCalendarDay
+// could pick a day cell from an unrelated calendar or an adjacent month and the run
+// would carry on with the wrong delivery date. The calendar can also just be slow to
+// render, so wait for it, then fail loudly.
+async function getCalendarRoot(page, timeout = 5000) {
+  const deadline = Date.now() + timeout;
 
-    for (let index = 0; index < count; index++) {
-      const root = roots.nth(index);
-      const hasDayButtons = (await root.locator('button[name="day"]').count().catch(() => 0)) > 0;
-      if (hasDayButtons) return root;
+  for (;;) {
+    for (const selector of CALENDAR_ROOT_SELECTORS) {
+      const roots = page.locator(selector);
+      const count = await roots.count().catch(() => 0);
+
+      for (let index = 0; index < count; index++) {
+        const root = roots.nth(index);
+        const hasDayButtons = (await root.locator('button[name="day"]').count().catch(() => 0)) > 0;
+        if (hasDayButtons) return root;
+      }
     }
+
+    if (Date.now() >= deadline) break;
+    await page.waitForTimeout(250);
   }
 
-  return page.locator('body');
+  throw new Error(
+    `No se encontro el calendario de entrega (${CALENDAR_ROOT_SELECTORS.join(', ')}) con dias disponibles en ${timeout}ms`,
+  );
 }
 
 async function getCalendarDayState(dayButton) {
@@ -792,6 +806,8 @@ module.exports = {
   clickAddToCart,
   compactText,
   escapeRegExp,
+  getCalendarDayState,
+  getCalendarRoot,
   findAddToCartButton,
   normalizeText,
   parseDeliveryDate,

@@ -9,6 +9,7 @@ export * from './checkbox';
 export * from './field';
 export * from './input';
 export * from './label';
+export * from './page';
 export * from './select';
 export * from './textarea';
 export * from './theme.service';

@@ -7,11 +7,15 @@
     <p class="text-gray-500">No orders placed yet.</p>
   } @else {
     <div class="space-y-3">
-      @for (entry of history; track entry.orderNumber + entry.date) {
+      @for (entry of history; track (entry.orderNumber ?? '') + entry.date) {
         <div class="border border-gray-200 rounded-lg p-4">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
-              <span class="font-semibold text-gray-800">#{{ entry.orderNumber }}</span>
+              @if (entry.orderNumber) {
+                <span class="font-semibold text-gray-800">#{{ entry.orderNumber }}</span>
+              } @else {
+                <span class="font-semibold text-gray-400 italic">order number not captured</span>
+              }
               @if (entry.environment === 'staging') {
                 <span class="text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-0.5 rounded">🟡 Staging</span>
               } @else {

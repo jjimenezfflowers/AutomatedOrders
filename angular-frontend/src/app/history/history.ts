@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 interface HistoryEntry {
-  orderNumber: string;
+  // Null when the confirmation page did not expose a usable order number; the
+  // order was still placed, so the entry is kept rather than dropped.
+  orderNumber: string | null;
   date: string;
   environment?: 'dev' | 'staging';
   products: { productId: string; quantity: number; variant?: string }[];

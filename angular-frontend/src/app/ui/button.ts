@@ -21,6 +21,11 @@ export type ButtonSize = 'xs' | 'sm' | 'default' | 'md' | 'lg' | 'icon';
  * The admin's base string ends in `outline-none` with no focus-visible rule, so
  * keyboard focus is invisible there. That omission is not carried over — the global
  * :focus-visible ring in styles.css applies here.
+ *
+ * The `elevated` and `destructive` variants are also re-expressed against tokens.
+ * Upstream they hardcode bg-white / bg-red-50 / border-gray-200, which render the
+ * same in light mode but do not adapt in dark mode — and this app ships a theme
+ * toggle. Light-mode appearance is unchanged.
  */
 export const buttonVariants = variants(
   'group/button inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent ' +
@@ -37,10 +42,10 @@ export const buttonVariants = variants(
         default:
           'bg-primary-900 text-primary-foreground hover:bg-primary-900/90 disabled:bg-primary-900/50 disabled:text-white',
         destructive:
-          'border border-red-200 bg-red-50 text-destructive hover:bg-red-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-muted-foreground',
+          'border border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20 disabled:border-border disabled:bg-muted disabled:text-muted-foreground',
         outline: 'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
-        elevated: 'border border-gray-200 bg-white hover:bg-gray-100 disabled:text-gray-400',
+        elevated: 'border border-border bg-card hover:bg-accent disabled:text-muted-foreground',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
       },

@@ -143,4 +143,35 @@ describe('StagingOrdersComponent', () => {
     expect(post.request.body.orders).toEqual([{ productId: 'roses', quantity: 7 }]);
     post.flush({});
   });
+
+  describe('loadProducts', () => {
+    // Same defect as the Orders tab: staging deduplicated by name as well as by id,
+    // so the second of two products sharing a name was unselectable here too.
+    function flushInit(products: unknown[]) {
+      httpMock.expectOne('/api/staging-products').flush(products);
+      httpMock.expectOne('/api/staging-order-config').flush(CONFIG);
+      detect();
+    }
+
+    it('keeps both products that share a name but have distinct ids', () => {
+      flushInit([
+        { id: 'babys-breath-flower-new-love-3', name: "Baby's Breath Flower New Love", url: 'a' },
+        { id: 'babys-breath-flower-new-love', name: "Baby's Breath Flower New Love", url: 'b' }
+      ]);
+
+      expect(component.products.map(p => p.id)).toEqual([
+        'babys-breath-flower-new-love-3',
+        'babys-breath-flower-new-love'
+      ]);
+    });
+
+    it('still collapses exact duplicates by id', () => {
+      flushInit([
+        { id: 'roses', name: 'Roses', url: 'a' },
+        { id: 'roses', name: 'Roses', url: 'a' }
+      ]);
+
+      expect(component.products.length).toBe(1);
+    });
+  });
 });

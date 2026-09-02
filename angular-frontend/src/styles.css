@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Quicksand and JetBrains Mono are the admin's typefaces (bb-remix root.css).
+ * theme.css maps them onto --font-sans / --font-mono.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import "tailwindcss";
+@import "./styles/theme.css";
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /*
+   * bb-remix's Button and Input ship no visible focus ring (`outline-none` and
+   * `focus-visible:outline-hidden` with nothing to replace it), and the storefront
+   * suppresses focus outright. We deliberately do not reproduce that: --ring is
+   * already defined upstream for exactly this purpose.
+   */
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+}

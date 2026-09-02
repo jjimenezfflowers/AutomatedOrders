@@ -316,3 +316,89 @@ test("unblocks Shopify add button when delivery date input already has a value",
   await expect(page.locator("#product-add-to-cart")).not.toHaveAttribute("aria-describedby", "product-add-to-cart-hint");
   await expect.poll(() => page.evaluate(() => window.addClicked)).toBe(true);
 });
+
+// Regression: the helper used to force-enable Add to Cart whenever a delivery
+// date input was non-empty, which also cleared blocks the store applied for
+// sold-out items, unavailable dates and unset required options — placing real
+// orders for combinations the storefront had deliberately refused.
+
+function blockedAddToCartPage({ hint, disabledAttr }) {
+  return `
+    <input id="isGiftCard" value="false">
+    <input id="is_subscription" value="0">
+    <div data-ff-product-calendar calendar-location="product-template">
+      <input type="hidden" name="delivery_date_input" value="09/10/2026">
+    </div>
+    <form action="/cart/add">
+      <button
+        type="submit"
+        name="add"
+        id="product-add-to-cart"
+        ${disabledAttr}
+        aria-disabled="true"
+        ${hint ? `aria-describedby="${hint}"` : ''}
+      >
+        Add To Cart
+      </button>
+    </form>
+    <script>
+      window.addClicked = false;
+      document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
+      document.querySelector("#product-add-to-cart").addEventListener("click", () => {
+        window.addClicked = true;
+      });
+    </script>
+  `;
+}
+
+test("does not unblock an add button the store disabled for a reason other than the delivery date", async ({ page }) => {
+  // No delivery-date hint: the block is sold out / unavailable date / missing option.
+  await page.setContent(blockedAddToCartPage({ hint: null, disabledAttr: '' }));
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "true");
+  expect(await page.evaluate(() => window.addClicked)).toBe(false);
+});
+
+test("does not unblock a natively disabled add button without the delivery hint", async ({ page }) => {
+  await page.setContent(blockedAddToCartPage({ hint: null, disabledAttr: 'disabled' }));
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  expect(await page.evaluate(() => document.querySelector("#product-add-to-cart").disabled)).toBe(true);
+  expect(await page.evaluate(() => window.addClicked)).toBe(false);
+});
+
+test("does not unblock when the store has not accepted a delivery date yet", async ({ page }) => {
+  await page.setContent(`
+    <input id="isGiftCard" value="false">
+    <input id="is_subscription" value="0">
+    <div data-ff-product-calendar calendar-location="product-template">
+      <input type="hidden" name="delivery_date_input" value="">
+    </div>
+    <form action="/cart/add">
+      <button type="submit" name="add" id="product-add-to-cart"
+              aria-disabled="true" aria-describedby="product-add-to-cart-hint">
+        Add To Cart
+      </button>
+    </form>
+  `);
+
+  await expect(clickAddToCart(page, { timeout: 1000 })).rejects.toThrow(
+    /No se encontro un boton Add to Cart visible y habilitado/,
+  );
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "true");
+});
+
+test("still unblocks the delivery-date hint block, which is the lag it exists for", async ({ page }) => {
+  await page.setContent(blockedAddToCartPage({ hint: 'product-add-to-cart-hint', disabledAttr: 'disabled' }));
+
+  const selector = await clickAddToCart(page, { timeout: 2000 });
+
+  expect(selector).toBe("#product-add-to-cart");
+  await expect(page.locator("#product-add-to-cart")).toHaveAttribute("aria-disabled", "false");
+  await expect.poll(() => page.evaluate(() => window.addClicked)).toBe(true);
+});

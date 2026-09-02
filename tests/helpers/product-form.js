@@ -680,31 +680,48 @@ async function setQuantityFromOrder(page, product, order) {
   return quantityText;
 }
 
+// The storefront keeps Add to Cart blocked for a moment after a delivery date is
+// picked, and marks that specific block with aria-describedby="product-add-to-cart-hint".
+// Clearing THAT block is a legitimate workaround for the lag. Clearing any other
+// block is not: a button disabled because the item is sold out, the date is
+// unavailable, or a required option is unset must stay disabled, otherwise we place
+// a real order for a combination the store deliberately refused.
+const ADD_TO_CART_DELIVERY_HINT = 'product-add-to-cart-hint';
+
 async function syncAddToCartAvailabilityFromDeliveryDate(page) {
   return page
-    .evaluate(() => {
-      const button = document.querySelector(
-        '#product-add-to-cart, button[name="add"], button[type="submit"]',
-      );
-      const deliveryInput = document.querySelector(
-        '[data-ff-product-calendar][calendar-location="product-template"] input[name="delivery_date_input"], input[name="delivery_date_input"]',
-      );
+    .evaluate(
+      ({ hintId }) => {
+        const button = document.querySelector(
+          '#product-add-to-cart, button[name="add"], button[type="submit"]',
+        );
+        const deliveryInput = document.querySelector(
+          '[data-ff-product-calendar][calendar-location="product-template"] input[name="delivery_date_input"], input[name="delivery_date_input"]',
+        );
 
-      if (!button || !deliveryInput?.value?.trim()) return false;
-      if (!/add\s*to\s*cart/i.test(button.textContent || '')) return false;
+        if (!button || !deliveryInput) return false;
 
-      const isGiftCard = document.getElementById('isGiftCard')?.value === 'true';
-      const isSubscription = Number(document.getElementById('is_subscription')?.value || 0) > 0;
-      if (isGiftCard || isSubscription) return false;
+        // The store writes the accepted date here; an empty value means it has
+        // not taken one yet.
+        if (!String(deliveryInput.value || '').trim()) return false;
 
-      button.disabled = false;
-      button.setAttribute('aria-disabled', 'false');
-      if (button.getAttribute('aria-describedby') === 'product-add-to-cart-hint') {
+        if (!/add\s*to\s*cart/i.test(button.textContent || '')) return false;
+
+        // The delivery-date hint is the only block we are allowed to clear.
+        if (button.getAttribute('aria-describedby') !== hintId) return false;
+
+        const isGiftCard = document.getElementById('isGiftCard')?.value === 'true';
+        const isSubscription = Number(document.getElementById('is_subscription')?.value || 0) > 0;
+        if (isGiftCard || isSubscription) return false;
+
+        button.disabled = false;
+        button.setAttribute('aria-disabled', 'false');
         button.removeAttribute('aria-describedby');
-      }
 
-      return true;
-    })
+        return true;
+      },
+      { hintId: ADD_TO_CART_DELIVERY_HINT },
+    )
     .catch(() => false);
 }
 

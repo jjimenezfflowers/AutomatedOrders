@@ -17,6 +17,14 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+// Product option labels, variant names and month names come from products.json and
+// from the storefront, so they can contain regex metacharacters ("Choose Color
+// (Premium)"). Interpolating them raw either silently fails to match or throws a
+// SyntaxError out of the locator call.
+function escapeRegExp(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function scoreMatch(target, candidate) {
   const targetNorm = normalizeText(target);
   const candidateNorm = normalizeText(candidate);
@@ -349,7 +357,10 @@ async function getProductOptionLocator(page, option) {
 
   if (!option.label) return null;
 
-  const label = page.locator('label').filter({ hasText: new RegExp(`^\\s*${option.label}\\s*$`, 'i') }).first();
+  const label = page
+    .locator('label')
+    .filter({ hasText: new RegExp(`^\\s*${escapeRegExp(option.label)}\\s*$`, 'i') })
+    .first();
   if ((await label.count().catch(() => 0)) === 0) return null;
 
   const labelledControl = label.locator('xpath=following-sibling::*[@role="combobox" or self::select or self::input][1]');
@@ -514,13 +525,16 @@ async function getCalendarDayState(dayButton) {
 
 async function selectCalendarOption(page, root, buttonLocator, expectedText, optionLabel, log) {
   const currentText = ((await buttonLocator.textContent().catch(() => '')) || '').trim();
-  if (new RegExp(`^\\s*${expectedText}\\s*$`, 'i').test(currentText)) return;
+  if (new RegExp(`^\\s*${escapeRegExp(expectedText)}\\s*$`, 'i').test(currentText)) return;
 
   log(`    Haciendo click en botón de ${optionLabel}...`);
   await buttonLocator.click();
   await page.waitForTimeout(1000);
 
-  const option = page.locator('[role="option"]').filter({ hasText: new RegExp(`^${expectedText}$`, 'i') }).first();
+  const option = page
+    .locator('[role="option"]')
+    .filter({ hasText: new RegExp(`^${escapeRegExp(expectedText)}$`, 'i') })
+    .first();
   if ((await option.count()) === 0) {
     throw new Error(`❌ No se encontró la opción de ${optionLabel} "${expectedText}" en el calendario`);
   }
@@ -777,6 +791,7 @@ async function clickAddToCart(page, options = {}) {
 module.exports = {
   clickAddToCart,
   compactText,
+  escapeRegExp,
   findAddToCartButton,
   normalizeText,
   parseDeliveryDate,

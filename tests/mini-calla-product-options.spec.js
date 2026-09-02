@@ -1,6 +1,7 @@
 const { test, expect } = require("@playwright/test");
 const {
   clickAddToCart,
+  escapeRegExp,
   selectDeliveryDate,
   selectProductOptionsFromOrder,
   selectVariantFromOrder,
@@ -56,7 +57,7 @@ test("mini calla: product-options add to cart", async ({ page }) => {
   })) {
     await expect(page.locator(`select[name="${optionId}"]`)).toHaveValue(expectedValue);
     await expect(page.locator(`input[name="hidden-${optionId}"]`)).toHaveValue(
-      new RegExp(`"value":"${expectedValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`),
+      new RegExp(`"value":"${escapeRegExp(expectedValue)}"`),
     );
   }
 

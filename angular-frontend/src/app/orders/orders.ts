@@ -89,22 +89,15 @@ export class OrdersComponent implements OnInit {
 
   loadProducts() {
     this.http.get<Product[]>('/api/products').subscribe(data => {
-      // Deduplicate products by ID first. If you have two products with the same name
-      // (same item being imported twice) we also keep one copy by name.
+      // Deduplicate by ID only. Distinct products are allowed to share a name, and dropping
+      // one of them would make it unselectable and erase any saved order for it on the next save.
       const uniqueProducts = new Map<string, Product>();
-      const names = new Set<string>();
 
       for (const p of data) {
         if (uniqueProducts.has(p.id)) {
           continue; // exact duplicate by ID
         }
 
-        if (names.has(p.name)) {
-          console.warn(`Skipping duplicate product name: ${p.name} (id=${p.id})`);
-          continue; // avoid “2 Baby's Breath” if duplicates exist by name
-        }
-
-        names.add(p.name);
         uniqueProducts.set(p.id, p);
       }
 

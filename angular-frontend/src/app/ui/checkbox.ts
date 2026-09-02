@@ -14,11 +14,11 @@ import { cx } from './variants';
 /*
  * From the admin's Checkbox root (bb-remix app/shared/components/ui/checkbox.tsx).
  * The admin wraps a Radix button and paints the checked state itself with
- * `data-[state=checked]:bg-primary-900`; a native input gets the same result from
- * `accent-primary-900`, so the size, border and radius carry over unchanged.
+ * `data-[state=checked]:bg-primary`; a native input gets the same result from
+ * `accent-primary`, so the size, border and radius carry over unchanged.
  */
 export const checkboxClassName =
-  'peer h-4 w-4 shrink-0 rounded-sm border border-primary-900 accent-primary-900 ' +
+  'peer h-4 w-4 shrink-0 rounded-sm border border-primary accent-primary ' +
   'disabled:cursor-not-allowed disabled:border-gray-600 disabled:opacity-50 ' +
   'aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20';
 

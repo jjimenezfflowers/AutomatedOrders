@@ -37,7 +37,7 @@ describe('UiBadgeComponent', () => {
   });
 
   it('renders the default variant', () => {
-    expect(badge().className).toContain('bg-primary-900');
+    expect(badge().className).toContain('bg-primary');
     expect(badge().className).toContain('rounded-sm');
   });
 
@@ -48,7 +48,7 @@ describe('UiBadgeComponent', () => {
 
   it('renders each variant onto the element', () => {
     const expected: Record<BadgeVariant, string> = {
-      default: 'bg-primary-900',
+      default: 'bg-primary',
       secondary: 'bg-secondary',
       success: 'bg-success/10',
       warning: 'bg-warning/10',
@@ -76,7 +76,7 @@ describe('UiBadgeComponent', () => {
     fixture.detectChanges();
 
     expect(badge().className).toContain('ml-2');
-    expect(badge().className).toContain('bg-primary-900');
+    expect(badge().className).toContain('bg-primary');
   });
 
   it('exposes testId', () => {

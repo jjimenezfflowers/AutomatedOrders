@@ -42,7 +42,7 @@ describe('UiCheckboxComponent', () => {
   it('renders an unchecked native checkbox with the base classes', () => {
     expect(box().type).toBe('checkbox');
     expect(box().checked).toBe(false);
-    expect(box().className).toContain('accent-primary-900');
+    expect(box().className).toContain('accent-primary');
     expect(box().classList).toContain('h-4');
     expect(box().classList).toContain('w-4');
   });

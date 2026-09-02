@@ -37,7 +37,7 @@ describe('UiButtonComponent', () => {
   });
 
   it('applies the default variant and size', () => {
-    expect(button().className).toContain('bg-primary-900');
+    expect(button().className).toContain('bg-primary');
     expect(button().className).toContain('h-9');
   });
 
@@ -94,7 +94,7 @@ describe('UiButtonComponent', () => {
       setInput('class', 'w-full');
 
       expect(button().className).toContain('w-full');
-      expect(button().className).toContain('bg-primary-900');
+      expect(button().className).toContain('bg-primary');
     });
   });
 

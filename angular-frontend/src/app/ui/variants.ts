@@ -29,7 +29,7 @@ export function cx(...parts: (string | false | null | undefined)[]): string {
  * Builds a class-string resolver from a base string plus named variant maps.
  *
  *   const button = variants('inline-flex rounded-md', {
- *     variants: { variant: { default: 'bg-primary-900', ghost: '' } },
+ *     variants: { variant: { default: 'bg-primary', ghost: '' } },
  *     defaultVariants: { variant: 'default' },
  *   });
  *   button({ variant: 'ghost' })

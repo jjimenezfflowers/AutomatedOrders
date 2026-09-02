@@ -23,6 +23,10 @@ export type ButtonSize = 'xs' | 'sm' | 'default' | 'md' | 'lg' | 'icon';
  * keyboard focus is invisible there. That omission is not carried over — the global
  * :focus-visible ring in styles.css applies here.
  *
+ * The admin's `bg-primary-900` is swapped for `bg-primary`. The two are byte-identical
+ * in :root, but .dark only remaps the `--primary` alias and leaves the numbered scale
+ * alone — so primary-900 would stay dark-on-dark under the theme toggle.
+ *
  * The `elevated` and `destructive` variants are also re-expressed against tokens.
  * Upstream they hardcode bg-white / bg-red-50 / border-gray-200, which render the
  * same in light mode but do not adapt in dark mode — and this app ships a theme
@@ -41,7 +45,7 @@ export const buttonVariants = variants(
     variants: {
       variant: {
         default:
-          'bg-primary-900 text-primary-foreground hover:bg-primary-900/90 disabled:bg-primary-900/50 disabled:text-white',
+          'bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-primary/50 disabled:text-primary-foreground',
         destructive:
           'border border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20 disabled:border-border disabled:bg-muted disabled:text-muted-foreground',
         outline: 'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',

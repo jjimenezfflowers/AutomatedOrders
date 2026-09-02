@@ -23,7 +23,7 @@ export const badgeVariants = variants(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-primary-900 text-primary-foreground',
+        default: 'border-transparent bg-primary text-primary-foreground',
         secondary: 'border-transparent bg-secondary text-secondary-foreground',
         success: 'border-success/20 bg-success/10 text-success',
         warning: 'border-warning/20 bg-warning/10 text-warning',

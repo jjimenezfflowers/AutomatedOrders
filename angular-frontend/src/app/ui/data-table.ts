@@ -297,7 +297,7 @@ const EMPTY_CLASS =
       >
         <span [attr.data-testid]="scopedTestId('count')">{{ countLabel() }}</span>
 
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
           <label class="flex items-center gap-2 text-xs">
             <span>Rows per page</span>
             <ui-select

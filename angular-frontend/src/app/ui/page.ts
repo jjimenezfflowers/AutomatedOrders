@@ -22,7 +22,7 @@ import { cx } from './variants';
   template: `
     <h1 class="text-xl font-semibold tracking-tight">{{ title }}</h1>
 
-    <div class="flex items-center justify-between gap-4 pb-4">
+    <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-4">
       @if (description) {
         <p class="text-sm text-muted-foreground">{{ description }}</p>
       } @else {

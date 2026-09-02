@@ -422,10 +422,17 @@ function parseDeliveryDate(deliveryDate) {
   const value = String(deliveryDate || '').trim();
   const isoMatch = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (isoMatch) {
+    const month = Number(isoMatch[2]);
+    const day = Number(isoMatch[3]);
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      throw new Error(`Fecha invalida: "${deliveryDate}". Usa YYYY-MM-DD.`);
+    }
+
     return {
       year: isoMatch[1],
-      month: Number(isoMatch[2]),
-      day: Number(isoMatch[3]),
+      month,
+      day,
       iso: `${isoMatch[1]}-${isoMatch[2].padStart(2, '0')}-${isoMatch[3].padStart(2, '0')}`,
     };
   }
@@ -434,9 +441,15 @@ function parseDeliveryDate(deliveryDate) {
   if (slashMatch) {
     const first = Number(slashMatch[1]);
     const second = Number(slashMatch[2]);
-    const isMonthFirst = second > 12;
-    const day = isMonthFirst ? second : first;
-    const month = isMonthFirst ? first : second;
+    // The storefront is US-locale, so slash dates are MM/DD/YYYY. Only fall back to
+    // day-first when the first component cannot be a month (e.g. 25/12/2026).
+    const isDayFirst = first > 12;
+    const month = isDayFirst ? second : first;
+    const day = isDayFirst ? first : second;
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      throw new Error(`Fecha invalida: "${deliveryDate}". Usa YYYY-MM-DD.`);
+    }
 
     return {
       year: slashMatch[3],

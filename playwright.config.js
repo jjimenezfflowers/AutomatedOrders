@@ -13,6 +13,10 @@ const config = {
 
   testDir: './tests',
 
+  /* Unit tests under tests/unit are run by node:test, not Playwright. */
+
+  testIgnore: ['**/unit/**'],
+
   /* Maximum time one test can run for. */
 
   timeout: 120 * 1000,

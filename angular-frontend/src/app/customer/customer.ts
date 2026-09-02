@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { UI_CARD, UiAlertComponent, UiButtonComponent, UiFieldComponent, UiInputComponent } from '../ui';
+
+type AddressRegion = 'CT' | 'HI' | 'AK' | 'NJ';
+
 interface OrderConfig {
   deliveryDate?: string;
   customerInfo: {
@@ -25,9 +29,16 @@ interface OrderConfig {
 
 @Component({
   selector: 'app-customer',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    ...UI_CARD,
+    UiAlertComponent,
+    UiButtonComponent,
+    UiFieldComponent,
+    UiInputComponent,
+  ],
   templateUrl: './customer.html',
-  styleUrl: './customer.css',
 })
 export class CustomerComponent implements OnInit {
   customerInfo = {
@@ -47,6 +58,16 @@ export class CustomerComponent implements OnInit {
     expiry: ''
   };
 
+  /** Shipping presets used to exercise different delivery regions. */
+  readonly addressPresets: { code: AddressRegion; label: string }[] = [
+    { code: 'CT', label: 'Set to CT' },
+    { code: 'NJ', label: 'Set to NJ' },
+    { code: 'HI', label: 'Set to Hawaii' },
+    { code: 'AK', label: 'Set to Alaska' }
+  ];
+
+  isSaving = false;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -65,20 +86,38 @@ export class CustomerComponent implements OnInit {
   }
 
   saveCustomerInfo() {
-    this.http.get<Partial<OrderConfig>>('/api/order-config').subscribe(currentConfig => {
-      const updatedConfig: Partial<OrderConfig> = {
-        ...currentConfig,
-        customerInfo: this.customerInfo,
-        payment: this.payment
-      };
+    if (this.isSaving) {
+      return;
+    }
 
-      this.http.post('/api/order-config', updatedConfig).subscribe(() => {
-        alert('Customer info saved!');
-      });
+    this.isSaving = true;
+    this.http.get<Partial<OrderConfig>>('/api/order-config').subscribe({
+      next: currentConfig => {
+        const updatedConfig: Partial<OrderConfig> = {
+          ...currentConfig,
+          customerInfo: this.customerInfo,
+          payment: this.payment
+        };
+
+        this.http.post('/api/order-config', updatedConfig).subscribe({
+          next: () => {
+            this.isSaving = false;
+            alert('Customer info saved!');
+          },
+          error: err => {
+            this.isSaving = false;
+            alert('Failed to save customer info: ' + (err.message || 'Unknown error'));
+          }
+        });
+      },
+      error: err => {
+        this.isSaving = false;
+        alert('Failed to save customer info: ' + (err.message || 'Unknown error'));
+      }
     });
   }
 
-  setAddress(region: 'CT' | 'HI' | 'AK' | 'NJ') {
+  setAddress(region: AddressRegion) {
     if (region === 'CT') {
       this.customerInfo.address = '124 Ben St';
       this.customerInfo.city = 'Bristol';

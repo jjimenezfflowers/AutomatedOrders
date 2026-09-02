@@ -1,90 +1,171 @@
-<div class="bg-white rounded-lg shadow-md p-6 mb-6">
-  <h2 class="text-2xl font-semibold mb-4">Customer Info</h2>
-  
-  <div class="space-y-6">
-    <!-- Contact Information -->
-    <div>
-      <h3 class="text-lg font-medium mb-3">Contact Information</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input type="email" [(ngModel)]="customerInfo.email" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="customer@example.com">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-          <input type="tel" [(ngModel)]="customerInfo.phone" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="(555) 555-5555">
-        </div>
-      </div>
-    </div>
+<ui-card>
+  <ui-card-header>
+    <ui-card-title>Customer Info</ui-card-title>
+    <ui-card-description>
+      Used by both DEV and Staging test runs.
+    </ui-card-description>
+  </ui-card-header>
 
-    <!-- Personal Information -->
-    <div>
-      <h3 class="text-lg font-medium mb-3">Personal Information</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-          <input type="text" [(ngModel)]="customerInfo.firstName" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="John">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-          <input type="text" [(ngModel)]="customerInfo.lastName" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="Doe">
-        </div>
+  <ui-card-content class="space-y-6">
+    <section>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Contact Information</h3>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <ui-field label="Email" controlId="customer-email">
+          <ui-input
+            type="email"
+            inputId="customer-email"
+            name="email"
+            autocomplete="email"
+            placeholder="customer@example.com"
+            [(ngModel)]="customerInfo.email"
+            testId="customer-email"
+          />
+        </ui-field>
+        <ui-field label="Phone" controlId="customer-phone">
+          <ui-input
+            type="tel"
+            inputId="customer-phone"
+            name="phone"
+            autocomplete="tel"
+            placeholder="(555) 555-5555"
+            [(ngModel)]="customerInfo.phone"
+            testId="customer-phone"
+          />
+        </ui-field>
       </div>
-    </div>
+    </section>
 
-    <!-- Shipping Address -->
-    <div>
-      <h3 class="text-lg font-medium mb-3">Shipping Address</h3>
-      <div class="flex gap-2 mb-3">
-        <button (click)="setAddress('CT')" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded">Set to CT</button>
-        <button (click)="setAddress('NJ')" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded">Set to NJ</button>
-        <button (click)="setAddress('HI')" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded">Set to Hawaii</button>
-        <button (click)="setAddress('AK')" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded">Set to Alaska</button>
+    <section>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Personal Information</h3>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <ui-field label="First Name" controlId="customer-first-name">
+          <ui-input
+            inputId="customer-first-name"
+            name="firstName"
+            autocomplete="given-name"
+            placeholder="John"
+            [(ngModel)]="customerInfo.firstName"
+            testId="customer-first-name"
+          />
+        </ui-field>
+        <ui-field label="Last Name" controlId="customer-last-name">
+          <ui-input
+            inputId="customer-last-name"
+            name="lastName"
+            autocomplete="family-name"
+            placeholder="Doe"
+            [(ngModel)]="customerInfo.lastName"
+            testId="customer-last-name"
+          />
+        </ui-field>
       </div>
+    </section>
+
+    <section>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Shipping Address</h3>
+
+      <div class="mb-3 flex flex-wrap gap-2">
+        @for (preset of addressPresets; track preset.code) {
+          <ui-button
+            variant="elevated"
+            size="xs"
+            (click)="setAddress(preset.code)"
+            [testId]="'address-preset-' + preset.code"
+          >
+            {{ preset.label }}
+          </ui-button>
+        }
+      </div>
+
       <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-          <input type="text" [(ngModel)]="customerInfo.address" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="123 Main St">
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-            <input type="text" [(ngModel)]="customerInfo.city" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="New York">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-            <input type="text" [(ngModel)]="customerInfo.state" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="NY">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
-            <input type="text" [(ngModel)]="customerInfo.zipCode" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="10001">
-          </div>
+        <ui-field label="Street Address" controlId="customer-address">
+          <ui-input
+            inputId="customer-address"
+            name="address"
+            autocomplete="street-address"
+            placeholder="123 Main St"
+            [(ngModel)]="customerInfo.address"
+            testId="customer-address"
+          />
+        </ui-field>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <ui-field label="City" controlId="customer-city">
+            <ui-input
+              inputId="customer-city"
+              name="city"
+              autocomplete="address-level2"
+              placeholder="New York"
+              [(ngModel)]="customerInfo.city"
+              testId="customer-city"
+            />
+          </ui-field>
+          <ui-field label="State" controlId="customer-state">
+            <ui-input
+              inputId="customer-state"
+              name="state"
+              autocomplete="address-level1"
+              placeholder="NY"
+              [(ngModel)]="customerInfo.state"
+              testId="customer-state"
+            />
+          </ui-field>
+          <ui-field label="ZIP Code" controlId="customer-zip">
+            <ui-input
+              inputId="customer-zip"
+              name="zipCode"
+              autocomplete="postal-code"
+              placeholder="10001"
+              [(ngModel)]="customerInfo.zipCode"
+              testId="customer-zip"
+            />
+          </ui-field>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Payment Information -->
-    <div>
-      <h3 class="text-lg font-medium mb-3">Payment Information</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-          <input type="text" [(ngModel)]="payment.cardNumber" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="1">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Expiry (MMYY)</label>
-          <input type="text" [(ngModel)]="payment.expiry" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="1226">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-          <input type="text" [(ngModel)]="payment.cvv" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="123">
-        </div>
+    <section>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Payment Information</h3>
+      <ui-alert variant="info" class="mb-3">
+        Test card details for automated checkout runs. Never enter a real card here.
+      </ui-alert>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <ui-field label="Card Number" controlId="payment-card" class="md:col-span-2">
+          <ui-input
+            inputId="payment-card"
+            name="cardNumber"
+            autocomplete="off"
+            placeholder="4242424242424242"
+            [(ngModel)]="payment.cardNumber"
+            testId="payment-card"
+          />
+        </ui-field>
+        <ui-field label="Expiry (MMYY)" controlId="payment-expiry">
+          <ui-input
+            inputId="payment-expiry"
+            name="expiry"
+            autocomplete="off"
+            placeholder="1226"
+            [(ngModel)]="payment.expiry"
+            testId="payment-expiry"
+          />
+        </ui-field>
+        <ui-field label="CVV" controlId="payment-cvv">
+          <ui-input
+            inputId="payment-cvv"
+            name="cvv"
+            autocomplete="off"
+            placeholder="123"
+            [(ngModel)]="payment.cvv"
+            testId="payment-cvv"
+          />
+        </ui-field>
       </div>
-    </div>
+    </section>
+  </ui-card-content>
 
-    <!-- Save Button -->
-    <div>
-      <button (click)="saveCustomerInfo()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">Save Customer Info</button>
-    </div>
-  </div>
-</div>
+  <ui-card-footer>
+    <ui-button (click)="saveCustomerInfo()" [loading]="isSaving" testId="save-customer">
+      Save Customer Info
+    </ui-button>
+  </ui-card-footer>
+</ui-card>

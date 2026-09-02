@@ -38,6 +38,23 @@ function timestamp(iso: string): number {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+/*
+ * Entries written before the order-number capture was fixed stored whatever the
+ * confirmation page's heading said — 362 of them read "Your order is confirmed",
+ * 32 "Finalize order", 22 "Order summary". Rendering those as "#Your order is
+ * confirmed" is worse than admitting the number was never captured, so anything
+ * that is not shaped like an identifier is treated as missing.
+ *
+ * Same rule as tests/helpers/order-number.js, which decides what gets written.
+ */
+const ORDER_NUMBER_PATTERN = /^#?[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$|^#?\d{3,}$/;
+
+function usableOrderNumber(value: string | null): string | null {
+  const trimmed = (value ?? '').trim();
+  if (!trimmed || !ORDER_NUMBER_PATTERN.test(trimmed)) return null;
+  return /\d/.test(trimmed) ? trimmed : null;
+}
+
 @Component({
   selector: 'app-history',
   imports: [
@@ -117,7 +134,11 @@ export class HistoryComponent implements OnInit {
       next: data => {
         // Newest first: the file appends, so its own order is oldest first, and
         // whoever opens this page is looking for the run that just finished.
-        this.history.set([...data].sort((a, b) => timestamp(b.date) - timestamp(a.date)));
+        this.history.set(
+          [...data]
+            .map((entry) => ({ ...entry, orderNumber: usableOrderNumber(entry.orderNumber) }))
+            .sort((a, b) => timestamp(b.date) - timestamp(a.date)),
+        );
         this.loading.set(false);
       },
       error: () => {

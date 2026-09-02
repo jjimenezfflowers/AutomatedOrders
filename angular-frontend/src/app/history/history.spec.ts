@@ -238,12 +238,12 @@ describe('HistoryComponent', () => {
     it('lists the newest entry first, whatever order the file is in', async () => {
       // The file appends, so the API hands back the oldest run first.
       await flushHistory([
-        entry({ orderNumber: 'OLDEST', date: '2026-01-05T10:00:00.000Z' }),
-        entry({ orderNumber: 'MIDDLE', date: '2026-06-05T10:00:00.000Z' }),
-        entry({ orderNumber: 'NEWEST', date: '2026-09-05T10:00:00.000Z' })
+        entry({ orderNumber: 'BB-OLDEST-1', date: '2026-01-05T10:00:00.000Z' }),
+        entry({ orderNumber: 'BB-MIDDLE-2', date: '2026-06-05T10:00:00.000Z' }),
+        entry({ orderNumber: 'BB-NEWEST-3', date: '2026-09-05T10:00:00.000Z' })
       ]);
 
-      expect(columnText(ORDER)).toEqual(['#NEWEST', '#MIDDLE', '#OLDEST']);
+      expect(columnText(ORDER)).toEqual(['#BB-NEWEST-3', '#BB-MIDDLE-2', '#BB-OLDEST-1']);
     });
 
     describe('search', () => {
@@ -311,10 +311,10 @@ describe('HistoryComponent', () => {
 
       it('treats an entry recorded before the staging runs existed as dev', async () => {
         // The oldest half of order-history.json has no `environment` key at all.
-        await flushHistory([{ ...entry({ orderNumber: 'LEGACY' }), environment: undefined }]);
+        await flushHistory([{ ...entry({ orderNumber: 'BB-LEGACY-1' }), environment: undefined }]);
         await choose('history-filter-environment', 'DEV');
 
-        expect(columnText(ORDER)).toEqual(['#LEGACY']);
+        expect(columnText(ORDER)).toEqual(['#BB-LEGACY-1']);
       });
     });
 
@@ -326,18 +326,18 @@ describe('HistoryComponent', () => {
          * "Aug" < "Sep" only by luck of the alphabet.
          */
         await flushHistory([
-          entry({ orderNumber: 'DEC', date: '2025-12-31T10:00:00.000Z' }),
-          entry({ orderNumber: 'JAN', date: '2026-01-01T10:00:00.000Z' }),
-          entry({ orderNumber: 'AUG', date: '2026-08-31T10:00:00.000Z' }),
+          entry({ orderNumber: 'BB-DEC-1', date: '2025-12-31T10:00:00.000Z' }),
+          entry({ orderNumber: 'BB-JAN-1', date: '2026-01-01T10:00:00.000Z' }),
+          entry({ orderNumber: 'BB-AUG-1', date: '2026-08-31T10:00:00.000Z' }),
           entry({ orderNumber: 'SEP-2', date: '2026-09-02T10:00:00.000Z' }),
           entry({ orderNumber: 'SEP-10', date: '2026-09-10T10:00:00.000Z' })
         ]);
 
         await click('history-sort-date');
-        expect(columnText(ORDER)).toEqual(['#DEC', '#JAN', '#AUG', '#SEP-2', '#SEP-10']);
+        expect(columnText(ORDER)).toEqual(['#BB-DEC-1', '#BB-JAN-1', '#BB-AUG-1', '#SEP-2', '#SEP-10']);
 
         await click('history-sort-date');
-        expect(columnText(ORDER)).toEqual(['#SEP-10', '#SEP-2', '#AUG', '#JAN', '#DEC']);
+        expect(columnText(ORDER)).toEqual(['#SEP-10', '#SEP-2', '#BB-AUG-1', '#BB-JAN-1', '#BB-DEC-1']);
       });
 
       it('orders the product count numerically', async () => {
@@ -548,6 +548,53 @@ describe('HistoryComponent', () => {
         expect(rows().length).toBe(0);
       });
     });
+
+    describe('legacy junk order numbers', () => {
+      /*
+       * order-history.json still holds 476 entries written before the capture was
+       * fixed: 362 read "Your order is confirmed", 32 "Finalize order", 22
+       * "Order summary". Rendering "#Your order is confirmed" as an order number
+       * is worse than admitting it was never captured.
+       */
+      it('renders the placeholder instead of a scraped heading', async () => {
+        await flushHistory([entry({ orderNumber: 'Your order is confirmed' })]);
+
+        expect(cellText(0, ORDER)).toContain('not captured');
+        expect(cellText(0, ORDER)).not.toContain('#Your order is confirmed');
+      });
+
+      for (const junk of ['Order summary', 'Finalize order', 'Thank you']) {
+        it(`rejects ${JSON.stringify(junk)}`, async () => {
+          await flushHistory([entry({ orderNumber: junk })]);
+
+          expect(cellText(0, ORDER)).toContain('not captured');
+        });
+      }
+
+      it('keeps a real identifier', async () => {
+        await flushHistory([entry({ orderNumber: 'DEV-BB-50F5089' })]);
+
+        expect(cellText(0, ORDER)).toContain('DEV-BB-50F5089');
+      });
+
+      it('keeps a classic numeric order number', async () => {
+        await flushHistory([entry({ orderNumber: '#1234' })]);
+
+        expect(cellText(0, ORDER)).toContain('1234');
+      });
+
+      it('does not make junk findable by searching its text', async () => {
+        await flushHistory([
+          entry({ orderNumber: 'Your order is confirmed', customer: 'a@example.test' }),
+          entry({ orderNumber: 'DEV-BB-1', customer: 'b@example.test' })
+        ]);
+
+        await type('confirmed');
+
+        expect(rows().length).toBe(0);
+      });
+    });
+
   });
 
 });

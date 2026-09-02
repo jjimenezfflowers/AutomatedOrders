@@ -49,6 +49,7 @@ describe('UiButtonComponent', () => {
       'secondary',
       'elevated',
       'ghost',
+      'warning',
       'link',
     ];
 
@@ -59,6 +60,13 @@ describe('UiButtonComponent', () => {
       });
 
       expect(new Set(rendered).size).toBe(cases.length);
+    });
+
+    it('styles warning against the warning token, so staging actions need no overrides', () => {
+      setInput('variant', 'warning');
+
+      expect(button().className).toContain('bg-warning');
+      expect(button().className).toContain('hover:bg-warning/90');
     });
 
     it('styles destructive against the destructive token', () => {

@@ -10,6 +10,7 @@ export type ButtonVariant =
   | 'secondary'
   | 'elevated'
   | 'ghost'
+  | 'warning'
   | 'link';
 export type ButtonSize = 'xs' | 'sm' | 'default' | 'md' | 'lg' | 'icon';
 
@@ -47,6 +48,9 @@ export const buttonVariants = variants(
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
         elevated: 'border border-border bg-card hover:bg-accent disabled:text-muted-foreground',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
+        // The staging actions are warning-toned; without this variant callers had to
+        // layer class overrides on top of ghost, which left the hover state undefined.
+        warning: 'bg-warning text-warning-foreground hover:bg-warning/90 disabled:bg-warning/50',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {

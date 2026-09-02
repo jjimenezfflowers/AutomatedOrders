@@ -1,177 +1,166 @@
-<div class="max-w-[960px] mx-auto">
-  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border">
+<ui-card class="w-full" testId="product-form-card">
 
-    <!-- Header -->
-    <div class="relative mx-4 mt-4 overflow-hidden text-slate-700 bg-white rounded-none bg-clip-border">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-lg font-semibold text-slate-800">{{ isEditMode ? 'Edit Product' : 'New Product' }}</h3>
-          <p class="text-slate-500">{{ isEditMode ? 'Modify the details of this product' : 'Fill in the details to add a new product' }}</p>
-        </div>
-        <button
-          (click)="cancel()"
-          class="rounded border border-slate-300 py-2.5 px-3 text-center text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300"
-          type="button">
-          Cancel
-        </button>
+  <ui-card-header>
+    <div class="flex items-start justify-between gap-4">
+      <div class="space-y-1.5">
+        <ui-card-title>{{ isEditMode ? 'Edit Product' : 'New Product' }}</ui-card-title>
+        <ui-card-description>
+          {{ isEditMode ? 'Modify the details of this product' : 'Fill in the details to add a new product' }}
+        </ui-card-description>
       </div>
-    </div>
-
-    <!-- Form -->
-    <div class="p-6">
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-
-        <!-- Product ID -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Product ID <span class="text-red-500">*</span></label>
-          <input
-            type="text"
-            [(ngModel)]="product.id"
-            placeholder="e.g., white-spray-roses"
-            [readonly]="isEditMode"
-            class="w-full rounded border px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-            [class.border-red-400]="errors['id']"
-            [class.border-slate-300]="!errors['id']"
-            [class.bg-slate-50]="isEditMode"
-            [class.cursor-not-allowed]="isEditMode" />
-          @if (errors['id']) {
-            <p class="text-xs text-red-500">{{ errors['id'] }}</p>
-          }
-        </div>
-
-        <!-- Name -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Name <span class="text-red-500">*</span></label>
-          <input
-            type="text"
-            [(ngModel)]="product.name"
-            placeholder="e.g., White Spray Roses"
-            class="w-full rounded border px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-            [class.border-red-400]="errors['name']"
-            [class.border-slate-300]="!errors['name']" />
-          @if (errors['name']) {
-            <p class="text-xs text-red-500">{{ errors['name'] }}</p>
-          }
-        </div>
-
-        <!-- URL -->
-        <div class="flex flex-col gap-1 sm:col-span-2">
-          <label class="text-sm font-medium text-slate-700">URL <span class="text-red-500">*</span></label>
-          <input
-            type="text"
-            [(ngModel)]="product.url"
-            placeholder="https://example.com/product"
-            class="w-full rounded border px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-            [class.border-red-400]="errors['url']"
-            [class.border-slate-300]="!errors['url']" />
-          @if (errors['url']) {
-            <p class="text-xs text-red-500">{{ errors['url'] }}</p>
-          }
-        </div>
-
-        <!-- Origin -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Origin</label>
-          <div class="flex flex-wrap gap-2 rounded border border-slate-300 px-3 py-2">
-            @for (origin of originOptions; track origin) {
-              <label class="inline-flex items-center gap-2 rounded bg-slate-50 px-2 py-1 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  [checked]="isOriginSelected(origin)"
-                  (change)="toggleOrigin(origin, $any($event.target).checked)"
-                  class="rounded border-slate-300 text-slate-800 focus:ring-slate-300" />
-                <span>{{ origin }}</span>
-              </label>
-            }
-          </div>
-        </div>
-
-        <!-- Type -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Type</label>
-          <select
-            [(ngModel)]="product.type"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300">
-            <option value="">Simple Product</option>
-            <option value="product-options">Product with Options</option>
-          </select>
-        </div>
-
-        <!-- Variant Selector -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Variant Selector <span class="text-xs text-slate-400">(optional)</span></label>
-          <input
-            type="text"
-            [(ngModel)]="product.variantSelector"
-            placeholder="#option-0"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-        </div>
-
-        <!-- Variants -->
-        <div class="flex flex-col gap-1 sm:col-span-2">
-          <label class="text-sm font-medium text-slate-700">Variants <span class="text-xs text-slate-400">(one per line, optional)</span></label>
-          <textarea
-            [(ngModel)]="variantsText"
-            rows="3"
-            placeholder="20 stems (2 Bunches)&#10;50 stems (5 Bunches)&#10;100 stems (10 Bunches)"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300 resize-none"></textarea>
-          @if (product.type === 'product-options') {
-            <p class="text-xs text-blue-600">ℹ️ Product Options: additional configuration can be done in products.json after saving.</p>
-          }
-        </div>
-
-        <!-- Default Variant -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Default Variant <span class="text-xs text-slate-400">(optional)</span></label>
-          <input
-            type="text"
-            [(ngModel)]="product.defaultVariant"
-            placeholder="20 stems"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-        </div>
-
-        <!-- Quantity Selector -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Quantity Selector</label>
-          <input
-            type="text"
-            [(ngModel)]="product.quantitySelector"
-            placeholder="#quantity-123"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-        </div>
-
-        <!-- Default Quantity -->
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-slate-700">Default Quantity</label>
-          <input
-            type="number"
-            [(ngModel)]="product.defaultQuantity"
-            min="1"
-            placeholder="1"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="flex items-center justify-end gap-2 p-4 border-t border-slate-200">
-      <button
+      <ui-button
+        variant="outline"
+        size="sm"
+        class="shrink-0"
         (click)="cancel()"
-        class="rounded border border-slate-300 py-2.5 px-4 text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300"
-        type="button">
+        testId="cancel-product-header">
         Cancel
-      </button>
-      <button
-        (click)="save()"
-        class="flex select-none items-center gap-2 rounded bg-slate-800 py-2.5 px-5 text-xs font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 focus:opacity-[0.85] active:opacity-[0.85]"
-        type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-          <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
-        </svg>
-        {{ isEditMode ? 'Save Changes' : 'Save Product' }}
-      </button>
+      </ui-button>
     </div>
+  </ui-card-header>
 
-  </div>
-</div>
+  <ui-card-content>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+      <!-- Product ID -->
+      <ui-field label="Product ID *" controlId="product-id" [error]="errors['id']">
+        <ui-input
+          inputId="product-id"
+          name="productId"
+          placeholder="e.g., white-spray-roses"
+          [(ngModel)]="product.id"
+          [readonly]="isEditMode"
+          [invalid]="!!errors['id']"
+          testId="product-id" />
+      </ui-field>
+
+      <!-- Name -->
+      <ui-field label="Name *" controlId="product-name" [error]="errors['name']">
+        <ui-input
+          inputId="product-name"
+          name="productName"
+          placeholder="e.g., White Spray Roses"
+          [(ngModel)]="product.name"
+          [invalid]="!!errors['name']"
+          testId="product-name" />
+      </ui-field>
+
+      <!-- URL -->
+      <ui-field label="URL *" controlId="product-url" class="sm:col-span-2" [error]="errors['url']">
+        <ui-input
+          inputId="product-url"
+          name="productUrl"
+          placeholder="https://example.com/product"
+          [(ngModel)]="product.url"
+          [invalid]="!!errors['url']"
+          testId="product-url" />
+      </ui-field>
+
+      <!-- Origin -->
+      <ui-field label="Origin" controlId="product-origin">
+        <div
+          class="flex flex-wrap gap-2 rounded-md border border-input px-3 py-2"
+          data-testid="product-origin">
+          @for (origin of originOptions; track origin) {
+            <span class="inline-flex items-center rounded-sm bg-muted px-2 py-1 text-foreground">
+              <ui-checkbox
+                [inputId]="'product-origin-' + origin"
+                [name]="'productOrigin' + origin"
+                [label]="origin"
+                [ngModel]="isOriginSelected(origin)"
+                (ngModelChange)="toggleOrigin(origin, $event)"
+                [testId]="'product-origin-' + origin" />
+            </span>
+          }
+        </div>
+      </ui-field>
+
+      <!-- Type -->
+      <ui-field label="Type" controlId="product-type">
+        <ui-select
+          inputId="product-type"
+          name="productType"
+          [(ngModel)]="product.type"
+          testId="product-type">
+          <option value="">Simple Product</option>
+          <option value="product-options">Product with Options</option>
+        </ui-select>
+      </ui-field>
+
+      <!-- Variant Selector -->
+      <ui-field label="Variant Selector" controlId="product-variant-selector" optional>
+        <ui-input
+          inputId="product-variant-selector"
+          name="variantSelector"
+          placeholder="#option-0"
+          [(ngModel)]="product.variantSelector"
+          testId="product-variant-selector" />
+      </ui-field>
+
+      <!-- Variants -->
+      <ui-field
+        label="Variants"
+        controlId="product-variants"
+        class="sm:col-span-2"
+        hint="One per line"
+        optional>
+        <ui-textarea
+          inputId="product-variants"
+          name="variants"
+          [rows]="3"
+          placeholder="20 stems (2 Bunches)&#10;50 stems (5 Bunches)&#10;100 stems (10 Bunches)"
+          [(ngModel)]="variantsText"
+          testId="product-variants" />
+        @if (product.type === 'product-options') {
+          <ui-alert variant="info" testId="product-options-note">
+            Product Options: additional configuration can be done in products.json after saving.
+          </ui-alert>
+        }
+      </ui-field>
+
+      <!-- Default Variant -->
+      <ui-field label="Default Variant" controlId="product-default-variant" optional>
+        <ui-input
+          inputId="product-default-variant"
+          name="defaultVariant"
+          placeholder="20 stems"
+          [(ngModel)]="product.defaultVariant"
+          testId="product-default-variant" />
+      </ui-field>
+
+      <!-- Quantity Selector -->
+      <ui-field label="Quantity Selector" controlId="product-quantity-selector">
+        <ui-input
+          inputId="product-quantity-selector"
+          name="quantitySelector"
+          placeholder="#quantity-123"
+          [(ngModel)]="product.quantitySelector"
+          testId="product-quantity-selector" />
+      </ui-field>
+
+      <!-- Default Quantity -->
+      <ui-field label="Default Quantity" controlId="product-default-quantity">
+        <ui-input
+          type="number"
+          inputId="product-default-quantity"
+          name="defaultQuantity"
+          min="1"
+          placeholder="1"
+          [(ngModel)]="product.defaultQuantity"
+          testId="product-default-quantity" />
+      </ui-field>
+
+    </div>
+  </ui-card-content>
+
+  <ui-card-footer class="justify-end gap-2 border-t border-border pt-6">
+    <ui-button variant="outline" (click)="cancel()" testId="cancel-product">
+      Cancel
+    </ui-button>
+    <ui-button variant="default" (click)="save()" testId="save-product">
+      <lucide-angular [img]="icons.save" class="size-4" aria-hidden="true" />
+      {{ isEditMode ? 'Save Changes' : 'Save Product' }}
+    </ui-button>
+  </ui-card-footer>
+
+</ui-card>

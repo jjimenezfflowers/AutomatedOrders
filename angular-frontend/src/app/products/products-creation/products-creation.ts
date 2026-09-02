@@ -1,6 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Check } from 'lucide-angular';
+
+import {
+  UI_CARD,
+  UiAlertComponent,
+  UiButtonComponent,
+  UiCheckboxComponent,
+  UiFieldComponent,
+  UiInputComponent,
+  UiSelectComponent,
+  UiTextareaComponent,
+} from '../../ui';
 
 interface ProductOption {
   id: string;
@@ -26,7 +38,19 @@ export interface NewProduct {
 
 @Component({
   selector: 'app-products-creation',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    LucideAngularModule,
+    ...UI_CARD,
+    UiAlertComponent,
+    UiButtonComponent,
+    UiCheckboxComponent,
+    UiFieldComponent,
+    UiInputComponent,
+    UiSelectComponent,
+    UiTextareaComponent,
+  ],
   templateUrl: './products-creation.html',
   styleUrl: './products-creation.css',
 })
@@ -40,6 +64,7 @@ export class ProductsCreation implements OnInit {
   variantsText = '';
   errors: Partial<Record<keyof NewProduct, string>> = {};
   readonly originOptions = ['US', 'CO', 'EC'];
+  readonly icons = { save: Check };
 
   get isEditMode(): boolean {
     return this.productToEdit !== null;

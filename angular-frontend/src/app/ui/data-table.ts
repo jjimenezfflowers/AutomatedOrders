@@ -60,6 +60,12 @@ export interface UiDataTableColumn<T> {
   width: string;
   /** Value used for search, sorting, filtering, and as the default cell text. */
   accessor: (row: T) => string | number | null;
+  /**
+   * Extra text global search should match, when the displayed value is not what a
+   * user would type. A cell showing "3 product(s)" wants to be findable by the
+   * product names behind it, while sorting still uses the numeric accessor.
+   */
+  searchAccessor?: (row: T) => string;
   sortable?: boolean;
   /** Renders a select of this column's distinct values above the table. */
   filterable?: boolean;
@@ -395,7 +401,28 @@ export class UiDataTableComponent<T extends RowData> {
     // less surprising: first click ascending, second descending, third unsorted.
     sortDescFirst: false,
     enableSortingRemoval: true,
+    globalFilterFn: this.matchesSearch,
   }));
+
+  /*
+   * Global search runs over the whole row rather than one column at a time, so a
+   * column can display one thing and still be found by another: History shows
+   * "3 product(s)" but is searchable by the product ids behind that count.
+   *
+   * TanStack calls this once per globally-filterable column; the row is included
+   * if any call returns true, so ignoring columnId and testing the row once gives
+   * the same result.
+   */
+  private readonly matchesSearch = (row: { original: T }, _columnId: string, filterValue: unknown) => {
+    const term = String(filterValue ?? '').trim().toLowerCase();
+    if (!term) return true;
+
+    return this.columns().some((column) => {
+      const value = column.accessor(row.original);
+      const extra = column.searchAccessor?.(row.original) ?? '';
+      return `${value ?? ''} ${extra}`.toLowerCase().includes(term);
+    });
+  };
 
   protected readonly gridTemplate = computed(() =>
     this.columns()

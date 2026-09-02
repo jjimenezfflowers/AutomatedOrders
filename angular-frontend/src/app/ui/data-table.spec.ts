@@ -493,3 +493,126 @@ describe('UiDataTableComponent custom cells', () => {
     expect((cells[1].textContent ?? '').trim()).toBe('Roses');
   });
 });
+
+describe('UiDataTableComponent searchAccessor', () => {
+  // A column can display one thing and be searchable by another: History shows
+  // "3 product(s)" but must be findable by the product ids behind that count.
+  interface Order {
+    id: string;
+    products: string[];
+  }
+
+  const ORDERS: Order[] = [
+    { id: 'DEV-BB-1', products: ['floreana-white-spray-roses', 'eskimo-white-rose'] },
+    { id: 'DEV-BB-2', products: ['peach-sorbet-diy-flower-kit'] },
+    { id: 'DEV-BB-3', products: ['magnolia-greenery-garland', 'gunnii-eucalyptus-greens'] },
+  ];
+
+  const COLUMNS_WITH_SEARCH: UiDataTableColumn<Order>[] = [
+    { id: 'id', header: 'Order', width: '200px', accessor: (o) => o.id, sortable: true },
+    {
+      id: 'products',
+      header: 'Products',
+      width: '120px',
+      accessor: (o) => o.products.length,
+      searchAccessor: (o) => o.products.join(' '),
+      sortable: true,
+    },
+  ];
+
+  @Component({
+    standalone: true,
+    imports: [UiDataTableComponent],
+    template: `<ui-data-table [data]="data" [columns]="columns" testId="orders" />`,
+  })
+  class SearchHost {
+    data = ORDERS;
+    columns = COLUMNS_WITH_SEARCH;
+  }
+
+  let fixture: ComponentFixture<SearchHost>;
+
+  async function settle() {
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  function rows(): HTMLElement[] {
+    return Array.from(fixture.nativeElement.querySelectorAll('[data-testid="orders-row"]'));
+  }
+
+  async function search(term: string) {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector(
+      'input[data-testid="orders-search"]',
+    );
+    input.value = term;
+    input.dispatchEvent(new Event('input'));
+    await settle();
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchHost],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SearchHost);
+    await settle();
+  });
+
+  it('renders every row before searching', () => {
+    expect(rows().length).toBe(3);
+  });
+
+  it('finds a row by text that is never displayed', async () => {
+    await search('peach-sorbet');
+
+    expect(rows().length).toBe(1);
+    expect(rows()[0].textContent).toContain('DEV-BB-2');
+  });
+
+  it('is case-insensitive over the hidden text', async () => {
+    await search('EUCALYPTUS');
+
+    expect(rows().length).toBe(1);
+    expect(rows()[0].textContent).toContain('DEV-BB-3');
+  });
+
+  it('still matches the visible accessor value', async () => {
+    await search('DEV-BB-1');
+
+    expect(rows().length).toBe(1);
+  });
+
+  it('does not match rows whose hidden text differs', async () => {
+    await search('floreana');
+
+    expect(rows().length).toBe(1);
+    expect(rows()[0].textContent).toContain('DEV-BB-1');
+  });
+
+  it('shows the empty state when nothing matches', async () => {
+    await search('no-such-product');
+
+    expect(rows().length).toBe(0);
+    expect(fixture.nativeElement.querySelector('[data-testid="orders-empty"]')).not.toBeNull();
+  });
+
+  it('keeps the numeric accessor for sorting, not the search text', async () => {
+    const sort: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="orders-sort-products"]',
+    );
+    sort.click();
+    await settle();
+
+    // Read the products cell, not the whole row: the order id also contains digits.
+    const counts = rows().map(
+      (row) => row.querySelectorAll('[role="cell"]')[1]?.textContent?.trim(),
+    );
+
+    expect(counts).toEqual(['1', '2', '2']);
+  });
+});
+

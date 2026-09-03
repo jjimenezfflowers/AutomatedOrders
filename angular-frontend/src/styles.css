@@ -7,6 +7,22 @@
 @import "./styles/theme.css";
 
 @layer base {
+  /*
+   * Tailwind v4 defaults an un-coloured `border` utility to currentColor, so
+   * `class="border"` paints the text colour — near-black lines around every card
+   * and row. v3 defaulted to gray-200, which is why markup ported from the admin
+   * looked right there and wrong here. bb-remix carries the same reset
+   * (app/styles/root.css) pinned to gray-200; ours uses the semantic token so it
+   * also adapts in dark mode.
+   */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border);
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }

@@ -139,13 +139,27 @@ describe('HistoryComponent', () => {
   });
 
   describe('data table', () => {
-    /** Column order matches HistoryComponent.columns. */
-    const ORDER = 0;
-    const ENVIRONMENT = 1;
-    const DATE = 2;
-    const DELIVERY = 3;
-    const CUSTOMER = 4;
-    const PRODUCTS = 5;
+    /*
+     * Read off the component rather than written down, so inserting a column
+     * moves these instead of silently pointing every assertion one cell to the
+     * left — which is exactly what adding Confirmation and Total did.
+     */
+    const columnIndex = (id: string) => {
+      const index = new HistoryComponent(null as never).columns.findIndex(
+        (column) => column.id === id,
+      );
+      if (index < 0) throw new Error(`HistoryComponent has no column "${id}"`);
+      return index;
+    };
+
+    const ORDER = columnIndex('orderNumber');
+    const CONFIRMATION = columnIndex('confirmationNumber');
+    const ENVIRONMENT = columnIndex('environment');
+    const DATE = columnIndex('date');
+    const DELIVERY = columnIndex('delivery');
+    const CUSTOMER = columnIndex('customer');
+    const TOTAL = columnIndex('total');
+    const PRODUCTS = columnIndex('products');
 
     interface EntryOverrides {
       orderNumber?: string | null;
@@ -153,6 +167,8 @@ describe('HistoryComponent', () => {
       environment?: string;
       customer?: string;
       productCount?: number;
+      confirmationNumber?: string | null;
+      total?: string;
     }
 
     function entry(overrides: EntryOverrides = {}) {
@@ -161,15 +177,18 @@ describe('HistoryComponent', () => {
         date = '2026-09-02T19:55:34.826Z',
         environment = 'dev',
         customer = 'jose@fiftyflowers.com',
-        productCount = 1
+        productCount = 1,
+        confirmationNumber = null,
+        total = 'N/A'
       } = overrides;
 
       return {
         orderNumber,
+        confirmationNumber,
         date,
         environment,
         customer,
-        total: 'N/A',
+        total,
         products: Array.from({ length: productCount }, (_, index) => ({
           productId: `product-${index + 1}`,
           quantity: index + 1,
@@ -333,6 +352,49 @@ describe('HistoryComponent', () => {
         expect(
           fixture.nativeElement.querySelector('select[data-testid="history-filter-customer"]')
         ).toBeNull();
+      });
+    });
+
+    describe('what the Admin API adds', () => {
+      it('shows the confirmation number the store reported', async () => {
+        // Scraping never had access to this: it is Shopify's own reference, and
+        // the confirmation page does not expose it in a form worth reading.
+        await flushHistory([entry({ confirmationNumber: 'FUY0HXCMI' })]);
+
+        expect(cellText(0, CONFIRMATION)).toBe('FUY0HXCMI');
+      });
+
+      it('leaves the confirmation blank for entries written before the integration', async () => {
+        // Those orders are real; they just have no reference recorded, and an
+        // invented placeholder would read as data.
+        await flushHistory([entry({ confirmationNumber: null })]);
+
+        expect(cellText(0, CONFIRMATION)).toBe('');
+      });
+
+      it('shows a real total', async () => {
+        await flushHistory([entry({ total: '114.86 USD' })]);
+
+        expect(cellText(0, TOTAL)).toBe('114.86 USD');
+      });
+
+      it('shows a dash for the N/A every older entry carries', async () => {
+        // 479 of the 480 entries read 'N/A', because a total could never be read
+        // off a page whose browser had already closed.
+        await flushHistory([entry({ total: 'N/A' })]);
+
+        expect(cellText(0, TOTAL)).toBe('—');
+      });
+
+      it('finds an order by its confirmation number', async () => {
+        await flushHistory([
+          entry({ orderNumber: 'DEV-1', confirmationNumber: 'FUY0HXCMI' }),
+          entry({ orderNumber: 'DEV-2', confirmationNumber: 'AQ5ZZCVJH' })
+        ]);
+
+        await type('FUY0HXCMI');
+
+        expect(columnText(ORDER)).toEqual(['#DEV-1']);
       });
     });
 

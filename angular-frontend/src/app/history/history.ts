@@ -21,6 +21,9 @@ interface HistoryEntry {
   // Null when the confirmation page did not expose a usable order number; the
   // order was still placed, so the entry is kept rather than dropped.
   orderNumber: string | null;
+  // Shopify's own confirmation reference, which only entries captured through the
+  // Admin API carry — the confirmation page never exposed it to scraping.
+  confirmationNumber?: string | null;
   date: string;
   environment?: 'dev' | 'staging';
   products: HistoryProduct[];
@@ -134,6 +137,15 @@ export class HistoryComponent implements OnInit {
       sortable: true,
     },
     {
+      id: 'confirmationNumber',
+      header: 'Confirmation',
+      width: 'minmax(150px,1fr)',
+      // Blank for every entry written before the API integration; those orders
+      // are real, they just have no reference recorded.
+      accessor: (entry) => entry.confirmationNumber ?? '',
+      sortable: true,
+    },
+    {
       id: 'environment',
       header: 'Environment',
       width: '150px',
@@ -164,6 +176,17 @@ export class HistoryComponent implements OnInit {
       sortable: true,
       // Not filterable: every entry in the file carries the same address, so the
       // dropdown would offer exactly one option.
+    },
+    {
+      id: 'total',
+      header: 'Total',
+      width: '130px',
+      // Not sortable: 479 of the 480 entries read 'N/A', because a total could
+      // never be read off a page whose browser had already closed. Sorting a
+      // column that is almost entirely one placeholder invites reading meaning
+      // into the order it produces.
+      accessor: (entry) => (entry.total && entry.total !== 'N/A' ? entry.total : '—'),
+      align: 'right',
     },
     {
       id: 'products',

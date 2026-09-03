@@ -6,18 +6,37 @@ const {
   orderTokenFromUrl,
   normaliseCartToken,
   summarise,
+  adminUrlFor,
 } = require('../../lib/order-lookup');
 
-function order({ name, cartToken = null, token = 'a'.repeat(32), titles = ['Roses'], createdAt = '2026-09-03T02:16:09Z' } = {}) {
+function order({ name, id, cartToken = null, token = 'a'.repeat(32), titles = ['Roses'], createdAt = '2026-09-03T02:16:09Z' } = {}) {
   return {
-    id: `gid://shopify/Order/${name}`,
+    id: id ?? `gid://shopify/Order/${name}`,
     name,
     confirmationNumber: `CONF-${name}`,
     statusPageUrl: `https://shop.myshopify.com/637/orders/${token}`,
     createdAt,
     displayFinancialStatus: 'PAID',
+    displayFulfillmentStatus: 'UNFULFILLED',
+    email: 'jose@fiftyflowers.com',
+    tags: ['bb-16055'],
+    currentSubtotalPriceSet: { shopMoney: { amount: '108.0', currencyCode: 'USD' } },
+    totalShippingPriceSet: { shopMoney: { amount: '0.0', currencyCode: 'USD' } },
+    currentTotalTaxSet: { shopMoney: { amount: '6.86', currencyCode: 'USD' } },
+    currentTotalDiscountsSet: { shopMoney: { amount: '11.99', currencyCode: 'USD' } },
     totalPriceSet: { shopMoney: { amount: '205.79', currencyCode: 'USD' } },
-    lineItems: { nodes: titles.map((title) => ({ title, quantity: 1, variantTitle: '20 stems' })) },
+    shippingLine: { title: 'Free Express Shipping' },
+    shippingAddress: { city: 'Bristol', provinceCode: 'CT', countryCodeV2: 'US', zip: '06830' },
+    lineItems: {
+      nodes: titles.map((title) => ({
+        title,
+        quantity: 1,
+        variantTitle: '20 stems',
+        sku: 'FF-VAR-10197',
+        originalUnitPriceSet: { shopMoney: { amount: '119.99', currencyCode: 'USD' } },
+        image: { url: 'https://cdn.shopify.com/roses.webp', altText: null },
+      })),
+    },
     cartToken,
   };
 }
@@ -89,29 +108,88 @@ describe('normaliseCartToken', () => {
   });
 });
 
+describe('adminUrlFor', () => {
+  test('addresses the order by the numeric id Admin uses', () => {
+    assert.equal(
+      adminUrlFor('gid://shopify/Order/6103347593356', 'bloom-brain-dev'),
+      'https://admin.shopify.com/store/bloom-brain-dev/orders/6103347593356',
+    );
+  });
+
+  test('is null without a shop, rather than a link to the wrong store', () => {
+    assert.equal(adminUrlFor('gid://shopify/Order/1', null), null);
+    assert.equal(adminUrlFor('gid://shopify/Order/1', ''), null);
+  });
+
+  test('is null when the id carries no number to address', () => {
+    assert.equal(adminUrlFor(null, 'shop'), null);
+    assert.equal(adminUrlFor('gid://shopify/Order/', 'shop'), null);
+    assert.equal(adminUrlFor('not-a-gid', 'shop'), null);
+  });
+});
+
 describe('summarise', () => {
   test('flattens an order into what the history file records', () => {
-    assert.deepEqual(summarise(order({ name: 'DEV-BB-1' })), {
-      id: 'gid://shopify/Order/DEV-BB-1',
+    assert.deepEqual(summarise(order({ name: 'DEV-BB-1', id: 'gid://shopify/Order/99' }), 'bloom-brain-dev'), {
+      id: 'gid://shopify/Order/99',
       orderNumber: 'DEV-BB-1',
       confirmationNumber: 'CONF-DEV-BB-1',
       statusUrl: 'https://shop.myshopify.com/637/orders/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      adminUrl: 'https://admin.shopify.com/store/bloom-brain-dev/orders/99',
       createdAt: '2026-09-03T02:16:09Z',
       financialStatus: 'PAID',
+      fulfillmentStatus: 'UNFULFILLED',
+      email: 'jose@fiftyflowers.com',
+      tags: ['bb-16055'],
+      subtotal: '108.00 USD',
+      shipping: '0.00 USD',
+      shippingMethod: 'Free Express Shipping',
+      tax: '6.86 USD',
+      discounts: '11.99 USD',
       total: '205.79 USD',
-      products: [{ title: 'Roses', quantity: 1, variant: '20 stems' }],
+      destination: 'Bristol, CT, US',
+      products: [
+        {
+          title: 'Roses',
+          quantity: 1,
+          variant: '20 stems',
+          sku: 'FF-VAR-10197',
+          unitPrice: '119.99 USD',
+          image: 'https://cdn.shopify.com/roses.webp',
+        },
+      ],
     });
   });
 
+  test('reads money at two decimals, which is how a price reads', () => {
+    // Shopify returns "108.0" and "0.0"; at one decimal they do not read as money.
+    const flat = summarise(order({ name: 'X' }), 'shop');
+
+    assert.equal(flat.subtotal, '108.00 USD');
+    assert.equal(flat.shipping, '0.00 USD');
+  });
+
+  test('keeps the street out, recording only where the run shipped to', () => {
+    // This file is served openly by /api/order-history, so it carries the city and
+    // not the customer's door.
+    const flat = summarise(order({ name: 'X' }), 'shop');
+
+    assert.equal(flat.destination, 'Bristol, CT, US');
+    assert.ok(!JSON.stringify(flat).includes('06830'));
+  });
+
   test('is null for no order, so a caller cannot read fields off nothing', () => {
-    assert.equal(summarise(null), null);
+    assert.equal(summarise(null, 'shop'), null);
   });
 
   test('survives an order with no money or lines', () => {
-    const bare = summarise({ id: 'gid://1', name: 'X' });
+    const bare = summarise({ id: 'gid://1', name: 'X' }, 'shop');
 
     assert.equal(bare.total, null);
+    assert.equal(bare.subtotal, null);
+    assert.equal(bare.destination, null);
     assert.deepEqual(bare.products, []);
+    assert.deepEqual(bare.tags, []);
   });
 });
 

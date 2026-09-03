@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 const { spawn } = require('child_process');
+const store = require('./lib/store');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -78,181 +79,96 @@ app.get('/api/logs', (req, res) => {
   res.json({ logs: recentLogs, total: logs.length });
 });
 
-// Get products
-app.get('/api/products', async (req, res) => {
-  try {
-    const data = await fs.readFile('products.json', 'utf8');
-    addLog('info', 'Products retrieved successfully');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    addLog('error', `Failed to get products: ${error.message}`);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Save products
-app.post('/api/products', async (req, res) => {
-  const count = req.body.length;
-  addLog('info', `Saving ${count} products`);
-  try {
-    await fs.writeFile('products.json', JSON.stringify(req.body, null, 2));
-    addLog('info', 'Products saved successfully');
-    res.json({ success: true });
-  } catch (error) {
-    addLog('error', `Failed to save products: ${error.message}`);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get staging products
-app.get('/api/staging-products', async (req, res) => {
-  try {
-    const data = await fs.readFile('products-staging.json', 'utf8');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      res.json([]);
-    } else {
-      res.status(500).json({ error: error.message });
-    }
-  }
-});
-
-// Save staging products
-app.post('/api/staging-products', async (req, res) => {
-  try {
-    await fs.writeFile('products-staging.json', JSON.stringify(req.body, null, 2));
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get order config
-app.get('/api/order-config', async (req, res) => {
-  try {
-    const data = await fs.readFile('order-config.json', 'utf8');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Save order config
-app.post('/api/order-config', async (req, res) => {
-  try {
-    await fs.writeFile('order-config.json', JSON.stringify(req.body, null, 2));
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get staging config
-app.get('/api/staging-config', async (req, res) => {
-  try {
-    const data = await fs.readFile('staging-config.json', 'utf8');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      res.json({ stagingBaseUrl: '' });
-    } else {
-      res.status(500).json({ error: error.message });
-    }
-  }
-});
-
-// Save staging config
-app.post('/api/staging-config', async (req, res) => {
-  try {
-    await fs.writeFile('staging-config.json', JSON.stringify(req.body, null, 2));
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get staging order config
-app.get('/api/staging-order-config', async (req, res) => {
-  try {
-    const data = await fs.readFile('order-config-staging.json', 'utf8');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      res.json({ stagingBaseUrl: '', deliveryDate: '', orders: [] });
-    } else {
-      res.status(500).json({ error: error.message });
-    }
-  }
-});
-
-// Save staging order config
-app.post('/api/staging-order-config', async (req, res) => {
-  try {
-    await fs.writeFile('order-config-staging.json', JSON.stringify(req.body, null, 2));
-    // Also sync stagingBaseUrl to staging-config.json for backward compat
-    if (req.body.stagingBaseUrl !== undefined) {
-      await fs.writeFile('staging-config.json', JSON.stringify({ stagingBaseUrl: req.body.stagingBaseUrl }, null, 2));
-    }
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get order history
-app.get('/api/order-history', async (req, res) => {
-  try {
-    const data = await fs.readFile('order-history.json', 'utf8');
-    res.json(JSON.parse(data));
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      res.json([]);
-    } else {
-      res.status(500).json({ error: error.message });
-    }
-  }
-});
-
-// Run test
-/**
- * The most recent entry in the order history, or null.
+/*
+ * The data endpoints, backed by SQLite rather than JSON files.
  *
- * Read after a run rather than parsed out of the test's stdout: the file is what
- * the run actually recorded, and stdout is prose that changes whenever a log line
- * is reworded.
+ * Their shapes are unchanged, so the Angular app did not move with them. What
+ * changed is underneath: a save is one transaction rather than a whole-file
+ * rewrite, and a body that is not the right shape is refused instead of being
+ * written over the catalogue. A POST of {} used to leave products.json holding
+ * exactly that.
  */
-async function readLatestOrder() {
-  const data = await fs.readFile(path.join(__dirname, 'order-history.json'), 'utf8');
-  const history = JSON.parse(data);
 
-  return history.length ? history[history.length - 1] : null;
+/** Turns a store call into a response, with one place for the error handling. */
+function handle(label, work) {
+  return async (req, res) => {
+    try {
+      res.json(await work(req));
+    } catch (error) {
+      const status = error instanceof TypeError ? 400 : 500;
+      addLog('error', `${label} failed: ${error.message}`);
+      res.status(status).json({ error: error.message });
+    }
+  };
 }
 
+app.get('/api/products', handle('Get products', async () => {
+  const products = await store.getProducts('dev');
+  addLog('info', 'Products retrieved successfully');
+  return products;
+}));
+
+app.post('/api/products', handle('Save products', async (req) => {
+  const count = await store.saveProducts('dev', req.body);
+  addLog('info', `Saved ${count} products`);
+  return { success: true };
+}));
+
+app.get('/api/staging-products', handle('Get staging products', () =>
+  store.getProducts('staging'),
+));
+
+app.post('/api/staging-products', handle('Save staging products', async (req) => {
+  await store.saveProducts('staging', req.body);
+  return { success: true };
+}));
+
+app.get('/api/order-config', handle('Get order config', () => store.getOrderConfig('dev')));
+
+app.post('/api/order-config', handle('Save order config', async (req) => {
+  await store.saveOrderConfig('dev', req.body);
+  return { success: true };
+}));
+
+app.get('/api/staging-config', handle('Get staging config', async () => ({
+  stagingBaseUrl: (await store.getStagingBaseUrl()) ?? '',
+})));
+
+app.post('/api/staging-config', handle('Save staging config', async (req) => {
+  await store.setStagingBaseUrl(req.body?.stagingBaseUrl ?? '');
+  return { success: true };
+}));
+
+app.get('/api/staging-order-config', handle('Get staging order config', () =>
+  store.getOrderConfig('staging'),
+));
+
+app.post('/api/staging-order-config', handle('Save staging order config', async (req) => {
+  // The base URL used to be mirrored into a second file to keep the two in
+  // step. It is one row now, so there is nothing to keep in step.
+  await store.saveOrderConfig('staging', req.body);
+  return { success: true };
+}));
+
+app.get('/api/order-history', handle('Get order history', () => store.getOrderHistory()));
+
+// Run test
 app.post('/api/run-test', async (req, res) => {
   console.log('\n' + '='.repeat(60));
   console.log('🧪 INICIANDO TEST DE PLAYWRIGHT');
   console.log('='.repeat(60) + '\n');
   addLog('info', '🧪 Starting Playwright test', { staging: req.body?.staging || false });
 
-  // Resolve staging base URL if requested
+  /*
+   * Which store the run is for. It used to be named by handing the spec a file
+   * path, and the base URL lived in two files that had to be kept in step; both
+   * are one row now, so the run only needs to be told which environment it is.
+   */
+  let runEnvironment = 'dev';
   let stagingBaseUrl = '';
-  let stagingConfigFile = '';
-  if (req.body && req.body.staging) {
-    try {
-      const stagingOrderData = await fs.readFile('order-config-staging.json', 'utf8');
-      const stagingOrderConfig = JSON.parse(stagingOrderData);
-      stagingBaseUrl = stagingOrderConfig.stagingBaseUrl || '';
-      stagingConfigFile = 'order-config-staging.json';
-    } catch (e) {
-      // fallback to staging-config.json for URL only
-      try {
-        const stagingData = await fs.readFile('staging-config.json', 'utf8');
-        stagingBaseUrl = JSON.parse(stagingData).stagingBaseUrl || '';
-      } catch (e2) {
-        // ignore
-      }
-    }
+  if (req.body?.staging) {
+    runEnvironment = 'staging';
+    stagingBaseUrl = (await store.getStagingBaseUrl()) ?? '';
   }
 
   try {
@@ -279,7 +195,7 @@ app.post('/api/run-test', async (req, res) => {
         ...process.env,
         FORCE_COLOR: '0',
         ...(stagingBaseUrl ? { STAGING_BASE_URL: stagingBaseUrl } : {}),
-        ...(stagingConfigFile ? { STAGING_CONFIG: stagingConfigFile } : {})
+        RUN_ENVIRONMENT: runEnvironment
       }
     });
     
@@ -319,7 +235,13 @@ app.post('/api/run-test', async (req, res) => {
          * is this run's order. Returning it lets the page show what was actually
          * created instead of just "it worked".
          */
-        readLatestOrder()
+        /*
+         * The run records what it placed, so the newest row is this run's order.
+         * Read from the store rather than parsed out of the test's stdout, which
+         * is prose that changes whenever a log line is reworded.
+         */
+        store
+          .getLatestOrderRun()
           .then((order) => res.json({ success: true, output, order }))
           .catch(() => res.json({ success: true, output, order: null }));
       } else {

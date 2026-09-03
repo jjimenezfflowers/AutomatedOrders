@@ -7,6 +7,17 @@ const { devices } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
+/*
+ * Admin API credentials live in .env, which is gitignored. Node reads it natively,
+ * so no dependency is needed. Absent, runs still work — they fall back to reading
+ * the confirmation page for the order number.
+ */
+try {
+  process.loadEnvFile(path.join(__dirname, '.env'));
+} catch {
+  // No .env, or a Node without loadEnvFile. Either way the fallback covers it.
+}
+
 // Authentication state handling removed - not needed for this project
 
 const config = {

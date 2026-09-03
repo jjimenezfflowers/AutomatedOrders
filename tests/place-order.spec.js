@@ -1,5 +1,6 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("fs").promises;
+const { randomUUID } = require("crypto");
 const path = require("path");
 const {
   clickAddToCart,
@@ -8,8 +9,11 @@ const {
   selectVariantFromOrder,
   setQuantityFromOrder,
 } = require("./helpers/product-form");
-const { extractOrderNumber } = require("./helpers/order-number");
 const { readCheckoutError } = require("./helpers/checkout");
+const { readCartToken, stampCart } = require("./helpers/cart-token");
+const { captureOrder } = require("./helpers/order-capture");
+const { OrderLookup } = require("../lib/order-lookup");
+const { hasCredentials } = require("../lib/shopify");
 
 // When STAGING_BASE_URL is set, rewrite product URLs to point at the staging store.
 const STAGING_BASE_URL = process.env.STAGING_BASE_URL
@@ -64,6 +68,25 @@ test("Place order from config", async ({ page, context }) => {
   const customer = orderConfig.customerInfo;
   const payment = orderConfig.payment;
 
+  /*
+   * Noted before anything is ordered, so the order this run created can be told
+   * apart from ones already sitting in the store.
+   */
+  const runStartedAt = new Date();
+  const lookup = hasCredentials() ? new OrderLookup({ environment: ENVIRONMENT }) : null;
+  if (!lookup) {
+    console.log('ℹ️  Sin credenciales de Shopify: el numero de orden saldra de la pagina');
+  }
+
+  /* The cart's own token, which identifies the resulting order exactly. */
+  let cartToken = null;
+
+  /*
+   * An id of this run's own making, stamped on the cart and read back off the
+   * order. Unlike the cart token it depends on nothing Shopify might withdraw.
+   */
+  const correlationId = randomUUID();
+
   for (let i = 0; i < orderConfig.orders.length; i++) {
     const order = orderConfig.orders[i];
     const product = products.find((p) => p.id === order.productId);
@@ -73,6 +96,17 @@ test("Place order from config", async ({ page, context }) => {
     }
 
     await page.goto(resolveProductUrl(product.url));
+
+    /*
+     * Stamped before anything is added, and only once. /cart/update.js makes the
+     * theme tear down its cart sidebar, and the checkout button never comes back,
+     * so doing this after add-to-cart strands the run on the product page. The
+     * attribute survives the add either way, which is what makes the earlier
+     * moment the right one.
+     */
+    if (i === 0 && (await stampCart(page, correlationId))) {
+      console.log(`  ✅ Carrito marcado para esta corrida`);
+    }
     await page.waitForLoadState('domcontentloaded');
     
     // Wait a moment for page to settle after navigation
@@ -140,6 +174,11 @@ test("Place order from config", async ({ page, context }) => {
     // Wait for cart count to update (faster signal than waiting for full sidebar)
     await page.waitForSelector('#cart-sidebar-checkout, .halo-sidebar-close, a[data-close-cart-sidebar], .cart-count', { state: 'visible', timeout: 6000 }).catch(() => {});
     console.log(`\n🛒 Producto "${product.name}" agregado al carrito correctamente`);
+
+    // Read every time: the token belongs to the cart, so the last read covers
+    // every product the run added.
+    cartToken = (await readCartToken(page)) ?? cartToken;
+
     
     // Close sidebar cart if not the last product
     if (i < orderConfig.orders.length - 1) {
@@ -206,6 +245,14 @@ test("Place order from config", async ({ page, context }) => {
   await page.waitForTimeout(500);
 
   console.log('\n🚀 Paso 5: Enviando orden...');
+
+  /*
+   * Noted before the redirect: the checkout lives at /checkouts/cn/{cartToken}/,
+   * and that token is what the order is filed under. Once the browser moves to
+   * the order-status page it is gone.
+   */
+  const checkoutUrl = page.url();
+
   try {
     await page
       .locator('button[type="submit"]')
@@ -216,18 +263,18 @@ test("Place order from config", async ({ page, context }) => {
     console.log('⚠️  Could not click submit button, order may have been placed automatically');
   }
 
-  // Wait for confirmation page - wait for URL to change or specific element
+  /*
+   * Wait for the browser to leave the payment step, not for a selector. The
+   * selector list included h2:has-text("Order"), which the payment page's own
+   * "Order summary" heading satisfies immediately — so a real run read its order
+   * number off /checkouts/cn/…/payment, where there is none, and recorded an
+   * order it had placed as uncaptured.
+   */
   try {
-    await page.waitForTimeout(1000);
-    
-    try {
-      // Wait for either order number or thank you message
-      await page.waitForSelector('span.os-order-number, h2:has-text("Thank"), h2:has-text("Order"), .notice__text', { timeout: 30000 });
-    } catch (e) {
-      console.log('⚠️  Confirmation page selector not found, continuing anyway...');
-    }
+    await page.waitForURL(/\/thank[-_]?you|\/orders\//, { timeout: 60000 });
+    console.log(`  ✅ Confirmacion alcanzada`);
   } catch (e) {
-    console.log('⚠️  Browser may have closed, but order was likely placed');
+    console.log('⚠️  El checkout no llego a la pagina de confirmacion dentro del tiempo');
   }
 
   // readCheckoutError never throws, so this throw cannot be swallowed by a
@@ -245,94 +292,51 @@ test("Place order from config", async ({ page, context }) => {
   }
 
   try {
-    // Try to capture order number from confirmation page - multiple selectors
-    let orderNumber;
+    const order = await captureOrder({
+      page,
+      lookup,
+      correlationId,
+      cartToken,
+      checkoutUrl,
+      since: runStartedAt,
+      productTitles: orderConfig.orders
+        .map((entry) => products.find((p) => p.id === entry.productId)?.name)
+        .filter(Boolean),
+    });
 
-    // Try different selectors for order number
-    /*
-     * Most specific first. `span:has-text("#")` matches any span containing a hash,
-     * including one holding a hex colour, so it goes last — a real run captured
-     * "#303030" from it and stopped before reaching .notice__text, which is where
-     * "Your order number is: DEV-BB-…" actually lives.
-     */
-    const selectors = [
-      "span.os-order-number",
-      ".order-number",
-      "[data-order-number]",
-      ".notice__text",
-      'h2:has-text("Order")',
-      'span:has-text("#")',
-    ];
-
-    for (const selector of selectors) {
-      try {
-        const element = await page
-          .locator(selector)
-          .first()
-          .textContent({ timeout: 3000 });
-        // These selectors also match headings like "Order summary", so keep
-        // looking until one yields something shaped like an order number.
-        orderNumber = extractOrderNumber(element);
-        if (orderNumber) break;
-      } catch (e) {
-        continue;
-      }
-    }
-
-    if (!orderNumber) {
-      // Try to get text from the entire page and extract order number
-      try {
-        const pageText = await page.textContent("body");
-        orderNumber = extractOrderNumber(pageText);
-      } catch (e) {
-        console.log('⚠️  Could not read page content, browser may have closed');
-      }
-    }
-
-    if (!orderNumber) {
-      console.log("⚠️  Could not capture a valid order number; recording the order without one");
-
-      /*
-       * Two real runs placed orders the store accepted but exposed no number where
-       * these selectors look, and guessing at the markup from the outside is how
-       * "#303030" got stored in the first place.
-       *
-       * This prints only tokens that are SHAPED like an identifier, never page
-       * prose. The confirmation page carries the customer's address and email, and
-       * these logs land in the buffer served by /api/logs, which has no auth and
-       * listens on 0.0.0.0 — so a snippet of surrounding text would publish PII to
-       * anyone on the network. Identifier-shaped tokens answer the only question
-       * being asked: is a number on this page at all, and what does it look like?
-       */
-      try {
-        const pageText = (await page.textContent("body")) ?? "";
-        const candidates = [
-          ...new Set(
-            (pageText.match(/\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\b|#\s*\d{3,}\b/g) ?? [])
-              .map((token) => token.trim())
-              // Anything with an @ or a dot is contact data, not an identifier.
-              .filter((token) => !/[@.]/.test(token)),
-          ),
-        ].slice(0, 10);
-
-        console.log(
-          candidates.length
-            ? `🔎 Identifier-shaped tokens on the confirmation page: ${candidates.join(", ")}`
-            : "🔎 No identifier-shaped token found on the confirmation page at all",
-        );
-      } catch (e) {
-        console.log("⚠️  Could not read the confirmation page for diagnostics");
-      }
-    }
-
-    // Save to history
     const historyEntry = {
-      orderNumber: orderNumber || null,
+      orderNumber: order.orderNumber,
+      confirmationNumber: order.confirmationNumber,
+      orderId: order.id,
+      statusUrl: order.statusUrl,
+      adminUrl: order.adminUrl ?? null,
       date: new Date().toISOString(),
       environment: ENVIRONMENT,
+      // What the run asked for. Kept because it carries the per-product delivery
+      // dates, which the store does not report back.
       products: orderConfig.orders,
+      // What the store actually charged for, which is not always the same thing.
+      lineItems: order.products ?? [],
       customer: customer.email,
-      total: 'N/A' // Can't get total if browser closed
+      financialStatus: order.financialStatus ?? null,
+      fulfillmentStatus: order.fulfillmentStatus ?? null,
+      destination: order.destination ?? null,
+      shippingMethod: order.shippingMethod ?? null,
+      subtotal: order.subtotal ?? null,
+      shipping: order.shipping ?? null,
+      tax: order.tax ?? null,
+      discounts: order.discounts ?? null,
+      // Every entry ever written said 'N/A', because a browser that has closed
+      // cannot be asked for a total. The store can.
+      total: order.total ?? 'N/A',
+      tags: order.tags ?? [],
+      // How confidently the order was identified, so a weak match is never read
+      // as a strong one.
+      matchedBy: order.matchedBy ?? null,
+      correlationId,
+      // Where the number came from, so a scraped one is never mistaken for the
+      // store's own answer.
+      source: order.source,
     };
 
     let history = [];
@@ -346,7 +350,7 @@ test("Place order from config", async ({ page, context }) => {
     history.push(historyEntry);
     await fs.writeFile("order-history.json", JSON.stringify(history, null, 2));
 
-    console.log("✅ Order placed successfully! Order #:", orderNumber || "(not captured)");
+    console.log("✅ Order placed successfully! Order #:", order.orderNumber || "(not captured)");
   } catch (error) {
     console.log(
       "⚠️  Order may have been placed but could not capture order number:",

@@ -26,6 +26,47 @@
           }
         </ng-template>
 
+        <ng-template uiDataTableCell="status" let-entry>
+          @if (entry.financialStatus || entry.fulfillmentStatus) {
+            <div class="flex flex-wrap items-center gap-1.5">
+              @if (entry.financialStatus) {
+                <ui-badge [variant]="financialTone(entry)">
+                  {{ humanise(entry.financialStatus) }}
+                </ui-badge>
+              }
+              @if (entry.fulfillmentStatus) {
+                <ui-badge variant="secondary">{{ humanise(entry.fulfillmentStatus) }}</ui-badge>
+              }
+            </div>
+          } @else {
+            <span class="text-sm text-muted-foreground">—</span>
+          }
+        </ng-template>
+
+        <ng-template uiDataTableCell="total" let-entry let-value="value">
+          <!-- The breakdown is a hover away: a column per line would not fit. -->
+          <span class="cursor-help text-sm tabular-nums" [title]="totalBreakdown(entry)">
+            {{ value }}
+          </span>
+        </ng-template>
+
+        <ng-template uiDataTableCell="admin" let-entry>
+          @if (entry.adminUrl) {
+            <a
+              [href]="entry.adminUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              [attr.aria-label]="'Open order ' + (entry.orderNumber ?? '') + ' in Shopify Admin'"
+            >
+              <lucide-angular [img]="icons.external" class="size-3.5" aria-hidden="true" />
+              Open
+            </a>
+          } @else {
+            <span class="text-sm text-muted-foreground">—</span>
+          }
+        </ng-template>
+
         <ng-template uiDataTableCell="environment" let-entry let-label="value">
           <ui-badge [variant]="entry.environment === 'staging' ? 'warning' : 'success'">
             {{ label }}

@@ -10,7 +10,8 @@
     "test:product-form": "playwright test tests/product-form-helpers.spec.js --project=chromium",
     "test:mini-calla": "playwright test tests/mini-calla-product-options.spec.js --project=chromium",
     "test:peach-sorbet": "ORDER_CONFIG=order-config-peach-sorbet.json playwright test tests/place-order.spec.js --project=chromium",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:integration": "node --test tests/integration/"
   },
   "keywords": [],
   "author": "",

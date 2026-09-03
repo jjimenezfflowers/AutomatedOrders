@@ -139,13 +139,29 @@ describe('HistoryComponent', () => {
   });
 
   describe('data table', () => {
-    /** Column order matches HistoryComponent.columns. */
-    const ORDER = 0;
-    const ENVIRONMENT = 1;
-    const DATE = 2;
-    const DELIVERY = 3;
-    const CUSTOMER = 4;
-    const PRODUCTS = 5;
+    /*
+     * Read off the component rather than written down, so inserting a column
+     * moves these instead of silently pointing every assertion one cell to the
+     * left — which is exactly what adding Confirmation and Total did.
+     */
+    const columnIndex = (id: string) => {
+      const index = new HistoryComponent(null as never).columns.findIndex(
+        (column) => column.id === id,
+      );
+      if (index < 0) throw new Error(`HistoryComponent has no column "${id}"`);
+      return index;
+    };
+
+    const ORDER = columnIndex('orderNumber');
+    const CONFIRMATION = columnIndex('confirmationNumber');
+    const ENVIRONMENT = columnIndex('environment');
+    const DATE = columnIndex('date');
+    const DELIVERY = columnIndex('delivery');
+    const CUSTOMER = columnIndex('customer');
+    const TOTAL = columnIndex('total');
+    const STATUS = columnIndex('status');
+    const ADMIN = columnIndex('admin');
+    const PRODUCTS = columnIndex('products');
 
     interface EntryOverrides {
       orderNumber?: string | null;
@@ -153,6 +169,17 @@ describe('HistoryComponent', () => {
       environment?: string;
       customer?: string;
       productCount?: number;
+      confirmationNumber?: string | null;
+      total?: string;
+      adminUrl?: string | null;
+      financialStatus?: string | null;
+      fulfillmentStatus?: string | null;
+      lineItems?: { title: string; quantity: number; variant?: string; sku?: string; unitPrice?: string }[];
+      subtotal?: string | null;
+      tax?: string | null;
+      shipping?: string | null;
+      shippingMethod?: string | null;
+      destination?: string | null;
     }
 
     function entry(overrides: EntryOverrides = {}) {
@@ -161,15 +188,36 @@ describe('HistoryComponent', () => {
         date = '2026-09-02T19:55:34.826Z',
         environment = 'dev',
         customer = 'jose@fiftyflowers.com',
-        productCount = 1
+        productCount = 1,
+        confirmationNumber = null,
+        total = 'N/A',
+        adminUrl = null,
+        financialStatus = null,
+        fulfillmentStatus = null,
+        lineItems = undefined,
+        subtotal = null,
+        tax = null,
+        shipping = null,
+        shippingMethod = null,
+        destination = null
       } = overrides;
 
       return {
         orderNumber,
+        confirmationNumber,
         date,
         environment,
         customer,
-        total: 'N/A',
+        total,
+        adminUrl,
+        financialStatus,
+        fulfillmentStatus,
+        lineItems,
+        subtotal,
+        tax,
+        shipping,
+        shippingMethod,
+        destination,
         products: Array.from({ length: productCount }, (_, index) => ({
           productId: `product-${index + 1}`,
           quantity: index + 1,
@@ -336,6 +384,179 @@ describe('HistoryComponent', () => {
       });
     });
 
+    describe('what the Admin API adds', () => {
+      it('shows the confirmation number the store reported', async () => {
+        // Scraping never had access to this: it is Shopify's own reference, and
+        // the confirmation page does not expose it in a form worth reading.
+        await flushHistory([entry({ confirmationNumber: 'FUY0HXCMI' })]);
+
+        expect(cellText(0, CONFIRMATION)).toBe('FUY0HXCMI');
+      });
+
+      it('leaves the confirmation blank for entries written before the integration', async () => {
+        // Those orders are real; they just have no reference recorded, and an
+        // invented placeholder would read as data.
+        await flushHistory([entry({ confirmationNumber: null })]);
+
+        expect(cellText(0, CONFIRMATION)).toBe('');
+      });
+
+      it('shows a real total', async () => {
+        await flushHistory([entry({ total: '114.86 USD' })]);
+
+        expect(cellText(0, TOTAL)).toBe('114.86 USD');
+      });
+
+      it('shows a dash for the N/A every older entry carries', async () => {
+        // 479 of the 480 entries read 'N/A', because a total could never be read
+        // off a page whose browser had already closed.
+        await flushHistory([entry({ total: 'N/A' })]);
+
+        expect(cellText(0, TOTAL)).toBe('—');
+      });
+
+      it('finds an order by its confirmation number', async () => {
+        await flushHistory([
+          entry({ orderNumber: 'DEV-1', confirmationNumber: 'FUY0HXCMI' }),
+          entry({ orderNumber: 'DEV-2', confirmationNumber: 'AQ5ZZCVJH' })
+        ]);
+
+        await type('FUY0HXCMI');
+
+        expect(columnText(ORDER)).toEqual(['#DEV-1']);
+      });
+    });
+
+    describe('the link into Shopify Admin', () => {
+      const ADMIN_URL = 'https://admin.shopify.com/store/bloom-brain-dev/orders/6103339008140';
+
+      it('links the order to its page in Admin', async () => {
+        await flushHistory([entry({ orderNumber: 'DEV-BB-1', adminUrl: ADMIN_URL })]);
+
+        const link = rows()[0].querySelectorAll('[role="cell"]')[ADMIN].querySelector('a');
+
+        expect(link!.getAttribute('href')).toBe(ADMIN_URL);
+        expect(link!.getAttribute('target')).toBe('_blank');
+        // Without noopener the opened tab can reach back into this one.
+        expect(link!.getAttribute('rel')).toContain('noopener');
+      });
+
+      it('names the order in the link label, for anyone using a screen reader', async () => {
+        await flushHistory([entry({ orderNumber: 'DEV-BB-1', adminUrl: ADMIN_URL })]);
+
+        const link = rows()[0].querySelectorAll('[role="cell"]')[ADMIN].querySelector('a');
+
+        expect(link!.getAttribute('aria-label')).toContain('DEV-BB-1');
+      });
+
+      it('shows a dash for entries written before the integration', async () => {
+        // Those orders exist; this app simply has no id to address them by.
+        await flushHistory([entry({ adminUrl: null })]);
+
+        expect(cellText(0, ADMIN)).toBe('—');
+        expect(rows()[0].querySelectorAll('[role="cell"]')[ADMIN].querySelector('a')).toBeNull();
+      });
+    });
+
+    describe('order status', () => {
+      it('shows payment and fulfillment in words, not SCREAMING_CASE', async () => {
+        await flushHistory([
+          entry({ financialStatus: 'PARTIALLY_REFUNDED', fulfillmentStatus: 'UNFULFILLED' })
+        ]);
+
+        expect(cellText(0, STATUS)).toContain('Partially refunded');
+        expect(cellText(0, STATUS)).toContain('Unfulfilled');
+      });
+
+      it('shows a dash when the run recorded no status', async () => {
+        await flushHistory([entry({ financialStatus: null, fulfillmentStatus: null })]);
+
+        expect(cellText(0, STATUS)).toBe('—');
+      });
+
+      it('finds the runs the store has not fulfilled yet', async () => {
+        await flushHistory([
+          entry({ orderNumber: 'DEV-1', fulfillmentStatus: 'FULFILLED' }),
+          entry({ orderNumber: 'DEV-2', fulfillmentStatus: 'UNFULFILLED' })
+        ]);
+
+        await type('unfulfilled');
+
+        expect(columnText(ORDER)).toEqual(['#DEV-2']);
+      });
+    });
+
+    describe('the money breakdown', () => {
+      it('keeps the breakdown a hover away rather than dropping it', async () => {
+        // A column per line would push the table past the width it has.
+        await flushHistory([
+          entry({
+            total: '114.86 USD',
+            subtotal: '108.00 USD',
+            tax: '6.86 USD',
+            shipping: '0.00 USD',
+            shippingMethod: 'Free Express Shipping',
+            destination: 'Bristol, CT, US'
+          })
+        ]);
+
+        const cell = rows()[0].querySelectorAll('[role="cell"]')[TOTAL].querySelector('[title]');
+        const tooltip = cell!.getAttribute('title')!;
+
+        expect(tooltip).toContain('Subtotal: 108.00 USD');
+        expect(tooltip).toContain('Tax: 6.86 USD');
+        expect(tooltip).toContain('Free Express Shipping');
+        expect(tooltip).toContain('Ships to Bristol, CT, US');
+      });
+
+      it('says so plainly when a run recorded no breakdown', async () => {
+        const cell = await flushHistory([entry({ total: 'N/A' })]).then(() =>
+          rows()[0].querySelectorAll('[role="cell"]')[TOTAL].querySelector('[title]')
+        );
+
+        expect(cell!.getAttribute('title')).toContain('No breakdown recorded');
+      });
+    });
+
+    describe('the product tooltip', () => {
+      it('prefers what the store charged for over what the run asked for', async () => {
+        // The config only knows a slug; the store knows the name, the SKU and the
+        // price, which is what someone checking a run is after.
+        await flushHistory([
+          entry({
+            lineItems: [
+              {
+                title: 'Floreana White Spray Roses',
+                quantity: 2,
+                variant: '20 stems',
+                sku: 'FF-VAR-10197',
+                unitPrice: '119.99 USD'
+              }
+            ]
+          })
+        ]);
+
+        const tooltip = rows()[0]
+          .querySelectorAll('[role="cell"]')[PRODUCTS].querySelector('[title]')!
+          .getAttribute('title')!;
+
+        expect(tooltip).toContain('Floreana White Spray Roses × 2');
+        expect(tooltip).toContain('FF-VAR-10197');
+        expect(tooltip).toContain('119.99 USD');
+        expect(tooltip).not.toContain('product-1');
+      });
+
+      it('falls back to the requested products when the store reported none', async () => {
+        await flushHistory([entry({ productCount: 1, lineItems: undefined })]);
+
+        const tooltip = rows()[0]
+          .querySelectorAll('[role="cell"]')[PRODUCTS].querySelector('[title]')!
+          .getAttribute('title')!;
+
+        expect(tooltip).toContain('product-1');
+      });
+    });
+
     describe('sorting', () => {
       it('orders dates chronologically, not by their formatted text', async () => {
         /*
@@ -431,7 +652,7 @@ describe('HistoryComponent', () => {
           [PRODUCTS].querySelector('[title]') as HTMLElement;
 
         expect(cellText(0, PRODUCTS)).toBe('2 product(s)');
-        expect(tooltip.title).toBe('product-1 × 1 — 1 bunches\nproduct-2 × 2 — 2 bunches');
+        expect(tooltip.title).toBe('product-1 × 1 - 1 bunches\nproduct-2 × 2 - 2 bunches');
       });
     });
 

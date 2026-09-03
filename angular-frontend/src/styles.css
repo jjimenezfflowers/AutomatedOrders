@@ -6,6 +6,20 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
 
+/*
+ * The admin's card puts p-6 on the header and p-6 pt-0 on the content, which
+ * assumes a header is always present. Several cards here have none — their title
+ * lives in the page header instead — and the content was landing flush against
+ * the card's top edge. Content carries full padding now and drops its top padding
+ * only when a header actually precedes it.
+ *
+ * Deliberately unlayered: Tailwind v4 puts utilities in @layer utilities, and
+ * unlayered rules outrank layered ones, so this beats the p-6 without !important.
+ */
+ui-card-header + ui-card-content > div {
+  padding-top: 0;
+}
+
 @layer base {
   /*
    * Tailwind v4 defaults an un-coloured `border` utility to currentColor, so

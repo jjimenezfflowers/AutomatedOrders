@@ -1,7 +1,7 @@
 <ui-card>
-  <ui-card-content class="space-y-6">
+  <ui-card-content class="space-y-8">
     <section>
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Contact Information</h3>
+      <h3 class="mb-4 border-b border-border pb-2 text-sm font-semibold text-foreground">Contact Information</h3>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ui-field label="Email" controlId="customer-email">
           <ui-input
@@ -29,7 +29,7 @@
     </section>
 
     <section>
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Personal Information</h3>
+      <h3 class="mb-4 border-b border-border pb-2 text-sm font-semibold text-foreground">Personal Information</h3>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ui-field label="First Name" controlId="customer-first-name">
           <ui-input
@@ -55,7 +55,7 @@
     </section>
 
     <section>
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Shipping Address</h3>
+      <h3 class="mb-4 border-b border-border pb-2 text-sm font-semibold text-foreground">Shipping Address</h3>
 
       <div class="mb-3 flex flex-wrap gap-2">
         @for (preset of addressPresets; track preset.code) {
@@ -117,7 +117,7 @@
     </section>
 
     <section>
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Payment Information</h3>
+      <h3 class="mb-4 border-b border-border pb-2 text-sm font-semibold text-foreground">Payment Information</h3>
       <ui-alert variant="info" class="mb-3">
         Test card details for automated checkout runs. Never enter a real card here.
       </ui-alert>

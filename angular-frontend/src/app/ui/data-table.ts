@@ -207,7 +207,9 @@ const EMPTY_CLASS =
         }
       </div>
 
-      <div class="relative w-full overflow-x-auto">
+      <!-- text-sm here is what bb-remix gets from its <table>; without it the body
+           cells fall back to the browser's 16px while the headers stay smaller. -->
+      <div class="relative w-full overflow-x-auto text-sm">
         <div role="table" class="flex w-full flex-col" [attr.aria-rowcount]="totalRows() + 1">
           <div
             role="row"

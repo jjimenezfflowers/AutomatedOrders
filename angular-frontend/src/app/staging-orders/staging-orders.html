@@ -28,7 +28,7 @@
 
     <!-- Available Products -->
     <div class="mb-4">
-      <h3 class="text-lg font-medium text-foreground mb-2">Available Products</h3>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Available Products</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-muted rounded-lg">
         @for (product of products; track product.id) {
           <div class="flex items-center">
@@ -42,7 +42,7 @@
         }
       </div>
 
-      <h3 class="text-lg font-medium text-foreground mb-2">Selected Products</h3>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Selected Products</h3>
       <div class="space-y-3">
         @for (item of orderItems; track item.id) {
           <div class="p-3 bg-muted rounded">

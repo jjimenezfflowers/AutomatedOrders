@@ -3,12 +3,17 @@ export * from './variants';
 
 export * from './alert';
 export * from './badge';
+export * from './breadcrumb';
 export * from './button';
 export * from './card';
 export * from './checkbox';
+export * from './confirm-dialog';
 export * from './field';
 export * from './input';
 export * from './label';
+export * from './page';
 export * from './select';
 export * from './textarea';
 export * from './theme.service';
+export * from './data-table';
+export * from './date-picker';

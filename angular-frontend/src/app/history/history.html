@@ -1,13 +1,6 @@
 <ui-card>
-  <ui-card-header>
-    <ui-card-title>Order History</ui-card-title>
-    <ui-card-description>Orders placed by automated runs, newest last.</ui-card-description>
-  </ui-card-header>
-
   <ui-card-content>
-    @if (loading) {
-      <p class="text-sm text-muted-foreground">Loading history...</p>
-    } @else if (history.length === 0) {
+    @if (!loading() && history().length === 0) {
       <div class="flex flex-col items-center justify-center gap-3 px-6 py-8">
         <div class="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <lucide-angular [img]="icons.history" class="size-5" aria-hidden="true" />
@@ -18,46 +11,51 @@
         </span>
       </div>
     } @else {
-      <div class="space-y-3">
-        @for (entry of history; track (entry.orderNumber ?? '') + entry.date) {
-          <div class="rounded-lg border border-border p-4">
-            <div class="mb-2 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                @if (entry.orderNumber) {
-                  <span class="font-semibold text-foreground">#{{ entry.orderNumber }}</span>
-                } @else {
-                  <span class="font-semibold italic text-muted-foreground">order number not captured</span>
-                }
-                @if (entry.environment === 'staging') {
-                  <ui-badge variant="warning">Staging</ui-badge>
-                } @else {
-                  <ui-badge variant="success">DEV</ui-badge>
-                }
-              </div>
-              <span class="text-xs text-muted-foreground">{{ formatDate(entry.date) }}</span>
-            </div>
+      <ui-data-table
+        testId="history"
+        searchPlaceholder="Search order number or customer..."
+        [data]="history()"
+        [columns]="columns"
+        [loading]="loading()"
+      >
+        <ng-template uiDataTableCell="orderNumber" let-entry>
+          @if (entry.orderNumber) {
+            <span class="font-semibold text-foreground">#{{ entry.orderNumber }}</span>
+          } @else {
+            <span class="font-semibold italic text-muted-foreground">order number not captured</span>
+          }
+        </ng-template>
 
-            <div class="flex items-center gap-4 text-sm text-muted-foreground">
-              <span class="flex items-center gap-1.5">
-                <lucide-angular [img]="icons.customer" class="size-3.5" aria-hidden="true" />
-                {{ entry.customer }}
-              </span>
-              <span class="flex items-center gap-1.5">
-                <lucide-angular [img]="icons.product" class="size-3.5" aria-hidden="true" />
-                {{ entry.products.length }} product(s)
-              </span>
-            </div>
+        <ng-template uiDataTableCell="environment" let-entry let-label="value">
+          <ui-badge [variant]="entry.environment === 'staging' ? 'warning' : 'success'">
+            {{ label }}
+          </ui-badge>
+        </ng-template>
 
-            @if (entry.products.length) {
-              <ul class="mt-2 list-inside list-disc text-xs text-muted-foreground">
-                @for (p of entry.products; track p.productId) {
-                  <li>{{ p.productId }} × {{ p.quantity }}{{ p.variant ? ' — ' + p.variant : '' }}</li>
-                }
-              </ul>
+        <ng-template uiDataTableCell="date" let-entry>
+          <span class="text-sm text-muted-foreground">{{ formatDate(entry.date) }}</span>
+        </ng-template>
+
+        <ng-template uiDataTableCell="delivery" let-entry>
+          @if (deliverySummary(entry); as delivery) {
+            @if (delivery.first) {
+              <span class="text-sm">{{ delivery.first }}</span>
+              @if (delivery.extra) {
+                <span class="ml-1 text-xs text-muted-foreground">+{{ delivery.extra }} more</span>
+              }
+            } @else {
+              <span class="text-sm text-muted-foreground">—</span>
             }
-          </div>
-        }
-      </div>
+          }
+        </ng-template>
+
+        <ng-template uiDataTableCell="products" let-entry let-count="value">
+          <!-- The full list lives in the tooltip: a bulleted list does not fit a table row. -->
+          <span class="cursor-help text-sm text-muted-foreground" [title]="productSummary(entry)">
+            {{ count }} product(s)
+          </span>
+        </ng-template>
+      </ui-data-table>
     }
   </ui-card-content>
 </ui-card>

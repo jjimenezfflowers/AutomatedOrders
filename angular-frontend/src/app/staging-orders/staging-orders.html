@@ -1,38 +1,45 @@
 <ui-card class="mb-6">
   <ui-card-header>
-    <ui-card-title class="flex items-center gap-2 text-2xl">
-      <lucide-angular [img]="icons.staging" class="size-4 fill-warning text-warning" aria-hidden="true" />
-      Staging — Orders
-    </ui-card-title>
     <ui-card-description>Configure and place orders against the staging store. Customer info &amp; payment are shared from the Shared → Customer Info tab.</ui-card-description>
   </ui-card-header>
 
   <ui-card-content>
     <!-- Staging URL -->
     <div class="mb-5 flex flex-col gap-1 rounded-lg border border-warning/30 bg-warning/10 p-4">
-      <ui-label for="staging-base-url" class="text-warning">Staging Base URL</ui-label>
-      <ui-input
-        type="url"
-        inputId="staging-base-url"
-        [(ngModel)]="stagingBaseUrl"
-        placeholder="https://staging-store.myshopify.com" />
+      <!-- text-warning sits on the wrapper so the label inherits it, and ui-field's own
+           destructive class still wins on the label when the field is invalid. -->
+      <ui-field
+        label="Staging Base URL"
+        controlId="staging-base-url"
+        class="text-warning"
+        [error]="errors['stagingBaseUrl']">
+        <ui-input
+          type="url"
+          inputId="staging-base-url"
+          [(ngModel)]="stagingBaseUrl"
+          [invalid]="!!errors['stagingBaseUrl']"
+          (focusout)="onFieldBlur('stagingBaseUrl')"
+          (input)="onFieldInput('stagingBaseUrl')"
+          testId="staging-base-url"
+          placeholder="https://staging-store.myshopify.com" />
+      </ui-field>
       <p class="mt-1 text-xs text-warning">Product URLs will have their domain replaced with this value at test run time.</p>
     </div>
 
     <!-- Delivery Date -->
     <div class="mb-4">
       <ui-field label="Delivery Date" controlId="staging-delivery-date">
-        <ui-input
-          type="date"
+        <ui-date-picker
           inputId="staging-delivery-date"
+          name="stagingDeliveryDate"
           [(ngModel)]="deliveryDate"
-          title="Select delivery date" />
+          testId="staging-delivery-date" />
       </ui-field>
     </div>
 
     <!-- Available Products -->
     <div class="mb-4">
-      <h3 class="text-lg font-medium text-foreground mb-2">Available Products</h3>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Available Products</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-muted rounded-lg">
         @for (product of products; track product.id) {
           <div class="flex items-center">
@@ -46,7 +53,7 @@
         }
       </div>
 
-      <h3 class="text-lg font-medium text-foreground mb-2">Selected Products</h3>
+      <h3 class="mb-3 text-sm font-semibold text-foreground">Selected Products</h3>
       <div class="space-y-3">
         @for (item of orderItems; track item.id) {
           <div class="p-3 bg-muted rounded">
@@ -100,13 +107,20 @@
             }
 
             <div class="mt-2 w-24">
-              <ui-field label="Quantity" [controlId]="'staging-quantity-' + item.id">
+              <ui-field
+                label="Quantity"
+                [controlId]="'staging-quantity-' + item.id"
+                [error]="errors[quantityField(item.id)]">
                 <ui-input
                   type="number"
                   [inputId]="'staging-quantity-' + item.id"
                   [(ngModel)]="item.quantity"
+                  [invalid]="!!errors[quantityField(item.id)]"
+                  (focusout)="onFieldBlur(quantityField(item.id))"
+                  (input)="onFieldInput(quantityField(item.id))"
                   min="1"
-                  placeholder="1" />
+                  placeholder="1"
+                  [testId]="'staging-quantity-' + item.id" />
               </ui-field>
             </div>
           </div>

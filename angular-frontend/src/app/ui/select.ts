@@ -31,12 +31,17 @@ export interface UiSelectOption {
  *  - the trigger's `outline-none` is omitted, for the same reason button.ts and
  *    input.ts omit theirs: it removes the focus ring without replacing it, and it
  *    would beat the global :focus-visible rule in styles.css.
+ * The admin's trigger is a Base UI button, which sizes to its content; ours is a
+ * native <select>, and setting py-2 alongside a fixed h-8 left 16px of box for
+ * 14px text, clipping descenders. The height carries the sizing and the browser
+ * centres the text, so the vertical padding goes.
+ *
  *  - height comes from `data-[size=...]` (as upstream), so the size input is
  *    rendered as a data attribute rather than a swapped class.
  */
 export const selectVariants = variants(
   'flex w-full items-center justify-between gap-1.5 rounded-md border border-input bg-transparent ' +
-    'py-2 pr-2 pl-2.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] ' +
+    'py-0 pr-2 pl-2.5 text-sm leading-none whitespace-nowrap shadow-xs transition-[color,box-shadow] ' +
     'disabled:cursor-not-allowed disabled:opacity-50 ' +
     'aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 ' +
     'data-placeholder:text-muted-foreground data-[size=default]:h-9 data-[size=sm]:h-8',

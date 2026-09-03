@@ -6,7 +6,37 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
 
+/*
+ * The admin's card puts p-6 on the header and p-6 pt-0 on the content, which
+ * assumes a header is always present. Several cards here have none — their title
+ * lives in the page header instead — and the content was landing flush against
+ * the card's top edge. Content carries full padding now and drops its top padding
+ * only when a header actually precedes it.
+ *
+ * Deliberately unlayered: Tailwind v4 puts utilities in @layer utilities, and
+ * unlayered rules outrank layered ones, so this beats the p-6 without !important.
+ */
+ui-card-header + ui-card-content > div {
+  padding-top: 0;
+}
+
 @layer base {
+  /*
+   * Tailwind v4 defaults an un-coloured `border` utility to currentColor, so
+   * `class="border"` paints the text colour — near-black lines around every card
+   * and row. v3 defaulted to gray-200, which is why markup ported from the admin
+   * looked right there and wrong here. bb-remix carries the same reset
+   * (app/styles/root.css) pinned to gray-200; ours uses the semantic token so it
+   * also adapts in dark mode.
+   */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border);
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }

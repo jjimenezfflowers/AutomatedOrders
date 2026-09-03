@@ -310,7 +310,9 @@ describe('OrdersComponent', () => {
       component.deliveryDate = '';
       component.runTest();
       httpMock.expectNone(r => r.method === 'POST');
-      expect(window.alert).toHaveBeenCalledWith('Please select a delivery date');
+      // A missing delivery date is a field error now, shown next to the control,
+      // rather than an alert that says nothing about where the problem is.
+      expect(component.errors['deliveryDate']).toBe('Delivery date is required.');
       expect(component.isPlacingOrder).toBeFalse();
     });
 
@@ -343,19 +345,21 @@ describe('OrdersComponent', () => {
       expect(window.alert).not.toHaveBeenCalled();
     });
 
-    it('disables both Place Order buttons while a run is in flight', () => {
+    it('disables the Place Order button while a run is in flight', () => {
       completeInit();
 
+      // The second Place Order button now lives in the page header; see
+      // shell/pages/orders-page.spec.ts for that one.
       const buttons = (): HTMLButtonElement[] =>
         Array.from(fixture.nativeElement.querySelectorAll('button[data-testid="place-order"]'));
 
-      expect(buttons().length).toBe(2);
+      expect(buttons().length).toBe(1);
       expect(buttons().every(b => b.disabled)).toBeFalse();
 
       component.runTest();
       detect();
 
-      expect(buttons().length).toBe(2);
+      expect(buttons().length).toBe(1);
       expect(buttons().every(b => b.disabled)).toBeTrue();
       // ui-button keeps the label static and signals the in-flight run with a
       // spinner plus aria-busy, instead of swapping the text to 'Placing Order...'.
@@ -423,14 +427,14 @@ describe('OrdersComponent', () => {
       input.dispatchEvent(new Event('input'));
     }
 
-    it('renders both Place Order buttons through ui-button, enabled while idle', () => {
+    it('renders the Place Order button through ui-button, enabled while idle', () => {
       completeInit();
 
       const buttons: HTMLButtonElement[] = Array.from(
         fixture.nativeElement.querySelectorAll('ui-button button[data-testid="place-order"]')
       );
 
-      expect(buttons.length).toBe(2);
+      expect(buttons.length).toBe(1);
       expect(buttons.every(b => b.disabled)).toBeFalse();
       expect(buttons.every(b => b.getAttribute('aria-busy') === null)).toBeTrue();
     });
@@ -439,41 +443,52 @@ describe('OrdersComponent', () => {
       completeInit();
 
       const all: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+      // ui-date-picker owns its trigger and day cells; they are kit markup too.
       const owned: HTMLButtonElement[] = Array.from(
-        fixture.nativeElement.querySelectorAll('ui-button button')
+        fixture.nativeElement.querySelectorAll('ui-button button, ui-date-picker button')
       );
 
       expect(all.length).toBeGreaterThan(0);
       expect(owned.length).toBe(all.length);
-      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(2);
+      // One Save Order remains in the card footer; the other moved to the page header.
+      expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(1);
     });
 
-    it('round-trips the main delivery date through ui-input', async () => {
+    it('round-trips the main delivery date through ui-date-picker', async () => {
       completeInit();
       await fixture.whenStable();
       detect();
 
-      const input = query<HTMLInputElement>('ui-input input#order-delivery-date');
-      expect(input.type).toBe('date');
-      expect(input.value).toBe('2026-01-10');
+      // Delivery dates render through ui-date-picker now, not a native date input:
+      // the trigger shows the formatted date and picking a day goes through the grid.
+      const trigger = query<HTMLButtonElement>('button[data-testid="order-delivery-date"]');
+      expect(trigger.textContent).toContain('Jan 10, 2026');
 
-      type(input, '2026-06-06');
+      trigger.click();
+      detect();
 
-      expect(component.deliveryDate).toBe('2026-06-06');
+      const day = query<HTMLButtonElement>('[data-testid="order-delivery-date-popover"] [data-day="2026-01-06"]');
+      day.click();
+      detect();
+
+      expect(component.deliveryDate).toBe('2026-01-06');
     });
 
-    it('round-trips a per-product delivery date through ui-input', async () => {
+    it('round-trips a per-product delivery date through ui-date-picker', async () => {
       completeInit();
       await fixture.whenStable();
       detect();
 
-      const input = query<HTMLInputElement>('ui-input input#delivery-date-roses');
-      expect(input.type).toBe('date');
-      expect(input.value).toBe('2026-01-10');
+      const trigger = query<HTMLButtonElement>('button[data-testid="delivery-date-roses"]');
+      expect(trigger.textContent).toContain('Jan 10, 2026');
 
-      type(input, '2026-07-07');
+      trigger.click();
+      detect();
 
-      expect(component.orderItems[0].deliveryDate).toBe('2026-07-07');
+      query<HTMLButtonElement>('[data-testid="delivery-date-roses-popover"] [data-day="2026-01-07"]').click();
+      detect();
+
+      expect(component.orderItems[0].deliveryDate).toBe('2026-01-07');
     });
 
     it('round-trips a per-product quantity through ui-input', async () => {
@@ -514,6 +529,204 @@ describe('OrdersComponent', () => {
       // primitives' own disabled treatment; only unprefixed palette classes are
       // migration leftovers.
       expect(html).not.toMatch(/(?:^|[\s"])(?:bg|text|border)-(?:gray|slate)-\d/);
+    });
+  });
+
+  describe('the available-products picker', () => {
+    function detectSync() {
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+    }
+
+    function options(): string[] {
+      return Array.from(
+        fixture.nativeElement.querySelectorAll('ui-checkbox input')
+      ).map((input: any) => input.getAttribute('id'));
+    }
+
+    async function search(term: string) {
+      const input: HTMLInputElement = fixture.nativeElement.querySelector(
+        'input[data-testid="product-search"]'
+      );
+      input.value = term;
+      input.dispatchEvent(new Event('input'));
+      detectSync();
+      await fixture.whenStable();
+      detectSync();
+    }
+
+    // 24 products in a checkbox grid is more than anyone scans, and the full list
+    // ran past the delivery date, so the field below it was off-screen.
+    it('lists every product before searching', () => {
+      completeInit();
+
+      expect(options().length).toBe(component.products.length);
+    });
+
+    it('narrows the list by name', async () => {
+      completeInit();
+
+      await search(component.products[0].name.slice(0, 6));
+
+      expect(options().length).toBeLessThan(component.products.length);
+      expect(options().length).toBeGreaterThan(0);
+    });
+
+    it('matches on the handle as well as the name', async () => {
+      completeInit();
+
+      await search(component.products[0].id);
+
+      expect(options()).toContain('product-' + component.products[0].id);
+    });
+
+    it('is case-insensitive', async () => {
+      completeInit();
+      const term = component.products[0].name.slice(0, 6);
+
+      await search(term.toUpperCase());
+      const upper = options().length;
+      await search(term.toLowerCase());
+
+      expect(options().length).toBe(upper);
+    });
+
+    it('says so when nothing matches, rather than showing an empty box', async () => {
+      completeInit();
+
+      await search('no-such-product-anywhere');
+
+      expect(options().length).toBe(0);
+      expect(fixture.nativeElement.querySelector('[data-testid="no-products"]')).not.toBeNull();
+    });
+
+    it('counts the selection, so it is visible without scanning the grid', () => {
+      completeInit();
+      // The saved config arrives with a product ticked; start from nothing.
+      component.clearSelection();
+      detectSync();
+
+      expect(fixture.nativeElement.querySelector('[data-testid="selected-count"]')).toBeNull();
+
+      component.selectedProducts[component.products[0].id] = true;
+      component.selectedProducts[component.products[1].id] = true;
+      detectSync();
+
+      expect(component.selectedCount).toBe(2);
+      expect(
+        fixture.nativeElement.querySelector('[data-testid="selected-count"]').textContent
+      ).toContain('2 selected');
+    });
+
+    it('clears the whole selection in one action', () => {
+      completeInit();
+      component.selectedProducts[component.products[0].id] = true;
+      component.updateOrderItems();
+      detectSync();
+
+      component.clearSelection();
+      detectSync();
+
+      expect(component.selectedCount).toBe(0);
+      expect(component.orderItems.length).toBe(0);
+    });
+
+    it('a filtered-out product stays selected, so searching never drops a choice', async () => {
+      completeInit();
+      component.clearSelection();
+      const chosen = component.products[0];
+      component.selectedProducts[chosen.id] = true;
+      component.updateOrderItems();
+      detectSync();
+
+      await search('no-such-product-anywhere');
+
+      expect(component.selectedCount).toBe(1);
+      expect(component.orderItems.length).toBe(1);
+    });
+  });
+
+  describe('the random delivery date', () => {
+    /*
+     * Measured on three products on 2026-09-02: the storefront's earliest offered
+     * date was 8 days out, and Sundays are blocked. The old range started at 7, so
+     * one pick in four produced a date the calendar rejects — and the run failed at
+     * the date step rather than at the button that chose it.
+     */
+    it('never lands inside the storefront lead time', () => {
+      completeInit();
+      const today = new Date();
+      const earliest = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8);
+
+      for (let i = 0; i < 200; i++) {
+        component.generateRandomDate();
+        const [y, m, d] = component.deliveryDate.split('-').map(Number);
+
+        expect(new Date(y, m - 1, d).getTime())
+          .withContext(component.deliveryDate)
+          .toBeGreaterThanOrEqual(earliest.getTime());
+      }
+    });
+
+    it('never lands on a Sunday', () => {
+      completeInit();
+      for (let i = 0; i < 200; i++) {
+        component.generateRandomDate();
+        const [y, m, d] = component.deliveryDate.split('-').map(Number);
+
+        expect(new Date(y, m - 1, d).getDay()).withContext(component.deliveryDate).not.toBe(0);
+      }
+    });
+
+    it('emits an ISO date, which is what the picker and the spec both read', () => {
+      completeInit();
+      component.generateRandomDate();
+
+      expect(component.deliveryDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('varies, so repeated runs do not all book the same day', () => {
+      completeInit();
+      const seen = new Set<string>();
+      for (let i = 0; i < 60; i++) {
+        component.generateRandomDate();
+        seen.add(component.deliveryDate);
+      }
+
+      expect(seen.size).toBeGreaterThan(1);
+    });
+
+    it('applies the new date to every selected product', async () => {
+      completeInit();
+      await fixture.whenStable();
+
+      component.randomDateAndApply();
+
+      const applied = component.orderItems.map(item => item.deliveryDate);
+      expect(applied.length).toBeGreaterThan(0);
+      expect(new Set(applied)).toEqual(new Set([component.deliveryDate]));
+    });
+
+    it('applyDateToAll copies the main date onto every product', async () => {
+      completeInit();
+      await fixture.whenStable();
+      component.deliveryDate = '2026-09-16';
+
+      component.applyDateToAll();
+
+      expect(component.orderItems.every(i => i.deliveryDate === '2026-09-16')).toBeTrue();
+    });
+
+    it('random after applyDateToAll replaces the applied date everywhere', async () => {
+      completeInit();
+      await fixture.whenStable();
+      component.deliveryDate = '2026-09-16';
+      component.applyDateToAll();
+
+      component.randomDateAndApply();
+
+      expect(component.orderItems.every(i => i.deliveryDate === component.deliveryDate)).toBeTrue();
+      expect(component.orderItems.every(i => i.deliveryDate === '2026-09-16')).toBeFalse();
     });
   });
 });

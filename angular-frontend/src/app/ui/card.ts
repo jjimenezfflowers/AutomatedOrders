@@ -20,7 +20,7 @@ export const cardClassName = 'rounded-xl border bg-card text-card-foreground sha
 export const cardHeaderClassName = 'flex flex-col space-y-1.5 p-6';
 export const cardTitleClassName = 'leading-none font-semibold tracking-tight';
 export const cardDescriptionClassName = 'text-sm text-muted-foreground';
-export const cardContentClassName = 'p-6 pt-0';
+export const cardContentClassName = 'p-6';
 export const cardFooterClassName = 'flex items-center p-6 pt-0';
 
 @Component({

@@ -82,6 +82,13 @@ export const buttonVariants = variants(
       [disabled]="disabled || loading"
       [attr.aria-busy]="loading ? 'true' : null"
       [attr.aria-invalid]="invalid ? 'true' : null"
+      [attr.aria-label]="ariaLabel"
+      [attr.aria-expanded]="ariaExpanded"
+      [attr.aria-haspopup]="ariaHasPopup"
+      [attr.aria-selected]="ariaSelected"
+      [attr.aria-current]="ariaCurrent"
+      [attr.role]="role"
+      [attr.title]="title"
       [attr.data-testid]="testId"
     >
       @if (loading) {
@@ -99,6 +106,18 @@ export class UiButtonComponent {
   @Input({ transform: booleanAttribute }) loading = false;
   @Input({ transform: booleanAttribute }) invalid = false;
   @Input() testId?: string;
+  /*
+   * ARIA passthroughs. The host element is <ui-button>, so an attribute written
+   * there would land on the wrapper rather than the button assistive tech reads;
+   * these forward onto the real control. Only the ones this app needs.
+   */
+  @Input() ariaLabel?: string;
+  @Input() ariaExpanded?: boolean | null;
+  @Input() ariaHasPopup?: string | null;
+  @Input() ariaSelected?: boolean | null;
+  @Input() ariaCurrent?: string | null;
+  @Input() role?: string;
+  @Input() title?: string;
   /** Extra utilities merged after the variant classes, for layout only. */
   @Input() class = '';
 

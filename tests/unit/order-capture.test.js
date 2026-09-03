@@ -27,6 +27,9 @@ function fakePage({ selectors = {}, body = '', url = 'https://shop.myshopify.com
 
 const silent = () => {};
 
+/** captureOrder with the waiting taken out, for the cases that are not about it. */
+const now = { timeoutMs: 0, sleep: async () => {}, log: silent };
+
 describe('readOrderNumberFromPage', () => {
   test('reads the number out of the notice text', async () => {
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-50F2327' } });
@@ -111,7 +114,7 @@ describe('captureOrder', () => {
     const lookup = { findRunOrder: async () => apiOrder };
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: WRONG-1' } });
 
-    const captured = await captureOrder({ page, lookup, log: silent });
+    const captured = await captureOrder({ page, lookup, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-50F5472');
     assert.equal(captured.confirmationNumber, 'JLIF0508C');
@@ -130,10 +133,11 @@ describe('captureOrder', () => {
       cartToken: 'hWNGO8?key=x',
       since,
       productTitles: ['Roses'],
-      log: silent,
+      ...now,
     });
 
-    assert.equal(received.cartToken, 'hWNGO8?key=x');
+    // Normalised on the way through, so the lookup never sees the read key.
+    assert.equal(received.cartToken, 'hWNGO8');
     assert.equal(received.since, since);
     assert.deepEqual(received.productTitles, ['Roses']);
     assert.equal(received.statusUrl, 'https://shop.myshopify.com/637/orders/abc');
@@ -145,7 +149,7 @@ describe('captureOrder', () => {
     const lookup = { findRunOrder: async () => { throw new Error('401'); } };
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-8' } });
 
-    const captured = await captureOrder({ page, lookup, log: silent });
+    const captured = await captureOrder({ page, lookup, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-8');
     assert.equal(captured.source, 'page');
@@ -157,7 +161,7 @@ describe('captureOrder', () => {
     const lookup = { findRunOrder: async () => ({ id: 'gid://1', orderNumber: null }) };
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-5' } });
 
-    const captured = await captureOrder({ page, lookup, log: silent });
+    const captured = await captureOrder({ page, lookup, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-5');
     assert.equal(captured.source, 'page');
@@ -167,20 +171,20 @@ describe('captureOrder', () => {
     const lookup = { findRunOrder: async () => null };
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-8' } });
 
-    assert.equal((await captureOrder({ page, lookup, log: silent })).source, 'page');
+    assert.equal((await captureOrder({ page, lookup, ...now })).source, 'page');
   });
 
   test('reads the page when no lookup is configured at all', async () => {
     const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-3' } });
 
-    const captured = await captureOrder({ page, log: silent });
+    const captured = await captureOrder({ page, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-3');
     assert.equal(captured.source, 'page');
   });
 
   test('records a run it could not identify without failing it', async () => {
-    const captured = await captureOrder({ page: fakePage({ body: 'Thank you!' }), log: silent });
+    const captured = await captureOrder({ page: fakePage({ body: 'Thank you!' }), ...now });
 
     assert.equal(captured.orderNumber, null);
     assert.equal(captured.source, 'page');
@@ -191,11 +195,132 @@ describe('captureOrder', () => {
     const captured = await captureOrder({
       page: fakePage({}),
       lookup: { findRunOrder: async () => apiOrder },
-      log: silent,
+      ...now,
     });
 
     assert.equal(captured.matchedBy, 'cartToken');
     assert.equal(captured.source, 'api');
+  });
+
+  describe('waiting for the store to catch up', () => {
+    test('retries until the order appears', async () => {
+      // Shopify creates the order after the redirect, so asking once races it: a
+      // real run asked 5s early, found nothing, and recorded an order it had
+      // genuinely placed as uncaptured.
+      let calls = 0;
+      const lookup = {
+        findRunOrder: async () => (++calls < 3 ? null : apiOrder),
+      };
+
+      const captured = await captureOrder({
+        page: fakePage({}),
+        lookup,
+        timeoutMs: 10_000,
+        intervalMs: 1,
+        sleep: async () => {},
+        log: silent,
+      });
+
+      assert.equal(captured.orderNumber, 'DEV-BB-50F5472');
+      assert.equal(captured.source, 'api');
+      assert.equal(calls, 3);
+    });
+
+    test('does not settle for the most recent order while there is time left', async () => {
+      // During the window before the run's own order appears, the most recent
+      // order in the store is somebody else's.
+      let calls = 0;
+      const lookup = {
+        findRunOrder: async () => {
+          calls += 1;
+          return calls < 3
+            ? { orderNumber: 'DEV-BB-SOMEONE-ELSE', matchedBy: 'mostRecent' }
+            : apiOrder;
+        },
+      };
+
+      const captured = await captureOrder({
+        page: fakePage({}),
+        lookup,
+        timeoutMs: 10_000,
+        intervalMs: 1,
+        sleep: async () => {},
+        log: silent,
+      });
+
+      assert.equal(captured.orderNumber, 'DEV-BB-50F5472');
+      assert.equal(captured.matchedBy, 'cartToken');
+    });
+
+    test('takes the most recent order once the deadline passes', async () => {
+      // Weak, but better than nothing, and matchedBy records that it is weak.
+      const lookup = {
+        findRunOrder: async () => ({ orderNumber: 'DEV-BB-LAST', matchedBy: 'mostRecent' }),
+      };
+
+      const captured = await captureOrder({ page: fakePage({}), lookup, ...now });
+
+      assert.equal(captured.orderNumber, 'DEV-BB-LAST');
+      assert.equal(captured.matchedBy, 'mostRecent');
+      assert.equal(captured.source, 'api');
+    });
+
+    test('stops retrying when the API is broken rather than waiting it out', async () => {
+      let calls = 0;
+      const lookup = { findRunOrder: async () => { calls += 1; throw new Error('401'); } };
+
+      await captureOrder({
+        page: fakePage({ body: 'Thank you!' }),
+        lookup,
+        timeoutMs: 10_000,
+        intervalMs: 1,
+        sleep: async () => {},
+        log: silent,
+      });
+
+      assert.equal(calls, 1);
+    });
+  });
+
+  describe('finding the cart token', () => {
+    test('takes it from the checkout URL when /cart.js gave none', async () => {
+      // /checkouts/cn/{cartToken}/ carries it for the whole of checkout.
+      let received;
+      const lookup = { findRunOrder: async (options) => { received = options; return apiOrder; } };
+
+      await captureOrder({
+        page: fakePage({}),
+        lookup,
+        checkoutUrl: 'https://shop.myshopify.com/checkouts/cn/hWNGO9qYF0y9W6MN7NCvSaGY/en-us/payment?_r=AQAB',
+        ...now,
+      });
+
+      assert.equal(received.cartToken, 'hWNGO9qYF0y9W6MN7NCvSaGY');
+    });
+
+    test('prefers the token the cart itself reported', async () => {
+      let received;
+      const lookup = { findRunOrder: async (options) => { received = options; return apiOrder; } };
+
+      await captureOrder({
+        page: fakePage({}),
+        lookup,
+        cartToken: 'fromCartJs?key=x',
+        checkoutUrl: 'https://shop.myshopify.com/checkouts/cn/fromTheUrlXXXXXXXX/en-us/payment',
+        ...now,
+      });
+
+      assert.equal(received.cartToken, 'fromCartJs');
+    });
+
+    test('passes none rather than a wrong one when neither source has it', async () => {
+      let received;
+      const lookup = { findRunOrder: async (options) => { received = options; return apiOrder; } };
+
+      await captureOrder({ page: fakePage({}), lookup, checkoutUrl: 'https://shop/cart', ...now });
+
+      assert.equal(received.cartToken, null);
+    });
   });
 
   test('an API failure is logged, not swallowed', async () => {
@@ -203,6 +328,8 @@ describe('captureOrder', () => {
     await captureOrder({
       page: fakePage({ body: 'Thank you!' }),
       lookup: { findRunOrder: async () => { throw new Error('boom'); } },
+      timeoutMs: 0,
+      sleep: async () => {},
       log: (line) => lines.push(line),
     });
 

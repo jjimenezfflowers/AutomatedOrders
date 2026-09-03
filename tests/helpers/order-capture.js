@@ -15,6 +15,7 @@
  */
 
 const { extractOrderNumber } = require('./order-number');
+const { cartTokenFromCheckoutUrl, normaliseCartToken } = require('../../lib/order-lookup');
 
 /*
  * Most specific first. `span:has-text("#")` matches any span containing a hash,
@@ -89,8 +90,10 @@ async function identifierCandidates(page) {
  * @param {import('@playwright/test').Page} options.page
  * @param {object} [options.lookup] an OrderLookup; omit to skip the API entirely
  * @param {string} [options.cartToken] from /cart.js
+ * @param {string} [options.checkoutUrl] the checkout URL, which carries the token
  * @param {Date} [options.since] when the run started
  * @param {string[]} [options.productTitles] what the run ordered
+ * @param {number} [options.timeoutMs] how long to wait for the order to appear
  * @param {Function} [options.log]
  * @returns {Promise<object>} always resolves; `source` says where it came from
  */
@@ -98,8 +101,12 @@ async function captureOrder({
   page,
   lookup,
   cartToken,
+  checkoutUrl,
   since,
   productTitles = [],
+  timeoutMs = 30_000,
+  intervalMs = 3_000,
+  sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   log = console.log,
 } = {}) {
   // page.url() is synchronous, and throws outright once the page has closed.
@@ -110,21 +117,55 @@ async function captureOrder({
     statusUrl = null;
   }
 
-  if (lookup) {
-    try {
-      const order = await lookup.findRunOrder({ cartToken, statusUrl, since, productTitles });
+  // The checkout URL carries the cart token for the whole of checkout, so it is
+  // the steadier of the two sources; /cart.js needs the storefront session.
+  const token = normaliseCartToken(cartToken) ?? cartTokenFromCheckoutUrl(checkoutUrl) ?? cartTokenFromCheckoutUrl(statusUrl);
 
-      if (order?.orderNumber) {
-        log(`🧾 Order ${order.orderNumber} (confirmation ${order.confirmationNumber ?? '—'}) via ${order.matchedBy}`);
-        return { ...order, source: 'api' };
+  if (lookup) {
+    /*
+     * Shopify creates the order after the browser is redirected, so asking once
+     * races it: a real run reached this point 5s early, found nothing, and
+     * recorded an order it had genuinely placed as uncaptured. Retry until the
+     * store has it.
+     *
+     * A `mostRecent` match is not accepted while there is still time to get a
+     * real one — it is the guess of last resort, and during the window where the
+     * run's own order has not appeared yet, the most recent order is somebody
+     * else's.
+     */
+    const deadline = Date.now() + timeoutMs;
+    let attempts = 0;
+
+    while (true) {
+      attempts += 1;
+
+      try {
+        const order = await lookup.findRunOrder({
+          cartToken: token,
+          statusUrl,
+          since,
+          productTitles,
+        });
+
+        const strong = order?.orderNumber && order.matchedBy !== 'mostRecent';
+        if (strong || (order?.orderNumber && Date.now() >= deadline)) {
+          log(`🧾 Order ${order.orderNumber} (confirmation ${order.confirmationNumber ?? '—'}) via ${order.matchedBy}`);
+          return { ...order, source: 'api' };
+        }
+      } catch (error) {
+        // A credentials or network problem must not fail a run that placed a real
+        // order — the order exists either way, and losing its number is the thing
+        // this module is here to prevent.
+        log(`⚠️  Could not reach the Shopify Admin API (${error.message}); falling back to the page`);
+        break;
       }
 
-      log('⚠️  The store returned no order for this run; falling back to the page');
-    } catch (error) {
-      // A credentials or network problem must not fail a run that placed a real
-      // order — the order exists either way, and losing its number is the thing
-      // this module is here to prevent.
-      log(`⚠️  Could not reach the Shopify Admin API (${error.message}); falling back to the page`);
+      if (Date.now() >= deadline) {
+        log(`⚠️  The store had no order for this run after ${attempts} attempts; falling back to the page`);
+        break;
+      }
+
+      await sleep(intervalMs);
     }
   }
 

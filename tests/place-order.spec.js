@@ -226,6 +226,14 @@ test("Place order from config", async ({ page, context }) => {
   await page.waitForTimeout(500);
 
   console.log('\n🚀 Paso 5: Enviando orden...');
+
+  /*
+   * Noted before the redirect: the checkout lives at /checkouts/cn/{cartToken}/,
+   * and that token is what the order is filed under. Once the browser moves to
+   * the order-status page it is gone.
+   */
+  const checkoutUrl = page.url();
+
   try {
     await page
       .locator('button[type="submit"]')
@@ -236,18 +244,18 @@ test("Place order from config", async ({ page, context }) => {
     console.log('⚠️  Could not click submit button, order may have been placed automatically');
   }
 
-  // Wait for confirmation page - wait for URL to change or specific element
+  /*
+   * Wait for the browser to leave the payment step, not for a selector. The
+   * selector list included h2:has-text("Order"), which the payment page's own
+   * "Order summary" heading satisfies immediately — so a real run read its order
+   * number off /checkouts/cn/…/payment, where there is none, and recorded an
+   * order it had placed as uncaptured.
+   */
   try {
-    await page.waitForTimeout(1000);
-    
-    try {
-      // Wait for either order number or thank you message
-      await page.waitForSelector('span.os-order-number, h2:has-text("Thank"), h2:has-text("Order"), .notice__text', { timeout: 30000 });
-    } catch (e) {
-      console.log('⚠️  Confirmation page selector not found, continuing anyway...');
-    }
+    await page.waitForURL(/\/thank[-_]?you|\/orders\//, { timeout: 60000 });
+    console.log(`  ✅ Confirmacion alcanzada`);
   } catch (e) {
-    console.log('⚠️  Browser may have closed, but order was likely placed');
+    console.log('⚠️  El checkout no llego a la pagina de confirmacion dentro del tiempo');
   }
 
   // readCheckoutError never throws, so this throw cannot be swallowed by a
@@ -269,6 +277,7 @@ test("Place order from config", async ({ page, context }) => {
       page,
       lookup,
       cartToken,
+      checkoutUrl,
       since: runStartedAt,
       productTitles: orderConfig.orders
         .map((entry) => products.find((p) => p.id === entry.productId)?.name)

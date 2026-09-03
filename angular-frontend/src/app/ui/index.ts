@@ -14,3 +14,4 @@ export * from './select';
 export * from './textarea';
 export * from './theme.service';
 export * from './data-table';
+export * from './date-picker';

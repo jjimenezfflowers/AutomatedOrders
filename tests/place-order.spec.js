@@ -291,6 +291,29 @@ test("Place order from config", async ({ page, context }) => {
 
     if (!orderNumber) {
       console.log("⚠️  Could not capture a valid order number; recording the order without one");
+
+      /*
+       * Two real runs placed orders the store accepted but exposed no number where
+       * these selectors look, and guessing at the markup from the outside is how
+       * "#303030" got stored in the first place. This prints what the page actually
+       * says around the word "order" so the next run can be diagnosed without
+       * placing another one.
+       *
+       * Bounded and keyword-anchored on purpose: the confirmation page also carries
+       * the customer's address and email, which should not land in the log buffer.
+       */
+      try {
+        const pageText = (await page.textContent("body")) ?? "";
+        const around = [...pageText.matchAll(/order/gi)]
+          .slice(0, 6)
+          .map((match) => pageText.slice(Math.max(0, match.index - 40), match.index + 60))
+          .map((snippet) => snippet.replace(/\s+/g, " ").trim());
+
+        console.log("🔎 Confirmation page, around \"order\":");
+        for (const snippet of [...new Set(around)]) console.log(`   … ${snippet} …`);
+      } catch (e) {
+        console.log("⚠️  Could not read the confirmation page for diagnostics");
+      }
     }
 
     // Save to history

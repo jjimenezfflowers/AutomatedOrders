@@ -15,7 +15,8 @@
     "db:migrate": "DATABASE_URL=file:./db.sqlite prisma migrate deploy",
     "db:studio": "DATABASE_URL=file:./db.sqlite prisma studio",
     "db:generate": "DATABASE_URL=file:./db.sqlite prisma generate",
-    "db:seed": "node prisma/seed-from-json.js"
+    "db:seed": "node prisma/seed-from-json.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",

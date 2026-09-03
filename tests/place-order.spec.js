@@ -289,13 +289,30 @@ test("Place order from config", async ({ page, context }) => {
       confirmationNumber: order.confirmationNumber,
       orderId: order.id,
       statusUrl: order.statusUrl,
+      adminUrl: order.adminUrl ?? null,
       date: new Date().toISOString(),
       environment: ENVIRONMENT,
+      // What the run asked for. Kept because it carries the per-product delivery
+      // dates, which the store does not report back.
       products: orderConfig.orders,
+      // What the store actually charged for, which is not always the same thing.
+      lineItems: order.products ?? [],
       customer: customer.email,
+      financialStatus: order.financialStatus ?? null,
+      fulfillmentStatus: order.fulfillmentStatus ?? null,
+      destination: order.destination ?? null,
+      shippingMethod: order.shippingMethod ?? null,
+      subtotal: order.subtotal ?? null,
+      shipping: order.shipping ?? null,
+      tax: order.tax ?? null,
+      discounts: order.discounts ?? null,
       // Every entry ever written said 'N/A', because a browser that has closed
       // cannot be asked for a total. The store can.
       total: order.total ?? 'N/A',
+      tags: order.tags ?? [],
+      // How confidently the order was identified, so a weak match is never read
+      // as a strong one.
+      matchedBy: order.matchedBy ?? null,
       // Where the number came from, so a scraped one is never mistaken for the
       // store's own answer.
       source: order.source,

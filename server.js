@@ -215,6 +215,20 @@ app.get('/api/order-history', async (req, res) => {
 });
 
 // Run test
+/**
+ * The most recent entry in the order history, or null.
+ *
+ * Read after a run rather than parsed out of the test's stdout: the file is what
+ * the run actually recorded, and stdout is prose that changes whenever a log line
+ * is reworded.
+ */
+async function readLatestOrder() {
+  const data = await fs.readFile(path.join(__dirname, 'order-history.json'), 'utf8');
+  const history = JSON.parse(data);
+
+  return history.length ? history[history.length - 1] : null;
+}
+
 app.post('/api/run-test', async (req, res) => {
   console.log('\n' + '='.repeat(60));
   console.log('🧪 INICIANDO TEST DE PLAYWRIGHT');
@@ -300,7 +314,14 @@ app.post('/api/run-test', async (req, res) => {
       
       if (code === 0) {
         addLog('info', `✅ Test completed successfully (exit code: ${code})`);
-        res.json({ success: true, output: output });
+        /*
+         * The run appends what it placed to the history file, so the newest entry
+         * is this run's order. Returning it lets the page show what was actually
+         * created instead of just "it worked".
+         */
+        readLatestOrder()
+          .then((order) => res.json({ success: true, output, order }))
+          .catch(() => res.json({ success: true, output, order: null }));
       } else {
         addLog('error', `❌ Test failed (exit code: ${code})`);
         res.json({ success: false, output: errorOutput || output });

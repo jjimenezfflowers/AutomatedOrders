@@ -72,7 +72,7 @@ describe('UiCardComponent', () => {
     expect(tokens(header)).toEqual(tokens('flex flex-col space-y-1.5 p-6'));
     expect(tokens(title)).toEqual(tokens('leading-none font-semibold tracking-tight'));
     expect(tokens(description)).toEqual(tokens('text-sm text-muted-foreground'));
-    expect(tokens(content)).toEqual(tokens('p-6 pt-0'));
+    expect(tokens(content)).toEqual(tokens('p-6'));
     expect(tokens(footer)).toEqual(tokens('flex items-center p-6 pt-0'));
 
     expect(title.textContent?.trim()).toBe('Orders');

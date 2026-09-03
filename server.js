@@ -335,7 +335,15 @@ app.use((req, res, next) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  // express.json() rejects a malformed body with a SyntaxError carrying status 400.
+  // Reporting that as 500 tells the caller the server broke when in fact the request did.
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    addLog('warn', `Malformed JSON body on ${req.method} ${req.path}`);
+    return res.status(400).json({ error: 'Malformed JSON body', message: err.message });
+  }
+
   console.error('[ERROR]', err.stack);
+  addLog('error', `Unhandled error on ${req.method} ${req.path}: ${err.message}`);
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 

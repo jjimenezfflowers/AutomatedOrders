@@ -6,8 +6,14 @@
 const ORDER_NUMBER_PATTERNS = [
   // Environment-prefixed identifiers, e.g. DEV-BB-50F2327 / STAGE-BB-1204.
   /\b([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)\b/,
-  // Classic Shopify order numbers, e.g. #1234.
-  /#\s*(\d{3,})\b/,
+  /*
+   * Classic Shopify order numbers, e.g. "Order #1234".
+   *
+   * The word is required: a bare /#\d{3,}/ also matches a hex colour, and a real
+   * run captured "#303030" off the confirmation page and stored it as the order
+   * number.
+   */
+  /\border\s*#\s*(\d{3,})\b/i,
 ];
 
 function extractOrderNumber(text) {

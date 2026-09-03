@@ -1,180 +1,136 @@
-<div class="max-w-[960px] mx-auto">
 
 @if (showCreation) {
-  <app-products-creation
-    [productToEdit]="editingProduct"
-    (created)="onProductCreated($event)"
-    (updated)="onProductUpdated($event)"
-    (cancelled)="onCreationCancelled()">
-  </app-products-creation>
+<app-products-creation
+  [productToEdit]="editingProduct"
+  [existingIds]="existingProductIds"
+  (created)="onProductCreated($event)"
+  (updated)="onProductUpdated($event)"
+  (cancelled)="onCreationCancelled()">
+</app-products-creation>
 } @else {
 
-  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border">
-    <div class="relative mx-4 mt-4 overflow-hidden text-slate-700 bg-white rounded-none bg-clip-border">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-lg font-semibold text-slate-800">Products List</h3>
-          <p class="text-slate-500">Review each product before edit</p>
-        </div>
-        <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-          <button
-            (click)="saveProducts()"
-            class="rounded border border-slate-300 py-2.5 px-3 text-center text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button">
-            Save All
-          </button>
-          <button
-            (click)="addProduct()"
-            class="flex select-none items-center gap-2 rounded bg-slate-800 py-2.5 px-4 text-xs font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
-              stroke-width="2" class="w-4 h-4">
-              <path
-                d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z">
-              </path>
-            </svg>
-            Add Product
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="p-0 overflow-scroll">
-      <table class="w-full mt-4 text-left table-auto min-w-max">
-        <thead>
-          <tr>
-            <th class="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-              <p class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                Product
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                  stroke="currentColor" aria-hidden="true" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
-                </svg>
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-              <p class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                Type
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                  stroke="currentColor" aria-hidden="true" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
-                </svg>
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-              <p class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                Variants
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                  stroke="currentColor" aria-hidden="true" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
-                </svg>
-              </p>
-            </th>
-            <th class="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-              <p class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                Qty
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                  stroke="currentColor" aria-hidden="true" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
-                </svg>
-              </p>
-            </th>
-            <th class="sticky right-0 z-20 p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100 shadow-[-8px_0_12px_-12px_rgba(15,23,42,0.35)]">
-              <p class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500"></p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (product of products; track product.id; let i = $index) {
-            <tr>
-              <td class="p-4 border-b border-slate-200">
-                <div class="flex items-center gap-3">
-                  <div class="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-semibold text-sm shrink-0">
-                    {{ (product.name || product.id || '?').charAt(0).toUpperCase() }}
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-sm font-semibold text-slate-700">{{ product.name || '(unnamed)' }}</p>
-                    <p class="text-sm text-slate-500">{{ product.id || '(no id)' }}</p>
-                    @if (hasOrigin(product.origin)) {
-                      <p class="text-xs text-slate-500">Origin: {{ formatOrigin(product.origin) }}</p>
-                    }
-                  </div>
-                </div>
-              </td>
-              <td class="p-4 border-b border-slate-200">
-                <div class="flex flex-col">
-                  <p class="text-sm font-semibold text-slate-700">
-                    {{ product.type === 'product-options' ? 'Product with Options' : 'Simple Product' }}
-                  </p>
-                  <p class="text-sm text-slate-500 truncate max-w-[160px]">{{ product.url || '—' }}</p>
-                </div>
-              </td>
-              <td class="p-4 border-b border-slate-200">
-                <div class="w-max">
-                  @if (product.variants && product.variants.length > 0) {
-                    <div class="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-green-900 uppercase rounded-md select-none whitespace-nowrap bg-green-500/20">
-                      <span>{{ product.variants.length }} variant{{ product.variants.length !== 1 ? 's' : '' }}</span>
-                    </div>
-                  } @else {
-                    <div class="relative grid items-center px-2 py-1 font-sans text-xs font-bold uppercase rounded-md select-none whitespace-nowrap bg-slate-100 text-slate-500">
-                      <span>none</span>
-                    </div>
-                  }
-                </div>
-              </td>
-              <td class="p-4 border-b border-slate-200">
-                <p class="text-sm text-slate-500">{{ product.defaultQuantity }}</p>
-              </td>
-              <td class="sticky right-0 z-10 p-4 border-b border-slate-200 bg-white whitespace-nowrap shadow-[-8px_0_12px_-12px_rgba(15,23,42,0.35)]">
-                <button
-                  (click)="editProductAt(i)"
-                  class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-slate-600 transition-all hover:bg-slate-100 active:bg-slate-200 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  type="button"
-                  title="Edit product">
-                  <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="w-4 h-4">
-                      <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                      <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
-                    </svg>
-                  </span>
-                </button>
-                <button
-                  (click)="deleteProduct(i)"
-                  class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-red-600 transition-all hover:bg-red-50 active:bg-red-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  type="button"
-                  title="Delete product">
-                  <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="w-4 h-4">
-                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
-                    </svg>
-                  </span>
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <div class="flex items-center justify-between p-3">
-      <p class="block text-sm text-slate-500">
-        {{ products.length }} product{{ products.length !== 1 ? 's' : '' }} total
-      </p>
-      <div class="flex gap-1">
-        <button
+<ui-card class="w-full" testId="products-card">
+  <ui-card-header>
+    <div class="flex flex-wrap items-center justify-end gap-2">
+      <div class="flex flex-wrap gap-2">
+        <ui-button
+          variant="outline"
+          size="sm"
           (click)="saveProducts()"
-          class="rounded border border-slate-300 py-2.5 px-3 text-center text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-          type="button">
-          Save Products
-        </button>
+          testId="save-all">
+          Save All
+        </ui-button>
+        <ui-button
+          variant="default"
+          size="sm"
+          (click)="addProduct()"
+          testId="add-product">
+          <lucide-angular [img]="icons.add" class="size-4" aria-hidden="true" />
+          Add Product
+        </ui-button>
       </div>
     </div>
-  </div>
+  </ui-card-header>
+
+  <ui-card-content>
+    <ui-data-table
+      testId="products"
+      searchPlaceholder="Search products..."
+      emptyMessage="No products yet"
+      [data]="products"
+      [columns]="columns"
+      [initialPageSize]="10">
+
+      <ng-template uiDataTableCell="product" let-product>
+        <div class="flex items-center gap-3">
+          <div class="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-muted text-foreground font-semibold text-sm shrink-0">
+            {{ (product.name || product.id || '?').charAt(0).toUpperCase() }}
+          </div>
+          <div class="flex min-w-0 flex-col">
+            <p class="truncate text-sm font-semibold text-foreground">{{ product.name || '(unnamed)' }}</p>
+            <p class="truncate text-sm text-muted-foreground">{{ product.id || '(no id)' }}</p>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template uiDataTableCell="type" let-product let-type="value">
+        <div class="flex min-w-0 flex-col">
+          <p class="truncate text-sm font-semibold text-foreground">{{ type }}</p>
+          <p class="truncate text-sm text-muted-foreground">{{ product.url || '—' }}</p>
+        </div>
+      </ng-template>
+
+      <ng-template uiDataTableCell="origin" let-origin="value">
+        @if (origin) {
+          <p class="truncate text-sm text-foreground">{{ origin }}</p>
+        } @else {
+          <p class="text-sm text-muted-foreground">—</p>
+        }
+      </ng-template>
+
+      <ng-template uiDataTableCell="variants" let-product>
+        <div class="w-max">
+          @if (product.variants && product.variants.length > 0) {
+            <ui-badge variant="success" class="uppercase">
+              <span>{{ product.variants.length }} variant{{ product.variants.length !== 1 ? 's' : '' }}</span>
+            </ui-badge>
+          } @else {
+            <ui-badge variant="secondary" class="uppercase">
+              <span>none</span>
+            </ui-badge>
+          }
+        </div>
+      </ng-template>
+
+      <ng-template uiDataTableCell="actions" let-product>
+        <div class="flex items-center justify-end gap-1 whitespace-nowrap">
+          <ui-button
+            variant="ghost"
+            size="icon"
+            (click)="editRow(product)"
+            [testId]="'edit-product-' + product.id"
+            title="Edit product">
+            <lucide-angular [img]="icons.edit" class="size-4" aria-hidden="true" />
+          </ui-button>
+          <ui-button
+            variant="destructive"
+            size="icon"
+            (click)="deleteRow(product)"
+            [testId]="'delete-product-' + product.id"
+            title="Delete product">
+            <lucide-angular [img]="icons.delete" class="size-4" aria-hidden="true" />
+          </ui-button>
+        </div>
+      </ng-template>
+    </ui-data-table>
+  </ui-card-content>
+
+  <ui-card-footer class="justify-between">
+    <p class="block text-sm text-muted-foreground">
+      {{ products.length }} product{{ products.length !== 1 ? 's' : '' }} total
+    </p>
+    <div class="flex gap-1">
+      <ui-button
+        variant="outline"
+        size="sm"
+        (click)="saveProducts()"
+        testId="save-products">
+        Save Products
+      </ui-button>
+    </div>
+  </ui-card-footer>
+</ui-card>
 
 } <!-- end @else -->
 
-</div>
+<ui-confirm-dialog
+  [open]="!!pendingDelete"
+  title="Delete this product?"
+  confirmLabel="Delete product"
+  testId="delete-product-dialog"
+  (confirm)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+>
+  {{ pendingDelete?.name }} will be removed from the catalogue and the change is saved
+  straight away. Orders already placed are not affected.
+</ui-confirm-dialog>

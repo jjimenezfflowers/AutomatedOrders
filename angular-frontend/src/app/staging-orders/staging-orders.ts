@@ -1,7 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Circle, CircleCheck, CircleX, Rocket, Save } from 'lucide-angular';
+
+import {
+  UI_CARD,
+  UiBadgeComponent,
+  UiButtonComponent,
+  UiCheckboxComponent,
+  UiDatePickerComponent,
+  UiFieldComponent,
+  UiInputComponent,
+  UiLabelComponent,
+  UiSelectComponent,
+} from '../ui';
+import {
+  STAGING_BASE_URL_FIELD,
+  StagingOrderValues,
+  quantityError,
+  quantityField,
+  stagingBaseUrlError,
+  stagingOrderErrors,
+} from './staging-orders.schema';
 
 interface ProductOption {
   id: string;
@@ -50,11 +71,31 @@ interface RunTestResponse {
 
 @Component({
   selector: 'app-staging-orders',
-  imports: [FormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    LucideAngularModule,
+    ...UI_CARD,
+    UiBadgeComponent,
+    UiButtonComponent,
+    UiCheckboxComponent,
+    UiFieldComponent,
+    UiInputComponent,
+    UiLabelComponent,
+    UiSelectComponent,
+    UiDatePickerComponent,
+  ],
   templateUrl: './staging-orders.html',
   styleUrl: './staging-orders.css',
 })
 export class StagingOrdersComponent implements OnInit {
+  readonly icons = {
+    staging: Circle,
+    save: Save,
+    place: Rocket,
+    passed: CircleCheck,
+    failed: CircleX,
+  };
   products: Product[] = [];
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];
@@ -65,6 +106,11 @@ export class StagingOrdersComponent implements OnInit {
   isRunning = false;
   testOutput = '';
   testSuccess: boolean | null = null;
+
+  /** Keyed by field name; `quantity-<productId>` for the per-item quantities. */
+  errors: Record<string, string | undefined> = {};
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   constructor(private http: HttpClient) {}
 
@@ -129,13 +175,91 @@ export class StagingOrdersComponent implements OnInit {
       }
       return item;
     });
+
+    // Deselecting a product removes its quantity control, so its message has to go
+    // too — otherwise a save stays blocked by a field nobody can see or fix.
+    const live = new Set(this.orderItems.map(item => quantityField(item.id)));
+    for (const field of Object.keys(this.errors)) {
+      if (field !== STAGING_BASE_URL_FIELD && !live.has(field)) delete this.errors[field];
+    }
   }
 
   updateOrderItems() {
     this.syncOrderItemsFromSelection();
   }
 
+  /** Re-exported for the template, which keys ui-field's `error` by the same name. */
+  quantityField = quantityField;
+
+  /** Blur is the first moment a value is finished, so it is the first moment to judge it. */
+  onFieldBlur(field: string) {
+    this.validateField(field);
+  }
+
+  /*
+   * Only re-checks a field that is already showing a message. Validating every
+   * keystroke would flag "https:/" as a bad URL while it is still being typed.
+   */
+  onFieldInput(field: string) {
+    if (!this.errors[field]) return;
+    this.validateField(field);
+  }
+
+  /** One field, against its own piece of the schema. */
+  private validateField(field: string) {
+    const message = field === STAGING_BASE_URL_FIELD
+      ? stagingBaseUrlError(this.stagingBaseUrl ?? '')
+      : quantityError(this.orderItems.find(item => quantityField(item.id) === field)?.quantity);
+
+    if (message) {
+      this.errors[field] = message;
+    } else {
+      delete this.errors[field];
+    }
+  }
+
+  /** The whole payload in one parse, so a blocked save shows every problem at once. */
+  private validateAll(): boolean {
+    this.errors = stagingOrderErrors(this.formValues());
+    return Object.keys(this.errors).length === 0;
+  }
+
+  private focusFirstInvalid() {
+    const field = this.fields.find(candidate => this.errors[candidate]);
+    if (!field) return;
+
+    const controlId = field === STAGING_BASE_URL_FIELD
+      ? 'staging-base-url'
+      : `staging-quantity-${field.slice('quantity-'.length)}`;
+
+    this.host.nativeElement.querySelector<HTMLElement>(`#${CSS.escape(controlId)}`)?.focus();
+  }
+
+  /** Template order, so a blocked save focuses the topmost problem. */
+  private get fields(): string[] {
+    return [STAGING_BASE_URL_FIELD, ...this.orderItems.map(item => quantityField(item.id))];
+  }
+
+  /** What is on screen, in the shape of the payload the schema describes. */
+  private formValues(): StagingOrderValues {
+    return {
+      stagingBaseUrl: this.stagingBaseUrl ?? '',
+      orders: this.orderItems.map(item => ({
+        productId: item.id,
+        // ui-input hands back null for an emptied number box; blank still means "1".
+        quantity: item.quantity ?? undefined
+      }))
+    };
+  }
+
   saveConfig() {
+    // A schemeless base URL or a zero quantity does not fail here — it fails minutes
+    // later in the checkout run that reads this file back.
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
+      return;
+    }
+
     const uniqueOrders = new Map<string, any>();
     for (const item of this.orderItems) {
       if (uniqueOrders.has(item.id)) continue;
@@ -158,6 +282,12 @@ export class StagingOrdersComponent implements OnInit {
   runTest() {
     if (!this.stagingBaseUrl) {
       alert('Please set a Staging Base URL before running the test.');
+      this.validateAll();
+      return;
+    }
+    // The run types these values into the storefront, so the same rules gate it.
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
       return;
     }
     if (this.orderItems.length === 0) {

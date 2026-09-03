@@ -161,3 +161,55 @@ describe('log entry identity', () => {
     }
   });
 });
+
+describe('error handling', () => {
+  let server;
+  let baseUrl;
+
+  before(async () => {
+    server = start(0);
+    await new Promise((resolve) => server.once('listening', resolve));
+    baseUrl = `http://127.0.0.1:${server.address().port}`;
+  });
+
+  after(async () => {
+    await new Promise((resolve) => server.close(resolve));
+  });
+
+  async function post(body) {
+    return fetch(`${baseUrl}/api/order-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+  }
+
+  // Regression: express.json() rejects a bad body with a SyntaxError carrying
+  // status 400, but the error middleware reported every error as 500 — telling the
+  // caller the server broke when the request was at fault.
+  test('a malformed JSON body is a 400, not a 500', async () => {
+    const response = await post('not-json');
+
+    assert.equal(response.status, 400);
+    assert.equal((await response.json()).error, 'Malformed JSON body');
+  });
+
+  test('truncated JSON is also a 400', async () => {
+    const response = await post('{"deliveryDate":');
+
+    assert.equal(response.status, 400);
+  });
+
+  test('a well-formed body is still accepted', async () => {
+    const current = await (await fetch(`${baseUrl}/api/order-config`)).json();
+    const response = await post(JSON.stringify(current));
+
+    assert.equal(response.status, 200);
+  });
+
+  test('an unknown API route is a 404 rather than the SPA shell', async () => {
+    const response = await fetch(`${baseUrl}/api/does-not-exist`);
+
+    assert.equal(response.status, 404);
+  });
+});

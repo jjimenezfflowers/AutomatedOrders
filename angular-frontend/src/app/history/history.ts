@@ -1,6 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { LucideAngularModule, History } from 'lucide-angular';
+
+import {
+  UI_CARD,
+  UiBadgeComponent,
+  UiDataTableCellDirective,
+  UiDataTableComponent,
+  type UiDataTableColumn,
+} from '../ui';
+
+interface HistoryProduct {
+  productId: string;
+  quantity: number;
+  variant?: string;
+  deliveryDate?: string;
+}
 
 interface HistoryEntry {
   // Null when the confirmation page did not expose a usable order number; the
@@ -8,31 +23,178 @@ interface HistoryEntry {
   orderNumber: string | null;
   date: string;
   environment?: 'dev' | 'staging';
-  products: { productId: string; quantity: number; variant?: string }[];
+  products: HistoryProduct[];
   customer: string;
   total: string;
 }
 
+/*
+ * Delivery date is per product, and an order can span more than one (3 of the 476
+ * do). The earliest is what the order is scheduled for; the cell says "+N more"
+ * when they differ so the spread is visible rather than silently dropped.
+ */
+function deliveryDates(entry: HistoryEntry): string[] {
+  return [...new Set(entry.products.map((p) => p.deliveryDate).filter(Boolean) as string[])].sort();
+}
+
+function earliestDelivery(entry: HistoryEntry): string {
+  return deliveryDates(entry)[0] ?? '';
+}
+
+/** Entries written before the staging runs existed carry no environment; they were all dev. */
+function environmentLabel(entry: HistoryEntry): string {
+  return entry.environment === 'staging' ? 'Staging' : 'DEV';
+}
+
+/** Epoch millis, with unparseable dates pushed to the oldest end rather than poisoning the sort. */
+function timestamp(iso: string): number {
+  const parsed = Date.parse(iso);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+/*
+ * Entries written before the order-number capture was fixed stored whatever the
+ * confirmation page's heading said. Most are useless — 362 read "Your order is
+ * confirmed", 32 "Finalize order", 22 "Order summary" — but 59 of them read
+ * "Your order number is: DEV-BB-50F2327" and do carry the real number.
+ *
+ * So this extracts rather than validates. An earlier version tested the whole
+ * string against the identifier shape, which is anchored, so every one of those
+ * 59 failed and rendered as "not captured" — throwing away information the file
+ * actually had.
+ *
+ * Same patterns as tests/helpers/order-number.js, which decides what gets written.
+ */
+const ORDER_NUMBER_PATTERNS = [
+  // Environment-prefixed identifiers, e.g. DEV-BB-50F2327 / STAGE-BB-1204.
+  /\b([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)\b/,
+  /*
+   * Classic Shopify order numbers, e.g. "Order #1234". The word is required: a
+   * bare /#\d{3,}/ also matches a hex colour like #303030.
+   */
+  /\border\s*#\s*(\d{3,})\b/i,
+];
+
+function usableOrderNumber(value: string | null): string | null {
+  const text = String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!text) return null;
+
+  for (const pattern of ORDER_NUMBER_PATTERNS) {
+    const match = text.match(pattern);
+    // An order number always carries a digit; this rejects tokens like "SHOP-NOW".
+    if (match && /\d/.test(match[1])) return match[1];
+  }
+
+  return null;
+}
+
 @Component({
   selector: 'app-history',
-  imports: [CommonModule],
+  imports: [
+    LucideAngularModule,
+    ...UI_CARD,
+    UiBadgeComponent,
+    UiDataTableComponent,
+    UiDataTableCellDirective,
+  ],
   templateUrl: './history.html',
   styleUrl: './history.css',
 })
 export class HistoryComponent implements OnInit {
-  history: HistoryEntry[] = [];
-  loading = true;
+  readonly history = signal<HistoryEntry[]>([]);
+  readonly loading = signal(true);
+  readonly icons = { history: History };
+
+  /** The order's delivery date, and how many other dates it spans. */
+  deliverySummary(entry: HistoryEntry): { first: string; extra: number } {
+    const dates = deliveryDates(entry);
+    return { first: dates[0] ?? '', extra: Math.max(0, dates.length - 1) };
+  }
+
+  /*
+   * The date column's accessor hands the table the raw ISO string, not what the
+   * cell displays: the formatted date sorts by month name ("Sep" before "Aug")
+   * and by the first digit of the day ("9/10" before "9/2"). ISO strings are
+   * fixed-width and zero-padded, so their lexicographic order is chronological.
+   *
+   * The per-entry product list is too tall for a 56px row, so it is folded into
+   * the count cell's `title` — nothing is dropped, it is one hover away.
+   */
+  readonly columns: UiDataTableColumn<HistoryEntry>[] = [
+    {
+      id: 'orderNumber',
+      header: 'Order',
+      width: 'minmax(220px,2fr)',
+      // '' rather than null so a missing number searches and sorts as empty text
+      // instead of stringifying to "null".
+      accessor: (entry) => entry.orderNumber ?? '',
+      sortable: true,
+    },
+    {
+      id: 'environment',
+      header: 'Environment',
+      width: '150px',
+      accessor: environmentLabel,
+      filterable: true,
+    },
+    {
+      id: 'date',
+      header: 'Date',
+      width: 'minmax(200px,1fr)',
+      accessor: (entry) => entry.date,
+      sortable: true,
+    },
+    {
+      id: 'delivery',
+      header: 'Delivery',
+      width: 'minmax(150px,1fr)',
+      // Sorts on the raw ISO date, like the placed-at column, so August orders
+      // before September rather than after it.
+      accessor: (entry) => earliestDelivery(entry),
+      sortable: true,
+    },
+    {
+      id: 'customer',
+      header: 'Customer',
+      width: 'minmax(200px,1.5fr)',
+      accessor: (entry) => entry.customer,
+      sortable: true,
+      // Not filterable: every entry in the file carries the same address, so the
+      // dropdown would offer exactly one option.
+    },
+    {
+      id: 'products',
+      header: 'Products',
+      width: '130px',
+      accessor: (entry) => entry.products.length,
+      // The cell shows a count, but the products behind it are what someone
+      // actually searches for. Sorting still uses the numeric accessor.
+      searchAccessor: (entry) =>
+        entry.products.map((p) => `${p.productId} ${p.variant ?? ''}`).join(' '),
+      sortable: true,
+      align: 'right',
+    },
+  ];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.http.get<HistoryEntry[]>('/api/order-history').subscribe({
       next: data => {
-        this.history = [...data].reverse();
-        this.loading = false;
+        // Newest first: the file appends, so its own order is oldest first, and
+        // whoever opens this page is looking for the run that just finished.
+        this.history.set(
+          [...data]
+            .map((entry) => ({ ...entry, orderNumber: usableOrderNumber(entry.orderNumber) }))
+            .sort((a, b) => timestamp(b.date) - timestamp(a.date)),
+        );
+        this.loading.set(false);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
@@ -43,5 +205,12 @@ export class HistoryComponent implements OnInit {
     } catch {
       return iso;
     }
+  }
+
+  /** The products of one entry, one per line, for the count cell's tooltip. */
+  productSummary(entry: HistoryEntry): string {
+    return entry.products
+      .map(p => `${p.productId} × ${p.quantity}${p.variant ? ' — ' + p.variant : ''}`)
+      .join('\n');
   }
 }

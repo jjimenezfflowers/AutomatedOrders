@@ -1,158 +1,160 @@
-<div class="max-w-[1100px] mx-auto">
-  <div class="relative flex flex-col w-full h-full text-slate-700 bg-white shadow-md rounded-xl bg-clip-border">
+<ui-card>
 
-    <!-- Header -->
-    <div class="relative mx-4 mt-4 overflow-hidden text-slate-700 bg-white rounded-none bg-clip-border">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-lg font-semibold text-slate-800">Create Order</h3>
-          <p class="text-slate-500">Select products and configure delivery details</p>
-        </div>
-        <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-          <button
-            (click)="saveOrder()"
-            [disabled]="isSavingOrder"
-            class="rounded border border-slate-300 py-2.5 px-3 text-center text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50"
-            type="button">
-            {{ isSavingOrder ? 'Saving...' : 'Save Order' }}
-          </button>
-          <button
-            (click)="runTest()"
-            [disabled]="isPlacingOrder"
-            data-testid="place-order"
-            class="flex select-none items-center gap-2 rounded bg-slate-800 py-2.5 px-4 text-xs font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 focus:opacity-[0.85] active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50"
-            type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
-            </svg>
-            {{ isPlacingOrder ? 'Placing Order...' : 'Place Order' }}
-          </button>
-        </div>
-      </div>
-    </div>
 
     <!-- Body -->
-    <div class="p-6 flex flex-col gap-6">
+    <ui-card-content class="flex flex-col gap-6">
 
       <!-- Available Products -->
       <div>
-        <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-sm font-medium text-slate-700">Available Products</p>
-          <label class="flex items-center gap-2 text-xs font-medium text-slate-500">
-            <span>Sort by</span>
-            <select
-              [(ngModel)]="productSort"
-              title="Sort available products"
-              class="rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300">
-              @for (option of productSortOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
-              }
-            </select>
-          </label>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-semibold text-foreground">Available Products</h3>
+            @if (selectedCount) {
+              <ui-badge variant="secondary" testId="selected-count">
+                {{ selectedCount }} selected
+              </ui-badge>
+              <ui-button variant="ghost" size="xs" (click)="clearSelection()" testId="clear-selection">
+                Clear
+              </ui-button>
+            }
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <ui-input
+              class="w-full sm:w-56"
+              placeholder="Search products..."
+              [(ngModel)]="productSearch"
+              testId="product-search" />
+            <div class="w-36">
+              <ui-select
+                size="sm"
+                [options]="productSortOptions"
+                [(ngModel)]="productSort"
+                title="Sort available products" />
+            </div>
+          </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 rounded-lg border border-slate-200 bg-slate-50">
-          @for (product of sortedProducts; track product.id) {
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                [id]="'product-' + product.id"
-                [(ngModel)]="selectedProducts[product.id]"
-                (change)="updateOrderItems()"
-                title="Select product"
-                class="rounded border-slate-300 text-slate-800 focus:ring-slate-300" />
-              <span class="flex flex-col">
-                <span class="text-sm text-slate-700">{{ product.name }}</span>
-                @if (hasOrigin(product.origin)) {
-                  <span class="text-xs text-slate-500">Origin: {{ formatOrigin(product.origin) }}</span>
-                }
-              </span>
-            </label>
+
+        <!-- Capped and scrollable: the full list ran ~550px and pushed the rest of
+             the form, including the delivery date, below the fold. -->
+        <div class="max-h-80 overflow-y-auto rounded-lg border border-border bg-muted p-4">
+          @if (visibleProducts.length) {
+            <div class="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+              @for (product of visibleProducts; track product.id) {
+                <label class="flex cursor-pointer select-none items-center gap-2 rounded-md px-1.5 py-1 transition-colors hover:bg-background">
+                  <ui-checkbox
+                    [inputId]="'product-' + product.id"
+                    [ngModel]="selectedProducts[product.id]"
+                    (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()"
+                    title="Select product" />
+                  <span class="flex min-w-0 flex-col">
+                    <span class="truncate text-sm text-foreground">{{ product.name }}</span>
+                    @if (hasOrigin(product.origin)) {
+                      <span class="text-xs text-muted-foreground">Origin: {{ formatOrigin(product.origin) }}</span>
+                    }
+                  </span>
+                </label>
+              }
+            </div>
+          } @else {
+            <p class="py-6 text-center text-sm text-muted-foreground" data-testid="no-products">
+              No products match "{{ productSearch }}"
+            </p>
           }
         </div>
       </div>
 
       <!-- Delivery Date -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-slate-700">Delivery Date</label>
-        <input
-            type="date"
-            [(ngModel)]="deliveryDate"
-            title="Select delivery date"
-            class="w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none transition-all focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-      </div>
+      <ui-field
+        label="Delivery Date"
+        controlId="order-delivery-date"
+        [error]="errors['deliveryDate']"
+      >
+        <ui-date-picker
+          inputId="order-delivery-date"
+          name="orderDeliveryDate"
+          [(ngModel)]="deliveryDate"
+          [invalid]="!!errors['deliveryDate']"
+          (focusout)="onFieldBlur('deliveryDate')"
+          (input)="onFieldInput('deliveryDate')"
+          testId="order-delivery-date" />
+      </ui-field>
 
       <!-- Selected Products -->
       @if (orderItems.length > 0) {
         <div>
           <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-slate-700">Selected Products</p>
+            <h3 class="text-sm font-semibold text-foreground">Selected Products</h3>
             <div class="flex gap-2">
-              <button
+              <ui-button
+                variant="outline"
+                size="xs"
                 (click)="randomDateAndApply()"
-                title="Pick random date 7-10 days ahead and apply to all products"
-                class="rounded border border-slate-300 py-1.5 px-3 text-xs font-semibold text-slate-600 transition-all hover:opacity-75 whitespace-nowrap">
-                🎲 Random (7-10 days)
-              </button>
-              <button
+                title="Pick a random delivery date 8-12 days ahead and apply it to every product">
+                <lucide-angular [img]="icons.random" class="size-3.5" aria-hidden="true" />
+                Random (8-12 days)
+              </ui-button>
+              <ui-button
+                variant="outline"
+                size="xs"
                 (click)="applyDateToAll()"
-                title="Apply main delivery date to all products"
-                class="rounded border border-slate-300 py-1.5 px-3 text-xs font-semibold text-slate-600 transition-all hover:opacity-75 whitespace-nowrap">
-                📅 Apply Date to All
-              </button>
+                title="Apply main delivery date to all products">
+                <lucide-angular [img]="icons.calendar" class="size-3.5" aria-hidden="true" />
+                Apply Date to All
+              </ui-button>
             </div>
           </div>
           <div class="flex flex-col gap-3">
             @for (item of orderItems; track item.id; let i = $index) {
-              <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div class="rounded-lg border border-border bg-muted p-4">
                 <div class="flex items-center justify-between mb-3">
                   <div>
-                    <p class="text-sm font-semibold text-slate-800">{{ item.name }}</p>
+                    <p class="text-sm font-semibold text-foreground">{{ item.name }}</p>
                     @if (hasOrigin(getProductById(item.id)?.origin)) {
-                      <p class="text-xs text-slate-500">Origin: {{ formatOrigin(getProductById(item.id)?.origin) }}</p>
+                      <p class="text-xs text-muted-foreground">Origin: {{ formatOrigin(getProductById(item.id)?.origin) }}</p>
                     }
                   </div>
                   @if (getProductById(item.id)?.type === 'product-options') {
-                    <span class="px-2 py-0.5 text-xs font-semibold rounded-md bg-blue-100 text-blue-800">Product Options</span>
+                    <ui-badge variant="secondary">Product Options</ui-badge>
                   }
                 </div>
 
                 @if (getProductById(item.id)?.variants?.length || item.variant) {
-                  <div class="mb-3">
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Variant</label>
+                  <div class="mb-3 flex flex-col gap-1">
+                    <ui-label [for]="'variant-' + item.id">Variant</ui-label>
                     @if (getProductById(item.id)?.variants?.length) {
-                      <select
-                        [(ngModel)]="item.variant"
-                        class="w-full rounded border border-slate-300 px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300">
+                      <ui-select size="sm" [inputId]="'variant-' + item.id" [(ngModel)]="item.variant">
                         @for (v of getProductById(item.id)?.variants; track v) {
                           <option [value]="v">{{ v }}</option>
                         }
-                      </select>
+                      </ui-select>
                     } @else {
-                      <input
+                      <ui-input
                         type="text"
+                        [inputId]="'variant-' + item.id"
                         [(ngModel)]="item.variant"
-                        placeholder="Variant"
-                        class="w-full rounded border border-slate-300 px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
+                        placeholder="Variant" />
                     }
                   </div>
                 }
 
                 @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
                   <div class="mb-3">
-                    <p class="text-xs font-semibold text-slate-600 mb-2">Product Options</p>
+                    <p class="text-xs font-semibold text-foreground mb-2">Product Options</p>
                     <div class="flex flex-col gap-2">
                       @for (option of getProductById(item.id)!.productOptions; track option.id) {
-                        <div>
-                          <label class="block text-xs text-slate-500 mb-1">{{ option.label }}</label>
-                          <select
-                            [(ngModel)]="item.productOptions![option.id]"
-                            class="w-full rounded border border-slate-300 px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300">
+                        <div class="flex flex-col gap-1">
+                          <ui-label [for]="item.id + '-' + option.id" class="text-muted-foreground">{{ option.label }}</ui-label>
+                          <ui-select
+                            size="sm"
+                            [inputId]="item.id + '-' + option.id"
+                            [(ngModel)]="item.productOptions![option.id]">
                             @for (opt of option.options; track $index) {
                               <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">
                                 {{ getOptionLabel(opt) }}
                               </option>
                             }
-                          </select>
+                          </ui-select>
                         </div>
                       }
                     </div>
@@ -160,23 +162,34 @@
                 }
 
                 <div class="grid grid-cols-2 gap-3 mt-2">
-                  <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Quantity</label>
-                    <input
+                  <ui-field
+                    label="Quantity"
+                    [controlId]="'quantity-' + item.id"
+                    [error]="errors[quantityFieldKey(item.id)]"
+                  >
+                    <ui-input
                       type="number"
+                      [inputId]="'quantity-' + item.id"
                       [(ngModel)]="item.quantity"
                       min="1"
                       placeholder="1"
-                      class="w-full rounded border border-slate-300 px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Delivery Date</label>
-                    <input
-                      type="date"
+                      [invalid]="!!errors[quantityFieldKey(item.id)]"
+                      (focusout)="onFieldBlur(quantityFieldKey(item.id))"
+                      (input)="onFieldInput(quantityFieldKey(item.id))" />
+                  </ui-field>
+                  <ui-field
+                    label="Delivery Date"
+                    [controlId]="'delivery-date-' + item.id"
+                    [error]="errors[deliveryDateFieldKey(item.id)]"
+                  >
+                    <ui-date-picker
+                      [inputId]="'delivery-date-' + item.id"
+                      [name]="'deliveryDate-' + item.id"
                       [(ngModel)]="item.deliveryDate"
-                      title="Delivery date for this product"
-                      class="w-full rounded border border-slate-300 px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300" />
-                  </div>
+                      [invalid]="!!errors[deliveryDateFieldKey(item.id)]"
+                      (focusout)="onFieldBlur(deliveryDateFieldKey(item.id))"
+                      [testId]="'delivery-date-' + item.id" />
+                  </ui-field>
                 </div>
               </div>
             }
@@ -184,29 +197,30 @@
         </div>
       }
 
-    </div>
+    </ui-card-content>
 
     <!-- Footer -->
-    <div class="flex items-center justify-end gap-2 p-4 border-t border-slate-200">
-      <button
-        (click)="saveOrder()"
-        [disabled]="isSavingOrder"
-        class="rounded border border-slate-300 py-2.5 px-4 text-xs font-semibold text-slate-600 transition-all hover:opacity-75 focus:ring focus:ring-slate-300 disabled:pointer-events-none disabled:opacity-50"
-        type="button">
-        {{ isSavingOrder ? 'Saving...' : 'Save Order' }}
-      </button>
-      <button
-        (click)="runTest()"
-        [disabled]="isPlacingOrder"
-        data-testid="place-order"
-        class="flex select-none items-center gap-2 rounded bg-slate-800 py-2.5 px-5 text-xs font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 focus:opacity-[0.85] active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50"
-        type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-          <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
-        </svg>
-        {{ isPlacingOrder ? 'Placing Order...' : 'Place Order' }}
-      </button>
-    </div>
+    <ui-card-footer class="border-t border-border">
+      <div class="flex w-full items-center justify-end gap-2 pt-6">
+        <ui-button
+          variant="outline"
+          size="sm"
+          (click)="saveOrder()"
+          [loading]="isSavingOrder">
+          Save Order
+        </ui-button>
+        <ui-button
+          variant="default"
+          size="sm"
+          testId="place-order"
+          (click)="runTest()"
+          [loading]="isPlacingOrder">
+          @if (!isPlacingOrder) {
+            <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
+          }
+          Place Order
+        </ui-button>
+      </div>
+    </ui-card-footer>
 
-  </div>
-</div>
+  </ui-card>

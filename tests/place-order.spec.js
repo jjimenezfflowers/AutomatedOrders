@@ -249,13 +249,19 @@ test("Place order from config", async ({ page, context }) => {
     let orderNumber;
 
     // Try different selectors for order number
+    /*
+     * Most specific first. `span:has-text("#")` matches any span containing a hash,
+     * including one holding a hex colour, so it goes last — a real run captured
+     * "#303030" from it and stopped before reaching .notice__text, which is where
+     * "Your order number is: DEV-BB-…" actually lives.
+     */
     const selectors = [
       "span.os-order-number",
       ".order-number",
+      "[data-order-number]",
+      ".notice__text",
       'h2:has-text("Order")',
       'span:has-text("#")',
-      ".notice__text",
-      "[data-order-number]",
     ];
 
     for (const selector of selectors) {
@@ -285,6 +291,38 @@ test("Place order from config", async ({ page, context }) => {
 
     if (!orderNumber) {
       console.log("⚠️  Could not capture a valid order number; recording the order without one");
+
+      /*
+       * Two real runs placed orders the store accepted but exposed no number where
+       * these selectors look, and guessing at the markup from the outside is how
+       * "#303030" got stored in the first place.
+       *
+       * This prints only tokens that are SHAPED like an identifier, never page
+       * prose. The confirmation page carries the customer's address and email, and
+       * these logs land in the buffer served by /api/logs, which has no auth and
+       * listens on 0.0.0.0 — so a snippet of surrounding text would publish PII to
+       * anyone on the network. Identifier-shaped tokens answer the only question
+       * being asked: is a number on this page at all, and what does it look like?
+       */
+      try {
+        const pageText = (await page.textContent("body")) ?? "";
+        const candidates = [
+          ...new Set(
+            (pageText.match(/\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\b|#\s*\d{3,}\b/g) ?? [])
+              .map((token) => token.trim())
+              // Anything with an @ or a dot is contact data, not an identifier.
+              .filter((token) => !/[@.]/.test(token)),
+          ),
+        ].slice(0, 10);
+
+        console.log(
+          candidates.length
+            ? `🔎 Identifier-shaped tokens on the confirmation page: ${candidates.join(", ")}`
+            : "🔎 No identifier-shaped token found on the confirmation page at all",
+        );
+      } catch (e) {
+        console.log("⚠️  Could not read the confirmation page for diagnostics");
+      }
     }
 
     // Save to history

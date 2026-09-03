@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Pause, Play, RefreshCw } from 'lucide-angular';
+
+import { UI_CARD, UiButtonComponent } from '../ui';
 
 interface LogEntry {
   id: number;
@@ -14,14 +17,14 @@ interface LogEntry {
 @Component({
   selector: 'app-logs',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './logs.html',
-  styleUrl: './logs.css'
+  imports: [CommonModule, LucideAngularModule, ...UI_CARD, UiButtonComponent],
+  templateUrl: './logs.html'
 })
 export class LogsComponent implements OnInit, OnDestroy {
   logs: LogEntry[] = [];
   totalLogs = 0;
   autoRefresh = true;
+  readonly icons = { pause: Pause, play: Play, refresh: RefreshCw };
   private refreshInterval: any;
 
   ngOnInit() {

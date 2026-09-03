@@ -1,60 +1,178 @@
-<div class="bg-gray-100 min-h-screen">
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-gray-800 mb-8">🌸 Order Manager</h1>
+<div class="flex min-h-screen w-full bg-background text-foreground">
+  <!-- Sidebar: 16rem open, icon-width collapsed, matching the admin. -->
+  <aside
+    class="hidden shrink-0 flex-col border-r bg-card transition-[width] duration-200 md:flex"
+    [class.w-64]="sidebarOpen()"
+    [class.w-14]="!sidebarOpen()"
+    data-testid="sidebar"
+  >
+    <div class="flex flex-col gap-2 p-2">
+      <div class="flex items-center gap-2 px-2 py-1.5">
+        <lucide-angular [img]="icons.brand" class="size-5 shrink-0 text-primary" aria-hidden="true" />
+        @if (sidebarOpen()) {
+          <span class="truncate text-sm font-semibold tracking-tight">BloomBrain</span>
+        }
+      </div>
 
-    <!-- Tabs -->
-    <div class="mb-6 border-b border-gray-200">
-      <nav class="flex items-center flex-wrap gap-y-2 space-x-1">
+      <!-- Environment switcher: the admin puts its org switcher in this slot. -->
+      <div class="relative">
+        <ui-button
+          variant="outline"
+          class="h-auto w-full justify-between px-2 py-1.5 text-left text-sm shadow-xs"
+          (click)="toggleEnvironmentMenu()"
+          [ariaExpanded]="environmentMenuOpen()"
+          ariaHasPopup="listbox"
+          testId="environment-switcher"
+        >
+          <span class="flex min-w-0 items-center gap-2">
+            <span
+              class="size-2 shrink-0 rounded-full"
+              [class.bg-success]="environment() === 'dev'"
+              [class.bg-warning]="environment() === 'staging'"
+              aria-hidden="true"
+            ></span>
+            @if (sidebarOpen()) {
+              <span class="truncate text-xs font-semibold">{{ activeEnvironment().label }}</span>
+            }
+          </span>
+          @if (sidebarOpen()) {
+            <lucide-angular [img]="icons.chevron" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          }
+        </ui-button>
 
-        <!-- DEV Group -->
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 py-1 self-center">🟢 DEV</span>
-        <button (click)="showTab('products')" [class.active]="activeTab === 'products'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Products</button>
-        <button (click)="showTab('orders')" [class.active]="activeTab === 'orders'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Orders</button>
-
-        <div class="w-px h-6 bg-gray-300 mx-2 self-center"></div>
-
-        <!-- Staging Group -->
-        <span class="text-xs font-bold text-yellow-500 uppercase tracking-wider px-2 py-1 self-center">🟡 Staging</span>
-        <button (click)="showTab('staging-products')" [class.active]="activeTab === 'staging-products'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Products</button>
-        <button (click)="showTab('staging-orders')" [class.active]="activeTab === 'staging-orders'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Orders</button>
-
-        <div class="w-px h-6 bg-gray-300 mx-2 self-center"></div>
-
-        <!-- Shared Group -->
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 py-1 self-center">Shared</span>
-        <button (click)="showTab('customer')" [class.active]="activeTab === 'customer'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Customer Info</button>
-        <button (click)="showTab('history')" [class.active]="activeTab === 'history'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">History</button>
-        <button (click)="showTab('logs')" [class.active]="activeTab === 'logs'" class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-gray-700">📊 Logs</button>
-
-      </nav>
+        @if (environmentMenuOpen()) {
+          <ul
+            class="absolute z-50 mt-1 w-full overflow-hidden rounded-md bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10"
+            role="listbox"
+          >
+            @for (item of environments; track item.id) {
+              <li>
+                <ui-button
+                  variant="ghost"
+                  class="h-auto w-full justify-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm"
+                  (click)="selectEnvironment(item.id)"
+                  role="option"
+                  [ariaSelected]="environment() === item.id"
+                  [testId]="'environment-option-' + item.id"
+                >
+                  <span
+                    class="size-2 shrink-0 rounded-full"
+                    [class.bg-success]="item.id === 'dev'"
+                    [class.bg-warning]="item.id === 'staging'"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="font-medium">{{ item.label }}</span>
+                  <span class="ml-auto truncate text-xs text-muted-foreground">{{ item.store }}</span>
+                </ui-button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
     </div>
 
-    <!-- Content -->
-    @switch (activeTab) {
-      @case ('products') {
-        <app-products></app-products>
-      }
-      @case ('orders') {
-        <app-orders></app-orders>
-      }
-      @case ('staging-products') {
-        <app-products [apiEndpoint]="'/api/staging-products'"></app-products>
-      }
-      @case ('staging-orders') {
-        <app-staging-orders></app-staging-orders>
-      }
-      @case ('customer') {
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-800">
-          ℹ️ <strong>Shared</strong> — Customer info and payment details are used by both DEV and Staging test runs.
+    <nav class="flex min-h-0 flex-1 flex-col gap-2 overflow-auto" aria-label="Sections">
+      @for (group of groups; track group.label) {
+        <div class="relative flex w-full min-w-0 flex-col p-2" [class.mt-auto]="group.footer">
+          @if (sidebarOpen()) {
+            <div class="flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-foreground/70">
+              {{ group.label }}
+            </div>
+          }
+          <ul class="flex w-full min-w-0 flex-col gap-1">
+            @for (item of group.items; track item.id) {
+              <li>
+                <a
+                  [routerLink]="linkFor(item.id)"
+                  routerLinkActive
+                  #link="routerLinkActive"
+                  [routerLinkActiveOptions]="{ exact: false }"
+                  [class]="navItemClasses(link.isActive)"
+                  [attr.aria-current]="link.isActive ? 'page' : null"
+                  [attr.title]="!sidebarOpen() ? item.label : null"
+                  [attr.data-testid]="'nav-' + item.id"
+                >
+                  <lucide-angular [img]="item.icon" class="size-4 shrink-0" aria-hidden="true" />
+                  @if (sidebarOpen()) {
+                    <span class="truncate">{{ item.label }}</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
         </div>
-        <app-customer></app-customer>
       }
-      @case ('history') {
-        <app-history></app-history>
+    </nav>
+  </aside>
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    <header
+      class="sticky top-0 z-10 flex h-12 w-full shrink-0 items-center justify-between gap-2 border-b bg-card px-2"
+    >
+      <div class="flex min-w-0 items-center gap-2">
+        <ui-button
+          variant="ghost"
+          size="icon"
+          class="hidden md:inline-flex"
+          (click)="toggleSidebar()"
+          ariaLabel="Toggle sidebar"
+          testId="sidebar-toggle"
+        >
+          <lucide-angular [img]="icons.menu" class="size-4" aria-hidden="true" />
+        </ui-button>
+        <div class="hidden h-6 items-center md:flex"><div class="mr-2 h-full w-px bg-border"></div></div>
+        <ui-breadcrumb [crumbs]="breadcrumbs()" testId="breadcrumb" class="truncate" />
+      </div>
+
+      <div class="ml-auto flex shrink-0 items-center gap-2">
+        @if (pageIsScoped()) {
+          <span
+            class="rounded-md border px-2 py-0.5 text-[10px] font-bold tracking-wide whitespace-nowrap"
+            [class.border-success/30]="environment() === 'dev'"
+            [class.text-success]="environment() === 'dev'"
+            [class.border-warning/30]="environment() === 'staging'"
+            [class.text-warning]="environment() === 'staging'"
+            data-testid="environment-badge"
+          >
+            {{ activeEnvironment().label }}
+          </span>
+        }
+        <ui-button
+          variant="ghost"
+          size="icon"
+          (click)="cycleTheme()"
+          [ariaLabel]="'Theme: ' + theme() + '. Change theme'"
+          testId="theme-toggle"
+        >
+          <lucide-angular [img]="themeIcon()" class="size-4" aria-hidden="true" />
+        </ui-button>
+      </div>
+    </header>
+
+    <!-- Mobile section switcher: the sidebar is hidden below md. -->
+    <nav class="flex gap-1 overflow-x-auto border-b bg-card px-2 py-1.5 md:hidden" aria-label="Sections">
+      @for (group of groups; track group.label) {
+        @for (item of group.items; track item.id) {
+          <a
+            [routerLink]="linkFor(item.id)"
+            routerLinkActive
+            #mobileLink="routerLinkActive"
+            class="flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium"
+            [class.bg-accent]="mobileLink.isActive"
+            [class.text-muted-foreground]="!mobileLink.isActive"
+            [attr.data-testid]="'nav-mobile-' + item.id"
+          >
+            <lucide-angular [img]="item.icon" class="size-3.5" aria-hidden="true" />
+            {{ item.label }}
+          </a>
+        }
       }
-      @case ('logs') {
-        <app-logs></app-logs>
-      }
-    }
+    </nav>
+
+    <main class="min-h-0 flex-1 bg-muted/30">
+      <div class="flex flex-col gap-y-2 px-4 py-6 tracking-tight sm:px-8 lg:px-10 lg:py-10">
+        <router-outlet />
+      </div>
+    </main>
   </div>
 </div>

@@ -249,13 +249,19 @@ test("Place order from config", async ({ page, context }) => {
     let orderNumber;
 
     // Try different selectors for order number
+    /*
+     * Most specific first. `span:has-text("#")` matches any span containing a hash,
+     * including one holding a hex colour, so it goes last — a real run captured
+     * "#303030" from it and stopped before reaching .notice__text, which is where
+     * "Your order number is: DEV-BB-…" actually lives.
+     */
     const selectors = [
       "span.os-order-number",
       ".order-number",
+      "[data-order-number]",
+      ".notice__text",
       'h2:has-text("Order")',
       'span:has-text("#")',
-      ".notice__text",
-      "[data-order-number]",
     ];
 
     for (const selector of selectors) {

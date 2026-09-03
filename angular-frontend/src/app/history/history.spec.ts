@@ -595,10 +595,18 @@ describe('HistoryComponent', () => {
         expect(cellText(0, ORDER)).toContain('DEV-BB-50F5089');
       });
 
-      it('keeps a classic numeric order number', async () => {
-        await flushHistory([entry({ orderNumber: '#1234' })]);
+      it('keeps a classic numeric order number when it says so', async () => {
+        await flushHistory([entry({ orderNumber: 'Order #1234' })]);
 
         expect(cellText(0, ORDER)).toContain('1234');
+      });
+
+      it('rejects a bare #1234, which is also a valid 4-digit hex colour', async () => {
+        // Ambiguous on its own, and every real number captured from this store has
+        // been DEV-BB-shaped, so the word is required.
+        await flushHistory([entry({ orderNumber: '#1234' })]);
+
+        expect(cellText(0, ORDER)).toContain('not captured');
       });
 
       it('does not make junk findable by searching its text', async () => {
@@ -610,6 +618,32 @@ describe('HistoryComponent', () => {
         await type('confirmed');
 
         expect(rows().length).toBe(0);
+      });
+    });
+
+
+    describe('a hex colour is not an order number', () => {
+      /*
+       * A real run captured "#303030" — a dark grey off the confirmation page — and
+       * stored it as the order number. The reader rejects it, so the row shows the
+       * placeholder rather than a colour.
+       */
+      it('shows the placeholder instead of a hex colour', async () => {
+        await flushHistory([entry({ orderNumber: '303030' })]);
+
+        expect(cellText(0, ORDER)).toContain('not captured');
+      });
+
+      it('still reads a real identifier', async () => {
+        await flushHistory([entry({ orderNumber: 'DEV-BB-50F5137' })]);
+
+        expect(cellText(0, ORDER)).toContain('DEV-BB-50F5137');
+      });
+
+      it('still reads a numeric number when the word order is present', async () => {
+        await flushHistory([entry({ orderNumber: 'Order #1234' })]);
+
+        expect(cellText(0, ORDER)).toContain('1234');
       });
     });
 

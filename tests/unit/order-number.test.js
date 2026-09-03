@@ -79,3 +79,31 @@ describe('extractOrderNumber', () => {
     });
   });
 });
+
+describe('regression: a hex colour is not an order number', () => {
+  /*
+   * A real run against the dev store captured "#303030" — a dark grey — and stored
+   * it as the order number. The bare /#\d{3,}/ fallback matched it, and because it
+   * matched, the selector loop stopped before reaching the element that actually
+   * holds "Your order number is: DEV-BB-50F5137".
+   */
+  for (const text of ['#303030', 'color: #303030', '.x{color:#303030}', '#ffffff', '#123456']) {
+    test(`rejects ${JSON.stringify(text)}`, () => {
+      assert.equal(extractOrderNumber(text), null);
+    });
+  }
+
+  test('still reads a numeric order number when the word is there', () => {
+    assert.equal(extractOrderNumber('Order #1234 confirmed'), '1234');
+  });
+
+  test('is case-insensitive about the word', () => {
+    assert.equal(extractOrderNumber('ORDER #987654'), '987654');
+  });
+
+  test('a page carrying both a hex colour and a real id reads the id', () => {
+    const page = '<style>.a{color:#303030}</style> Your order number is: DEV-BB-50F5137';
+
+    assert.equal(extractOrderNumber(page), 'DEV-BB-50F5137');
+  });
+});

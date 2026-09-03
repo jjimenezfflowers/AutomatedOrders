@@ -14,12 +14,13 @@ const fs = require('fs').promises;
 const path = require('path');
 const { chromium } = require('@playwright/test');
 
+const store = require('../lib/store');
+const { disconnect } = require('../lib/db');
+
 async function main() {
-  const products = JSON.parse(
-    await fs.readFile(path.join(__dirname, '..', 'products.json'), 'utf8'),
-  );
+  const products = await store.getProducts('dev');
   const product = products[0];
-  if (!product) throw new Error('products.json is empty.');
+  if (!product) throw new Error('The catalogue is empty; run npm run db:seed.');
 
   const browser = await chromium.launch();
   const page = await browser.newPage();
@@ -56,6 +57,7 @@ async function main() {
     console.log(`\ncomparar contra el cart_token de una orden real: hWNGO828YDgpYmSDFMKyD3Cs (24 chars, plano)`);
   } finally {
     await browser.close();
+    await disconnect();
   }
 }
 

@@ -16,6 +16,10 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  // Relative to this file, so it resolves the same whatever directory the
+  // process was started from. The server used to read its JSON with bare
+  // relative paths and picked up nothing when started from elsewhere.
+  url      = env("DATABASE_URL")
 }
 
 /// A product the automation can order, per store.

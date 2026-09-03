@@ -310,7 +310,9 @@ describe('OrdersComponent', () => {
       component.deliveryDate = '';
       component.runTest();
       httpMock.expectNone(r => r.method === 'POST');
-      expect(window.alert).toHaveBeenCalledWith('Please select a delivery date');
+      // A missing delivery date is a field error now, shown next to the control,
+      // rather than an alert that says nothing about where the problem is.
+      expect(component.errors['deliveryDate']).toBe('Delivery date is required.');
       expect(component.isPlacingOrder).toBeFalse();
     });
 

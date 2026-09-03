@@ -65,11 +65,18 @@
       </div>
 
       <!-- Delivery Date -->
-      <ui-field label="Delivery Date" controlId="order-delivery-date">
+      <ui-field
+        label="Delivery Date"
+        controlId="order-delivery-date"
+        [error]="errors['deliveryDate']"
+      >
         <ui-date-picker
           inputId="order-delivery-date"
           name="orderDeliveryDate"
           [(ngModel)]="deliveryDate"
+          [invalid]="!!errors['deliveryDate']"
+          (focusout)="onFieldBlur('deliveryDate')"
+          (input)="onFieldInput('deliveryDate')"
           testId="order-delivery-date" />
       </ui-field>
 
@@ -155,19 +162,32 @@
                 }
 
                 <div class="grid grid-cols-2 gap-3 mt-2">
-                  <ui-field label="Quantity" [controlId]="'quantity-' + item.id">
+                  <ui-field
+                    label="Quantity"
+                    [controlId]="'quantity-' + item.id"
+                    [error]="errors[quantityFieldKey(item.id)]"
+                  >
                     <ui-input
                       type="number"
                       [inputId]="'quantity-' + item.id"
                       [(ngModel)]="item.quantity"
                       min="1"
-                      placeholder="1" />
+                      placeholder="1"
+                      [invalid]="!!errors[quantityFieldKey(item.id)]"
+                      (focusout)="onFieldBlur(quantityFieldKey(item.id))"
+                      (input)="onFieldInput(quantityFieldKey(item.id))" />
                   </ui-field>
-                  <ui-field label="Delivery Date" [controlId]="'delivery-date-' + item.id">
+                  <ui-field
+                    label="Delivery Date"
+                    [controlId]="'delivery-date-' + item.id"
+                    [error]="errors[deliveryDateFieldKey(item.id)]"
+                  >
                     <ui-date-picker
                       [inputId]="'delivery-date-' + item.id"
                       [name]="'deliveryDate-' + item.id"
                       [(ngModel)]="item.deliveryDate"
+                      [invalid]="!!errors[deliveryDateFieldKey(item.id)]"
+                      (focusout)="onFieldBlur(deliveryDateFieldKey(item.id))"
                       [testId]="'delivery-date-' + item.id" />
                   </ui-field>
                 </div>

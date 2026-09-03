@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -50,6 +50,14 @@ interface Product {
  */
 const MIN_LEAD_DAYS = 8;
 const MAX_LEAD_DAYS = 12;
+
+import {
+  deliveryDateError,
+  deliveryDateField,
+  orderFormErrors,
+  quantityError,
+  quantityField,
+} from './orders.schema';
 
 interface OrderItem {
   id: string;
@@ -107,6 +115,11 @@ export class OrdersComponent implements OnInit {
   productSort: ProductSortKey = 'entry';
   /** Filters the picker; 24 products in a checkbox grid is more than anyone scans. */
   productSearch = '';
+
+  /** Messages keyed by field; empty means the order can be saved. */
+  errors: Record<string, string | undefined> = {};
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   readonly productSortOptions: { value: ProductSortKey; label: string }[] = [
     { value: 'entry', label: 'Entry' },
     { value: 'origin', label: 'Origin' },
@@ -168,6 +181,70 @@ export class OrdersComponent implements OnInit {
         .toLowerCase()
         .includes(term),
     );
+  }
+
+  /* Validate when a field is left, not on every keystroke. */
+  onFieldBlur(field: string): void {
+    this.validateField(field);
+  }
+
+  /*
+   * Only re-checks a field already showing a message, so a half-typed date is not
+   * flagged, but a corrected one clears as soon as it is right.
+   */
+  onFieldInput(field: string): void {
+    if (this.errors[field]) this.validateField(field);
+  }
+
+  quantityFieldKey = quantityField;
+  deliveryDateFieldKey = deliveryDateField;
+
+  private validateField(field: string): void {
+    if (field === 'deliveryDate') {
+      this.errors[field] = deliveryDateError(this.deliveryDate) ?? undefined;
+      return;
+    }
+
+    const item = this.orderItems.find(
+      candidate =>
+        quantityField(candidate.id) === field || deliveryDateField(candidate.id) === field,
+    );
+    if (!item) return;
+
+    this.errors[field] =
+      (field.startsWith('quantity-')
+        // Not Number(): a cleared box reads back as null, and Number(null) is 0,
+        // which is indistinguishable from a deliberately typed 0. Blank saves as 1.
+        ? quantityError(item.quantity)
+        : item.deliveryDate
+          ? deliveryDateError(item.deliveryDate)
+          : null) ?? undefined;
+  }
+
+  private validateAll(): boolean {
+    this.errors = orderFormErrors({
+      deliveryDate: this.deliveryDate,
+      orders: this.orderItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        deliveryDate: item.deliveryDate,
+      })),
+    });
+    return Object.keys(this.errors).length === 0;
+  }
+
+  private focusFirstInvalid(): void {
+    const field = Object.keys(this.errors).find(key => this.errors[key]);
+    if (!field) return;
+
+    const controlId =
+      field === 'deliveryDate'
+        ? 'order-delivery-date'
+        : field.startsWith('quantity-')
+          ? `quantity-${field.slice('quantity-'.length)}`
+          : `delivery-date-${field.slice('deliveryDate-'.length)}`;
+
+    this.host.nativeElement.querySelector<HTMLElement>(`#${CSS.escape(controlId)}`)?.focus();
   }
 
   clearSelection(): void {
@@ -250,8 +327,15 @@ export class OrdersComponent implements OnInit {
   }
 
   saveOrder() {
+    // The "not loaded yet" guard runs first: it explains a different problem, and
+    // validating a form that has not been populated would report every field blank.
     if (!this.configLoaded) {
       alert('The saved order has not loaded yet. Please wait a moment and try again.');
+      return;
+    }
+
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
       return;
     }
 
@@ -341,8 +425,8 @@ export class OrdersComponent implements OnInit {
       return;
     }
 
-    if (!this.deliveryDate) {
-      alert('Please select a delivery date');
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
       return;
     }
 

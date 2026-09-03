@@ -15,10 +15,14 @@ import {
   UiLabelComponent,
   UiSelectComponent,
 } from '../ui';
-import { FieldRule, firstError, positiveInteger, required, url } from '../ui/validators';
-
-/** The one non-repeating field; the rest are `quantity-<productId>`. */
-const STAGING_URL_FIELD = 'stagingBaseUrl';
+import {
+  STAGING_BASE_URL_FIELD,
+  StagingOrderValues,
+  quantityError,
+  quantityField,
+  stagingBaseUrlError,
+  stagingOrderErrors,
+} from './staging-orders.schema';
 
 interface ProductOption {
   id: string;
@@ -174,9 +178,9 @@ export class StagingOrdersComponent implements OnInit {
 
     // Deselecting a product removes its quantity control, so its message has to go
     // too — otherwise a save stays blocked by a field nobody can see or fix.
-    const live = new Set(this.orderItems.map(item => this.quantityField(item.id)));
+    const live = new Set(this.orderItems.map(item => quantityField(item.id)));
     for (const field of Object.keys(this.errors)) {
-      if (field !== STAGING_URL_FIELD && !live.has(field)) delete this.errors[field];
+      if (field !== STAGING_BASE_URL_FIELD && !live.has(field)) delete this.errors[field];
     }
   }
 
@@ -184,10 +188,8 @@ export class StagingOrdersComponent implements OnInit {
     this.syncOrderItemsFromSelection();
   }
 
-  /** The `errors` key for a product's quantity, shared by the template and the rules. */
-  quantityField(productId: string): string {
-    return `quantity-${productId}`;
-  }
+  /** Re-exported for the template, which keys ui-field's `error` by the same name. */
+  quantityField = quantityField;
 
   /** Blur is the first moment a value is finished, so it is the first moment to judge it. */
   onFieldBlur(field: string) {
@@ -203,8 +205,12 @@ export class StagingOrdersComponent implements OnInit {
     this.validateField(field);
   }
 
+  /** One field, against its own piece of the schema. */
   private validateField(field: string) {
-    const message = firstError(this.currentValue(field), ...this.rulesFor(field));
+    const message = field === STAGING_BASE_URL_FIELD
+      ? stagingBaseUrlError(this.stagingBaseUrl ?? '')
+      : quantityError(this.orderItems.find(item => quantityField(item.id) === field)?.quantity);
+
     if (message) {
       this.errors[field] = message;
     } else {
@@ -212,10 +218,9 @@ export class StagingOrdersComponent implements OnInit {
     }
   }
 
+  /** The whole payload in one parse, so a blocked save shows every problem at once. */
   private validateAll(): boolean {
-    for (const field of this.fields) {
-      this.validateField(field);
-    }
+    this.errors = stagingOrderErrors(this.formValues());
     return Object.keys(this.errors).length === 0;
   }
 
@@ -223,7 +228,7 @@ export class StagingOrdersComponent implements OnInit {
     const field = this.fields.find(candidate => this.errors[candidate]);
     if (!field) return;
 
-    const controlId = field === STAGING_URL_FIELD
+    const controlId = field === STAGING_BASE_URL_FIELD
       ? 'staging-base-url'
       : `staging-quantity-${field.slice('quantity-'.length)}`;
 
@@ -232,20 +237,19 @@ export class StagingOrdersComponent implements OnInit {
 
   /** Template order, so a blocked save focuses the topmost problem. */
   private get fields(): string[] {
-    return [STAGING_URL_FIELD, ...this.orderItems.map(item => this.quantityField(item.id))];
+    return [STAGING_BASE_URL_FIELD, ...this.orderItems.map(item => quantityField(item.id))];
   }
 
-  private rulesFor(field: string): FieldRule[] {
-    return field === STAGING_URL_FIELD
-      ? [required('Staging base URL'), url]
-      : [positiveInteger('Quantity')];
-  }
-
-  private currentValue(field: string): string {
-    if (field === STAGING_URL_FIELD) return this.stagingBaseUrl ?? '';
-
-    const item = this.orderItems.find(candidate => this.quantityField(candidate.id) === field);
-    return item?.quantity == null ? '' : String(item.quantity);
+  /** What is on screen, in the shape of the payload the schema describes. */
+  private formValues(): StagingOrderValues {
+    return {
+      stagingBaseUrl: this.stagingBaseUrl ?? '',
+      orders: this.orderItems.map(item => ({
+        productId: item.id,
+        // ui-input hands back null for an emptied number box; blank still means "1".
+        quantity: item.quantity ?? undefined
+      }))
+    };
   }
 
   saveConfig() {

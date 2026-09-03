@@ -5,31 +5,14 @@ import { CommonModule } from '@angular/common';
 
 import { UI_CARD, UiAlertComponent, UiButtonComponent, UiFieldComponent, UiInputComponent } from '../ui';
 import {
-  FieldRule,
-  cardNumber,
-  cvv,
-  email,
-  expiryMMYY,
-  firstError,
-  phone,
-  required,
-  zipCode,
-} from '../ui/validators';
+  CUSTOMER_FIELDS,
+  CustomerField,
+  CustomerFormValues,
+  customerFieldError,
+  customerFormErrors,
+} from './customer.schema';
 
 type AddressRegion = 'CT' | 'HI' | 'AK' | 'NJ';
-
-export type CustomerField =
-  | 'email'
-  | 'phone'
-  | 'firstName'
-  | 'lastName'
-  | 'address'
-  | 'city'
-  | 'state'
-  | 'zipCode'
-  | 'cardNumber'
-  | 'expiry'
-  | 'cvv';
 
 /** The fields a preset writes; their messages have to go when it fills them in. */
 const ADDRESS_FIELDS: CustomerField[] = ['address', 'city', 'state', 'zipCode'];
@@ -97,24 +80,6 @@ export class CustomerComponent implements OnInit {
 
   /** The message showing under each field, keyed the same way the template reads it. */
   errors: Partial<Record<CustomerField, string>> = {};
-
-  /*
-   * Declared in template order, which is also the order the first invalid field is
-   * looked for in, so a blocked save moves focus to the topmost problem.
-   */
-  private readonly rules: Record<CustomerField, FieldRule[]> = {
-    email: [required('Email'), email],
-    phone: [required('Phone'), phone],
-    firstName: [required('First name')],
-    lastName: [required('Last name')],
-    address: [required('Street address')],
-    city: [required('City')],
-    state: [required('State')],
-    zipCode: [required('ZIP code'), zipCode],
-    cardNumber: [required('Card number'), cardNumber],
-    expiry: [required('Expiry'), expiryMMYY],
-    cvv: [required('CVV'), cvv],
-  };
 
   private readonly controlIds: Record<CustomerField, string> = {
     email: 'customer-email',
@@ -232,8 +197,9 @@ export class CustomerComponent implements OnInit {
     }
   }
 
+  /** One field, against its own slice of the schema. */
   private validateField(field: CustomerField) {
-    const message = firstError(this.currentValue(field), ...this.rules[field]);
+    const message = customerFieldError(field, this.currentValue(field));
     if (message) {
       this.errors[field] = message;
     } else {
@@ -241,34 +207,25 @@ export class CustomerComponent implements OnInit {
     }
   }
 
+  /** The whole form in one parse, so a blocked save shows every problem at once. */
   private validateAll(): boolean {
-    for (const field of this.fields) {
-      this.validateField(field);
-    }
+    this.errors = customerFormErrors(this.formValues());
     return Object.keys(this.errors).length === 0;
   }
 
   private focusFirstInvalid() {
-    const field = this.fields.find(candidate => this.errors[candidate]);
+    const field = CUSTOMER_FIELDS.find(candidate => this.errors[candidate]);
     if (!field) return;
 
     this.host.nativeElement.querySelector<HTMLElement>(`#${this.controlIds[field]}`)?.focus();
   }
 
-  private get fields(): CustomerField[] {
-    return Object.keys(this.rules) as CustomerField[];
+  /** The two halves of the model flattened into the shape the schema describes. */
+  private formValues(): CustomerFormValues {
+    return { ...this.customerInfo, ...this.payment };
   }
 
   private currentValue(field: CustomerField): string {
-    switch (field) {
-      case 'cardNumber':
-        return this.payment.cardNumber ?? '';
-      case 'expiry':
-        return this.payment.expiry ?? '';
-      case 'cvv':
-        return this.payment.cvv ?? '';
-      default:
-        return this.customerInfo[field] ?? '';
-    }
+    return this.formValues()[field] ?? '';
   }
 }

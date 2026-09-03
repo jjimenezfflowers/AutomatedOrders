@@ -225,7 +225,7 @@ describe('ProductsComponent', () => {
       expect(query('[data-testid="products"]')).toBeTruthy();
     });
 
-    it('renders the primary action as a ui-button that opens the creation form', async () => {
+    it('renders the primary action as a ui-button that asks for the creation form', async () => {
       await completeInitAndSettle();
 
       const addButton = query('[data-testid="add-product"]')!;
@@ -233,7 +233,16 @@ describe('ProductsComponent', () => {
       expect(addButton.tagName).toBe('BUTTON');
       expect(component.showCreation).toBeFalse();
 
+      let requested = 0;
+      component.createRequested.subscribe(() => requested++);
+
       addButton.click();
+      await settle();
+
+      // The page turns this into a navigation to /products/new.
+      expect(requested).toBe(1);
+
+      component.formMode = 'new';
       await settle();
 
       expect(component.showCreation).toBeTrue();
@@ -279,7 +288,8 @@ describe('ProductsComponent', () => {
     it('round-trips an edited field back into the model and the rendered row', async () => {
       await completeInitAndSettle();
 
-      query('[data-testid="edit-product-tulips"]')!.click();
+      component.formMode = 'edit';
+      component.formProductId = 'tulips';
       await settle();
 
       expect(component.editingProduct?.name).toBe('Tulips');
@@ -516,29 +526,44 @@ describe('ProductsComponent', () => {
         expect(names()).not.toContain('Anemones');
       });
 
-      it('edits the product the row actually shows on a later page', async () => {
+      it('asks to edit the product the row actually shows on a later page', async () => {
         await click('products-next');
         expect(names()).toEqual(['Jasmine', 'Kalanchoe']);
 
+        const requested: any[] = [];
+        component.editRequested.subscribe(p => requested.push(p));
+
         await click('edit-product-jasmine');
 
-        expect(component.editingProduct?.id).toBe('jasmine');
-        expect(component.editingIndex).toBe(10);
+        expect(requested.length).toBe(1);
+        expect(requested[0].id).toBe('jasmine');
       });
 
-      it('edits the product the row actually shows after a sort', async () => {
+      /*
+       * The component asks the page to open the form now, rather than opening it
+       * itself: create and edit are routes, so the URL changes and the back button
+       * works. What still matters is that the request names the product the row
+       * actually shows, which an index-keyed action would get wrong once sorted.
+       */
+      it('asks to edit the product the row actually shows after a sort', async () => {
+        const requested: any[] = [];
+        component.editRequested.subscribe(p => requested.push(p));
+
         await click('products-sort-variants');
         expect(names()[0]).toBe('Begonias');
 
         await click('edit-product-begonias');
 
-        expect(component.editingProduct?.name).toBe('Begonias');
-        expect(component.editingIndex).toBe(2);
+        expect(requested.length).toBe(1);
+        expect(requested[0].name).toBe('Begonias');
       });
 
       it('saves the edited product back into the row it came from', async () => {
         await click('products-sort-product');
-        await click('edit-product-anemones');
+        // The route would normally open the form; drive it directly here.
+        component.formMode = 'edit';
+        component.formProductId = 'anemones';
+        await settle();
 
         component.onProductUpdated({ ...TABLE_PRODUCTS[1], name: 'Red Anemones' } as never);
         httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/products').flush({});
@@ -551,8 +576,10 @@ describe('ProductsComponent', () => {
     });
 
     describe('the creation form', () => {
-      it('still opens from Add Product and saves a new product', async () => {
-        await click('add-product');
+      it('still opens the form and saves a new product', async () => {
+        // Add Product is a navigation now; the route sets formMode.
+        component.formMode = 'new';
+        await settle();
 
         expect(fixture.nativeElement.querySelector('app-products-creation')).toBeTruthy();
 

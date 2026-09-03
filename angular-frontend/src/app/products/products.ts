@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LucideAngularModule, Plus, SquarePen, Trash2 } from 'lucide-angular';
 
@@ -51,6 +51,22 @@ interface Product {
 })
 export class ProductsComponent implements OnInit {
   @Input() apiEndpoint: string = '/api/products';
+  /* Driven by the route now, so the form survives a reload and the back button. */
+  @Input() set formMode(mode: 'new' | 'edit' | null) {
+    this.requestedForm = mode;
+    this.syncFormFromRoute();
+  }
+  @Input() set formProductId(id: string | null) {
+    this.requestedProductId = id;
+    this.syncFormFromRoute();
+  }
+  @Output() formClosed = new EventEmitter<void>();
+  /* The page owns navigation; this component stays routing-agnostic. */
+  @Output() createRequested = new EventEmitter<void>();
+  @Output() editRequested = new EventEmitter<Product>();
+
+  private requestedForm: 'new' | 'edit' | null = null;
+  private requestedProductId: string | null = null;
 
   products: Product[] = [];
   showCreation = false;
@@ -140,13 +156,42 @@ export class ProductsComponent implements OnInit {
         ...p,
         variantsText: p.variants?.join('\n') || ''
       }));
+      this.syncFormFromRoute();
     });
   }
 
-  addProduct() {
+  /*
+   * The route owns whether the form is open. Products may not have loaded when the
+   * inputs first arrive, so this runs again after every load.
+   */
+  private syncFormFromRoute(): void {
+    if (this.requestedForm === 'new') {
+      this.editingProduct = null;
+      this.editingIndex = -1;
+      this.showCreation = true;
+      return;
+    }
+
+    if (this.requestedForm === 'edit') {
+      const index = this.products.findIndex((p) => p.id === this.requestedProductId);
+      if (index < 0) {
+        // Products are still loading, or the id is unknown; the load will retry.
+        this.showCreation = this.products.length === 0;
+        return;
+      }
+      this.editingProduct = { ...this.products[index] };
+      this.editingIndex = index;
+      this.showCreation = true;
+      return;
+    }
+
+    this.showCreation = false;
     this.editingProduct = null;
     this.editingIndex = -1;
-    this.showCreation = true;
+  }
+
+  addProduct() {
+    this.createRequested.emit();
   }
 
   editProductAt(index: number) {
@@ -163,9 +208,8 @@ export class ProductsComponent implements OnInit {
    * this.products.
    */
   editRow(product: Product) {
-    const index = this.indexOfProduct(product);
-    if (index >= 0) {
-      this.editProductAt(index);
+    if (this.indexOfProduct(product) >= 0) {
+      this.editRequested.emit(product);
     }
   }
 
@@ -180,6 +224,7 @@ export class ProductsComponent implements OnInit {
     ];
     this.showCreation = false;
     this.saveProducts();
+      this.formClosed.emit();
   }
 
   onProductUpdated(updatedProduct: NewProduct) {
@@ -195,12 +240,15 @@ export class ProductsComponent implements OnInit {
     this.editingIndex = -1;
     this.showCreation = false;
     this.saveProducts();
+      this.formClosed.emit();
   }
 
   onCreationCancelled() {
     this.editingProduct = null;
     this.editingIndex = -1;
     this.showCreation = false;
+    // The route owns the form, so leaving it is a navigation.
+    this.formClosed.emit();
   }
 
   /*

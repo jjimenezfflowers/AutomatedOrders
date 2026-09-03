@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Check } from 'lucide-angular';
@@ -54,7 +54,7 @@ export interface NewProduct {
   templateUrl: './products-creation.html',
   styleUrl: './products-creation.css',
 })
-export class ProductsCreation implements OnInit {
+export class ProductsCreation implements OnInit, OnChanges {
   @Input() productToEdit: NewProduct | null = null;
   @Output() created = new EventEmitter<NewProduct>();
   @Output() updated = new EventEmitter<NewProduct>();
@@ -70,15 +70,30 @@ export class ProductsCreation implements OnInit {
     return this.productToEdit !== null;
   }
 
+  /*
+   * ngOnChanges, not ngOnInit: on a deep link to /products/:id/edit the form mounts
+   * before the catalogue has loaded, so productToEdit arrives null and only becomes
+   * the product once the request resolves. Reading it once at init left the form
+   * blank on reload.
+   */
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes['productToEdit']) return;
+    this.hydrateFromInput();
+  }
+
   ngOnInit() {
-    if (this.productToEdit) {
-      this.product = {
-        ...this.emptyProduct(),
-        ...this.productToEdit,
-        origin: this.normalizeOrigins(this.productToEdit.origin)
-      };
-      this.variantsText = this.productToEdit.variants?.join('\n') || '';
-    }
+    this.hydrateFromInput();
+  }
+
+  private hydrateFromInput() {
+    if (!this.productToEdit) return;
+
+    this.product = {
+      ...this.emptyProduct(),
+      ...this.productToEdit,
+      origin: this.normalizeOrigins(this.productToEdit.origin)
+    };
+    this.variantsText = this.productToEdit.variants?.join('\n') || '';
   }
 
   private emptyProduct(): NewProduct {

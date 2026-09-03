@@ -2,8 +2,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LucideAngularModule, Menu, Moon, Sun, Monitor, Flower2, ChevronDown } from 'lucide-angular';
 
+import { BreadcrumbService } from './shell/breadcrumb.service';
 import { EnvironmentService } from './shell/environment.service';
 import { ENVIRONMENTS, Environment, NAV_GROUPS, SECTION_COPY } from './shell/navigation';
+import { UiBreadcrumbComponent, UiCrumb } from './ui/breadcrumb';
 // Imported from the files rather than the ui barrel: the barrel re-exports the
 // data table, and pulling it in here dragged TanStack into the initial bundle
 // even though the shell never renders a table.
@@ -16,7 +18,14 @@ const SIDEBAR_STORAGE_KEY = 'bb-order-automation.sidebar';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule, UiButtonComponent],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    LucideAngularModule,
+    UiButtonComponent,
+    UiBreadcrumbComponent,
+  ],
   // Deliberately not OnPush: the feature components still assign plain fields inside
   // HTTP subscriptions. An OnPush shell is not marked dirty by those updates and
   // blocks change detection from reaching them, leaving lists empty.
@@ -25,6 +34,7 @@ const SIDEBAR_STORAGE_KEY = 'bb-order-automation.sidebar';
 export class AppComponent {
   private readonly themeService = inject(ThemeService);
   protected readonly environmentService = inject(EnvironmentService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
 
   readonly groups = NAV_GROUPS;
   readonly environments = ENVIRONMENTS;
@@ -51,6 +61,28 @@ export class AppComponent {
   readonly pageTitle = computed(() => {
     const section = this.activeSection();
     return section ? SECTION_COPY[section].title : '';
+  });
+
+  /*
+   * The top bar carries the trail rather than a bare title, as the admin's does.
+   * Every page gets a default derived from the nav — "DEV / Products" for an
+   * environment-scoped section, "Shared / History" for one that is not — and a page
+   * with a sub-view publishes a longer trail through BreadcrumbService.
+   */
+  readonly breadcrumbs = computed<UiCrumb[]>(() => {
+    const published = this.breadcrumbService.crumbs();
+    if (published.length) return published;
+
+    const section = this.activeSection();
+    if (!section) return [];
+
+    const group = NAV_GROUPS.find((g) => g.items.some((item) => item.id === section));
+    const scoped = this.pageIsScoped();
+    const context = scoped ? this.activeEnvironment().label : (group?.label ?? '');
+
+    return context
+      ? [{ label: context }, { label: SECTION_COPY[section].title }]
+      : [{ label: SECTION_COPY[section].title }];
   });
 
   readonly themeIcon = computed(() => {

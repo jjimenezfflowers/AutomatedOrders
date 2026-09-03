@@ -121,7 +121,7 @@
           <lucide-angular [img]="icons.menu" class="size-4" aria-hidden="true" />
         </ui-button>
         <div class="hidden h-6 items-center md:flex"><div class="mr-2 h-full w-px bg-border"></div></div>
-        <span class="truncate text-sm font-semibold">{{ pageTitle() }}</span>
+        <ui-breadcrumb [crumbs]="breadcrumbs()" testId="breadcrumb" class="truncate" />
       </div>
 
       <div class="ml-auto flex shrink-0 items-center gap-2">

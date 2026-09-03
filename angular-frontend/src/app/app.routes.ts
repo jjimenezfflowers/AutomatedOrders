@@ -20,6 +20,24 @@ const environmentRoutes: Routes = ENVIRONMENTS.flatMap((environment) => [
     loadComponent: () => import('./shell/pages/products-page').then((m) => m.ProductsPageComponent),
     title: `${SECTION_COPY.products.title} · ${environment.label} — ${BRAND}`,
   },
+  /*
+   * Creating and editing a product used to be component state, so the URL never
+   * changed: the back button did nothing, a reload dropped you back on the list,
+   * and Cancel was the only way out. They are routes now, which also gives the
+   * breadcrumb something real to point at.
+   */
+  {
+    path: `${environment.id}/products/new`,
+    loadComponent: () => import('./shell/pages/products-page').then((m) => m.ProductsPageComponent),
+    data: { productForm: 'new' },
+    title: `New product · ${environment.label} — ${BRAND}`,
+  },
+  {
+    path: `${environment.id}/products/:productId/edit`,
+    loadComponent: () => import('./shell/pages/products-page').then((m) => m.ProductsPageComponent),
+    data: { productForm: 'edit' },
+    title: `Edit product · ${environment.label} — ${BRAND}`,
+  },
   {
     path: `${environment.id}/orders`,
     loadComponent: () => import('./shell/pages/orders-page').then((m) => m.OrdersPageComponent),

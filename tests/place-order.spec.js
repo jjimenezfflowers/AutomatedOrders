@@ -295,22 +295,31 @@ test("Place order from config", async ({ page, context }) => {
       /*
        * Two real runs placed orders the store accepted but exposed no number where
        * these selectors look, and guessing at the markup from the outside is how
-       * "#303030" got stored in the first place. This prints what the page actually
-       * says around the word "order" so the next run can be diagnosed without
-       * placing another one.
+       * "#303030" got stored in the first place.
        *
-       * Bounded and keyword-anchored on purpose: the confirmation page also carries
-       * the customer's address and email, which should not land in the log buffer.
+       * This prints only tokens that are SHAPED like an identifier, never page
+       * prose. The confirmation page carries the customer's address and email, and
+       * these logs land in the buffer served by /api/logs, which has no auth and
+       * listens on 0.0.0.0 — so a snippet of surrounding text would publish PII to
+       * anyone on the network. Identifier-shaped tokens answer the only question
+       * being asked: is a number on this page at all, and what does it look like?
        */
       try {
         const pageText = (await page.textContent("body")) ?? "";
-        const around = [...pageText.matchAll(/order/gi)]
-          .slice(0, 6)
-          .map((match) => pageText.slice(Math.max(0, match.index - 40), match.index + 60))
-          .map((snippet) => snippet.replace(/\s+/g, " ").trim());
+        const candidates = [
+          ...new Set(
+            (pageText.match(/\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\b|#\s*\d{3,}\b/g) ?? [])
+              .map((token) => token.trim())
+              // Anything with an @ or a dot is contact data, not an identifier.
+              .filter((token) => !/[@.]/.test(token)),
+          ),
+        ].slice(0, 10);
 
-        console.log("🔎 Confirmation page, around \"order\":");
-        for (const snippet of [...new Set(around)]) console.log(`   … ${snippet} …`);
+        console.log(
+          candidates.length
+            ? `🔎 Identifier-shaped tokens on the confirmation page: ${candidates.join(", ")}`
+            : "🔎 No identifier-shaped token found on the confirmation page at all",
+        );
       } catch (e) {
         console.log("⚠️  Could not read the confirmation page for diagnostics");
       }

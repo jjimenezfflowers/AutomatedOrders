@@ -85,13 +85,30 @@ describe('Shopify Admin API', { skip }, () => {
       assert.ok('confirmationNumber' in known);
     });
 
-    test('cartToken and checkoutToken are not readable fields', async () => {
-      // If Shopify ever adds them, the lookup can be simplified — so this is
-      // pinned rather than assumed.
-      await assert.rejects(
-        () => client.graphql('{ orders(first: 1) { nodes { cartToken } } }'),
-        /cartToken|doesn't exist|Field/i,
+    test('cartToken is readable, which is what lets a match be verified', async () => {
+      // Added to Order in API 2026-07. On 2026-04 and earlier the field does not
+      // exist, so the pinned version matters and is asserted here.
+      assert.ok('cartToken' in known);
+    });
+
+    test('checkoutToken is readable too', async () => {
+      /*
+       * Both tokens are readable on 2026-07, against a changelog that named only
+       * cartToken. Pinned because the pinned API version is what decides it: on
+       * 2026-04 and earlier neither field exists, and a silent downgrade would
+       * turn the verified cart-token match back into a trusted one.
+       */
+      const data = await client.graphql(
+        '{ orders(first: 1, reverse: true, sortKey: CREATED_AT) { nodes { checkoutToken } } }',
       );
+
+      assert.ok('checkoutToken' in data.orders.nodes[0]);
+    });
+
+    test('customAttributes survive from the cart onto the order', async () => {
+      // The correlation id rides in on this, so it has to be real. This store's
+      // own storefront already sets attributes, which is how it was confirmed.
+      assert.ok(Array.isArray(known.customAttributes));
     });
 
     test('a total comes back as money, which the history file lacked entirely', () => {

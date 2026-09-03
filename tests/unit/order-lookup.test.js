@@ -7,11 +7,13 @@ const {
   normaliseCartToken,
   summarise,
   adminUrlFor,
+  RUN_ATTRIBUTE,
 } = require('../../lib/order-lookup');
 
-function order({ name, id, cartToken = null, token = 'a'.repeat(32), titles = ['Roses'], createdAt = '2026-09-03T02:16:09Z' } = {}) {
+function order({ name, id, cartToken = null, runId = null, token = 'a'.repeat(32), titles = ['Roses'], createdAt = '2026-09-03T02:16:09Z' } = {}) {
   return {
     id: id ?? `gid://shopify/Order/${name}`,
+    customAttributes: runId ? [{ key: RUN_ATTRIBUTE, value: runId }] : [],
     name,
     confirmationNumber: `CONF-${name}`,
     statusPageUrl: `https://shop.myshopify.com/637/orders/${token}`,
@@ -209,6 +211,91 @@ describe('findRunOrder', () => {
     assert.equal(found.matchedBy, 'cartToken');
     // The cart token identifies one order, so the list is never fetched.
     assert.deepEqual(client.asked, ['cart_token:hWNGO828YDgpYmSDFMKyD3Cs']);
+  });
+
+  test('checks the token the store returns rather than trusting the filter', async () => {
+    /*
+     * From API 2026-07 the order carries cartToken as a readable field. Shopify
+     * has signalled the field is on its way out, and a filter that quietly
+     * stopped filtering would otherwise hand back the wrong order in silence.
+     */
+    const wrong = { ...order({ name: 'DEV-BB-WRONG' }), cartToken: 'someoneElsesToken' };
+    const client = fakeClient({
+      byQuery: { 'cart_token:mine': [wrong] },
+      recent: [order({ name: 'DEV-BB-RECENT' })],
+    });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ cartToken: 'mine' });
+
+    assert.notEqual(found.orderNumber, 'DEV-BB-WRONG');
+  });
+
+  test('accepts the filter alone when the version returns no token to check', async () => {
+    // Older API versions do not expose the field; the filter then stands on its own.
+    const older = { ...order({ name: 'DEV-BB-OLDAPI' }), cartToken: null };
+    const client = fakeClient({ byQuery: { 'cart_token:mine': [older] }, recent: [] });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ cartToken: 'mine' });
+
+    assert.equal(found.matchedBy, 'cartToken');
+  });
+
+  test('ignores the read key when comparing the token back', async () => {
+    const match = { ...order({ name: 'DEV-BB-KEY' }), cartToken: 'abc123?key=zzz' };
+    const client = fakeClient({ byQuery: { 'cart_token:abc123': [match] }, recent: [] });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ cartToken: 'abc123?key=yyy' });
+
+    assert.equal(found.matchedBy, 'cartToken');
+  });
+
+  test('finds the order by the id the run stamped on its own cart', async () => {
+    // Depends on nothing Shopify might withdraw: the value is ours.
+    const client = fakeClient({
+      recent: [
+        order({ name: 'DEV-BB-OTHER', runId: 'someone-else' }),
+        order({ name: 'DEV-BB-MINE', runId: 'run-42' }),
+      ],
+    });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ correlationId: 'run-42' });
+
+    assert.equal(found.orderNumber, 'DEV-BB-MINE');
+    assert.equal(found.matchedBy, 'correlationId');
+  });
+
+  test('falls through when no order carries the run id', async () => {
+    const client = fakeClient({ recent: [order({ name: 'DEV-BB-UNSTAMPED' })] });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ correlationId: 'run-42' });
+
+    assert.notEqual(found.matchedBy, 'correlationId');
+  });
+
+  test('will not match a run id against some other attribute holding it', async () => {
+    // The key matters as much as the value; another attribute is not this stamp.
+    const impostor = order({ name: 'DEV-BB-IMPOSTOR' });
+    impostor.customAttributes = [{ key: 'aws_logs_id', value: 'run-42' }];
+    const client = fakeClient({ recent: [impostor] });
+
+    const found = await new OrderLookup({ client }).findRunOrder({ correlationId: 'run-42' });
+
+    assert.notEqual(found.matchedBy, 'correlationId');
+  });
+
+  test('prefers the cart token, which costs one targeted query', async () => {
+    const client = fakeClient({
+      byQuery: { 'cart_token:tok': [{ ...order({ name: 'DEV-BB-BYCART' }), cartToken: 'tok' }] },
+      recent: [order({ name: 'DEV-BB-BYRUNID', runId: 'run-42' })],
+    });
+
+    const found = await new OrderLookup({ client }).findRunOrder({
+      cartToken: 'tok',
+      correlationId: 'run-42',
+    });
+
+    assert.equal(found.matchedBy, 'cartToken');
+    assert.deepEqual(client.asked, ['cart_token:tok']);
   });
 
   test('refuses an ambiguous cart-token result rather than picking one', async () => {

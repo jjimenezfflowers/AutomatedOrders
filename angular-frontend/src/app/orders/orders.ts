@@ -39,6 +39,18 @@ interface Product {
   defaultQuantity: number;
 }
 
+/*
+ * The storefront will not take a delivery date inside its lead time. Measured on
+ * three different products on 2026-09-02, the earliest it offered was 8 days out,
+ * and Sundays are blocked on top of that.
+ *
+ * The old range started at 7, so one pick in four produced a date the calendar
+ * rejects — the run then fails at the date step rather than at the button that
+ * chose it.
+ */
+const MIN_LEAD_DAYS = 8;
+const MAX_LEAD_DAYS = 12;
+
 interface OrderItem {
   id: string;
   name: string;
@@ -449,8 +461,8 @@ export class OrdersComponent implements OnInit {
 
   generateRandomDate() {
     const today = new Date();
-    // Random number between 7 and 10 (inclusive)
-    const daysToAdd = Math.floor(Math.random() * 4) + 7; // 7, 8, 9, or 10
+    const span = MAX_LEAD_DAYS - MIN_LEAD_DAYS + 1;
+    const daysToAdd = Math.floor(Math.random() * span) + MIN_LEAD_DAYS;
     
     const targetDate = new Date(today);
     targetDate.setDate(today.getDate() + daysToAdd);

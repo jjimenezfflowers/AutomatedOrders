@@ -643,4 +643,88 @@ describe('OrdersComponent', () => {
       expect(component.orderItems.length).toBe(1);
     });
   });
+
+  describe('the random delivery date', () => {
+    /*
+     * Measured on three products on 2026-09-02: the storefront's earliest offered
+     * date was 8 days out, and Sundays are blocked. The old range started at 7, so
+     * one pick in four produced a date the calendar rejects — and the run failed at
+     * the date step rather than at the button that chose it.
+     */
+    it('never lands inside the storefront lead time', () => {
+      completeInit();
+      const today = new Date();
+      const earliest = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8);
+
+      for (let i = 0; i < 200; i++) {
+        component.generateRandomDate();
+        const [y, m, d] = component.deliveryDate.split('-').map(Number);
+
+        expect(new Date(y, m - 1, d).getTime())
+          .withContext(component.deliveryDate)
+          .toBeGreaterThanOrEqual(earliest.getTime());
+      }
+    });
+
+    it('never lands on a Sunday', () => {
+      completeInit();
+      for (let i = 0; i < 200; i++) {
+        component.generateRandomDate();
+        const [y, m, d] = component.deliveryDate.split('-').map(Number);
+
+        expect(new Date(y, m - 1, d).getDay()).withContext(component.deliveryDate).not.toBe(0);
+      }
+    });
+
+    it('emits an ISO date, which is what the picker and the spec both read', () => {
+      completeInit();
+      component.generateRandomDate();
+
+      expect(component.deliveryDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('varies, so repeated runs do not all book the same day', () => {
+      completeInit();
+      const seen = new Set<string>();
+      for (let i = 0; i < 60; i++) {
+        component.generateRandomDate();
+        seen.add(component.deliveryDate);
+      }
+
+      expect(seen.size).toBeGreaterThan(1);
+    });
+
+    it('applies the new date to every selected product', async () => {
+      completeInit();
+      await fixture.whenStable();
+
+      component.randomDateAndApply();
+
+      const applied = component.orderItems.map(item => item.deliveryDate);
+      expect(applied.length).toBeGreaterThan(0);
+      expect(new Set(applied)).toEqual(new Set([component.deliveryDate]));
+    });
+
+    it('applyDateToAll copies the main date onto every product', async () => {
+      completeInit();
+      await fixture.whenStable();
+      component.deliveryDate = '2026-09-16';
+
+      component.applyDateToAll();
+
+      expect(component.orderItems.every(i => i.deliveryDate === '2026-09-16')).toBeTrue();
+    });
+
+    it('random after applyDateToAll replaces the applied date everywhere', async () => {
+      completeInit();
+      await fixture.whenStable();
+      component.deliveryDate = '2026-09-16';
+      component.applyDateToAll();
+
+      component.randomDateAndApply();
+
+      expect(component.orderItems.every(i => i.deliveryDate === component.deliveryDate)).toBeTrue();
+      expect(component.orderItems.every(i => i.deliveryDate === '2026-09-16')).toBeFalse();
+    });
+  });
 });

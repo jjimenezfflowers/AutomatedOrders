@@ -2,6 +2,7 @@
 @if (showCreation) {
 <app-products-creation
   [productToEdit]="editingProduct"
+  [existingIds]="existingProductIds"
   (created)="onProductCreated($event)"
   (updated)="onProductUpdated($event)"
   (cancelled)="onCreationCancelled()">

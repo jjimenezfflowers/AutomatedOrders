@@ -212,6 +212,11 @@ export class ProductsComponent implements OnInit {
    * delete a different product as soon as the visible order stopped matching
    * this.products.
    */
+  /** Ids already in the catalogue, so the form can reject a duplicate. */
+  get existingProductIds(): string[] {
+    return this.products.map(product => product.id);
+  }
+
   editRow(product: Product) {
     if (this.indexOfProduct(product) >= 0) {
       this.editRequested.emit(product);

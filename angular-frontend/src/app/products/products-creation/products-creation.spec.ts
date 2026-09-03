@@ -278,6 +278,9 @@ describe('ProductsCreation', () => {
       await type(input('product-id'), 'lilies');
       await type(input('product-name'), 'Lilies');
       await type(input('product-url'), 'https://example.test/lilies');
+      // The Playwright run hands this to page.locator() to set the quantity, so a
+      // product without it cannot be ordered. All 24 real products carry one.
+      await type(input('product-quantity-selector'), '#quantity');
     }
 
     it('emits created from the save button in add mode', async () => {
@@ -344,6 +347,7 @@ describe('ProductsCreation', () => {
       await type(input('product-id'), 'lilies');
       await type(input('product-name'), 'Lilies');
       await type(input('product-url'), 'https://example.test/lilies');
+      await type(input('product-quantity-selector'), '#quantity');
       const variants = query<HTMLTextAreaElement>('textarea[data-testid="product-variants"]');
       await type(variants, '20 stems');
       await type(variants, '20 stems\n50 stems');
@@ -370,6 +374,11 @@ describe('ProductsCreation', () => {
       await create();
       const created: NewProduct[] = [];
       component.created.subscribe(p => created.push(p));
+
+      await type(input('product-id'), 'lilies');
+      await type(input('product-name'), 'Lilies');
+      await type(input('product-url'), 'https://example.test/lilies');
+      await type(input('product-quantity-selector'), '#quantity');
 
       await check(input('product-origin-US'), true);
       await check(input('product-origin-CO'), true);
@@ -426,7 +435,10 @@ describe('ProductsCreation', () => {
       expect(input('product-id').getAttribute('aria-invalid')).toBe('true');
       expect(input('product-name').getAttribute('aria-invalid')).toBe('true');
       expect(input('product-url').getAttribute('aria-invalid')).toBe('true');
-      expect(input('product-quantity-selector').getAttribute('aria-invalid')).toBeNull();
+      // The quantity selector is required too: the run hands it to page.locator().
+      expect(input('product-quantity-selector').getAttribute('aria-invalid')).toBe('true');
+      // The variant selector is genuinely optional, so a blank one is not flagged.
+      expect(input('product-variant-selector').getAttribute('aria-invalid')).toBeNull();
       expect(html()).toContain('text-destructive');
     });
 
@@ -437,6 +449,7 @@ describe('ProductsCreation', () => {
       await type(input('product-id'), 'lilies');
       await type(input('product-name'), 'Lilies');
       await type(input('product-url'), 'https://example.test/lilies');
+      await type(input('product-quantity-selector'), '#quantity');
       await click('save-product');
 
       expect(component.errors).toEqual({});

@@ -26,6 +26,9 @@
       <ui-field label="Product ID *" controlId="product-id" [error]="errors['id']">
         <ui-input
           inputId="product-id"
+          [invalid]="!!errors['id']"
+          (focusout)="onFieldBlur('id')"
+          (input)="onFieldInput('id')"
           name="productId"
           placeholder="e.g., white-spray-roses"
           [(ngModel)]="product.id"
@@ -38,6 +41,9 @@
       <ui-field label="Name *" controlId="product-name" [error]="errors['name']">
         <ui-input
           inputId="product-name"
+          [invalid]="!!errors['name']"
+          (focusout)="onFieldBlur('name')"
+          (input)="onFieldInput('name')"
           name="productName"
           placeholder="e.g., White Spray Roses"
           [(ngModel)]="product.name"
@@ -49,6 +55,9 @@
       <ui-field label="URL *" controlId="product-url" class="sm:col-span-2" [error]="errors['url']">
         <ui-input
           inputId="product-url"
+          [invalid]="!!errors['url']"
+          (focusout)="onFieldBlur('url')"
+          (input)="onFieldInput('url')"
           name="productUrl"
           placeholder="https://example.com/product"
           [(ngModel)]="product.url"
@@ -88,9 +97,12 @@
       </ui-field>
 
       <!-- Variant Selector -->
-      <ui-field label="Variant Selector" controlId="product-variant-selector" optional>
+      <ui-field label="Variant Selector" controlId="product-variant-selector" [error]="errors['variantSelector']" optional>
         <ui-input
           inputId="product-variant-selector"
+          [invalid]="!!errors['variantSelector']"
+          (focusout)="onFieldBlur('variantSelector')"
+          (input)="onFieldInput('variantSelector')"
           name="variantSelector"
           placeholder="#option-0"
           [(ngModel)]="product.variantSelector"
@@ -129,9 +141,12 @@
       </ui-field>
 
       <!-- Quantity Selector -->
-      <ui-field label="Quantity Selector" controlId="product-quantity-selector">
+      <ui-field label="Quantity Selector" controlId="product-quantity-selector" [error]="errors['quantitySelector']">
         <ui-input
           inputId="product-quantity-selector"
+          [invalid]="!!errors['quantitySelector']"
+          (focusout)="onFieldBlur('quantitySelector')"
+          (input)="onFieldInput('quantitySelector')"
           name="quantitySelector"
           placeholder="#quantity-123"
           [(ngModel)]="product.quantitySelector"
@@ -139,10 +154,13 @@
       </ui-field>
 
       <!-- Default Quantity -->
-      <ui-field label="Default Quantity" controlId="product-default-quantity">
+      <ui-field label="Default Quantity" controlId="product-default-quantity" [error]="errors['defaultQuantity']">
         <ui-input
           type="number"
           inputId="product-default-quantity"
+          [invalid]="!!errors['defaultQuantity']"
+          (focusout)="onFieldBlur('defaultQuantity')"
+          (input)="onFieldInput('defaultQuantity')"
           name="defaultQuantity"
           min="1"
           placeholder="1"

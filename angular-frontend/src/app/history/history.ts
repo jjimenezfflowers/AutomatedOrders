@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LucideAngularModule, History } from 'lucide-angular';
+import { LucideAngularModule, History, ExternalLink } from 'lucide-angular';
 
 import {
   UI_CARD,
@@ -17,6 +17,15 @@ interface HistoryProduct {
   deliveryDate?: string;
 }
 
+/** A line the store actually charged for, as opposed to one the run asked for. */
+interface HistoryLineItem {
+  title: string;
+  quantity: number;
+  variant?: string;
+  sku?: string;
+  unitPrice?: string;
+}
+
 interface HistoryEntry {
   // Null when the confirmation page did not expose a usable order number; the
   // order was still placed, so the entry is kept rather than dropped.
@@ -29,6 +38,19 @@ interface HistoryEntry {
   products: HistoryProduct[];
   customer: string;
   total: string;
+  // Everything below arrives from the Admin API, so it is absent on every entry
+  // written before that integration. The table renders those as blank rather
+  // than inventing a value.
+  adminUrl?: string | null;
+  financialStatus?: string | null;
+  fulfillmentStatus?: string | null;
+  destination?: string | null;
+  shippingMethod?: string | null;
+  subtotal?: string | null;
+  shipping?: string | null;
+  tax?: string | null;
+  discounts?: string | null;
+  lineItems?: HistoryLineItem[];
 }
 
 /*
@@ -109,7 +131,7 @@ function usableOrderNumber(value: string | null): string | null {
 export class HistoryComponent implements OnInit {
   readonly history = signal<HistoryEntry[]>([]);
   readonly loading = signal(true);
-  readonly icons = { history: History };
+  readonly icons = { history: History, external: ExternalLink };
 
   /** The order's delivery date, and how many other dates it spans. */
   deliverySummary(entry: HistoryEntry): { first: string; extra: number } {
@@ -143,6 +165,16 @@ export class HistoryComponent implements OnInit {
       // Blank for every entry written before the API integration; those orders
       // are real, they just have no reference recorded.
       accessor: (entry) => entry.confirmationNumber ?? '',
+      sortable: true,
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      width: 'minmax(150px,1fr)',
+      // Sorts and searches on both statuses at once, so "unfulfilled" finds the
+      // runs waiting on the store.
+      accessor: (entry) =>
+        [entry.financialStatus, entry.fulfillmentStatus].filter(Boolean).join(' ').toLowerCase(),
       sortable: true,
     },
     {
@@ -189,6 +221,14 @@ export class HistoryComponent implements OnInit {
       align: 'right',
     },
     {
+      id: 'admin',
+      header: 'Admin',
+      width: '110px',
+      // Nothing to sort or search on; the cell is a link, and its text would
+      // just repeat the order number.
+      accessor: () => '',
+    },
+    {
       id: 'products',
       header: 'Products',
       width: '130px',
@@ -203,6 +243,51 @@ export class HistoryComponent implements OnInit {
   ];
 
   constructor(private http: HttpClient) {}
+
+  /** PARTIALLY_REFUNDED reads as "Partially refunded". */
+  humanise(status: string | null | undefined): string {
+    if (!status) return '';
+    const words = status.toLowerCase().replace(/_/g, ' ');
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+
+  financialTone(entry: HistoryEntry): 'success' | 'warning' | 'destructive' | 'secondary' {
+    switch (entry.financialStatus) {
+      case 'PAID':
+        return 'success';
+      case 'REFUNDED':
+      case 'VOIDED':
+        return 'destructive';
+      case 'PENDING':
+      case 'PARTIALLY_PAID':
+      case 'PARTIALLY_REFUNDED':
+        return 'warning';
+      default:
+        return 'secondary';
+    }
+  }
+
+  /**
+   * The money breakdown, for the total cell's tooltip.
+   *
+   * A column per line would push the table past the width it has; the breakdown is
+   * worth keeping, so it lives one hover away rather than being dropped.
+   */
+  totalBreakdown(entry: HistoryEntry): string {
+    const rows: [string, string | null | undefined][] = [
+      ['Subtotal', entry.subtotal],
+      ['Discounts', entry.discounts],
+      [entry.shippingMethod ? `Shipping (${entry.shippingMethod})` : 'Shipping', entry.shipping],
+      ['Tax', entry.tax],
+      ['Total', entry.total !== 'N/A' ? entry.total : null],
+    ];
+    const lines = rows.filter(([, value]) => Boolean(value));
+
+    if (!lines.length) return 'No breakdown recorded for this run.';
+
+    const destination = entry.destination ? `\nShips to ${entry.destination}` : '';
+    return lines.map(([label, value]) => `${label}: ${value}`).join('\n') + destination;
+  }
 
   ngOnInit() {
     this.http.get<HistoryEntry[]>('/api/order-history').subscribe({
@@ -231,9 +316,25 @@ export class HistoryComponent implements OnInit {
   }
 
   /** The products of one entry, one per line, for the count cell's tooltip. */
+  /*
+   * Prefers what the store charged for over what the run asked for. The config
+   * only knows a product's slug; the store knows its name, its SKU and what it
+   * cost, which is what someone checking a run is actually after.
+   */
   productSummary(entry: HistoryEntry): string {
+    if (entry.lineItems?.length) {
+      return entry.lineItems
+        .map((item) => {
+          const variant = item.variant ? ` - ${item.variant}` : '';
+          const sku = item.sku ? ` [${item.sku}]` : '';
+          const price = item.unitPrice ? ` @ ${item.unitPrice}` : '';
+          return `${item.title} × ${item.quantity}${variant}${sku}${price}`;
+        })
+        .join('\n');
+    }
+
     return entry.products
-      .map(p => `${p.productId} × ${p.quantity}${p.variant ? ' — ' + p.variant : ''}`)
+      .map(p => `${p.productId} × ${p.quantity}${p.variant ? ' - ' + p.variant : ''}`)
       .join('\n');
   }
 }

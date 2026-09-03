@@ -143,8 +143,9 @@ describe('HistoryComponent', () => {
     const ORDER = 0;
     const ENVIRONMENT = 1;
     const DATE = 2;
-    const CUSTOMER = 3;
-    const PRODUCTS = 4;
+    const DELIVERY = 3;
+    const CUSTOMER = 4;
+    const PRODUCTS = 5;
 
     interface EntryOverrides {
       orderNumber?: string | null;
@@ -310,11 +311,28 @@ describe('HistoryComponent', () => {
       });
 
       it('treats an entry recorded before the staging runs existed as dev', async () => {
-        // The oldest half of order-history.json has no `environment` key at all.
-        await flushHistory([{ ...entry({ orderNumber: 'BB-LEGACY-1' }), environment: undefined }]);
+        // 144 of the 476 entries have no `environment` key at all. The staging
+        // entry is here so the filter has two options and actually renders.
+        await flushHistory([
+          { ...entry({ orderNumber: 'BB-LEGACY-1' }), environment: undefined },
+          entry({ orderNumber: 'STG-BB-1', environment: 'staging' })
+        ]);
         await choose('history-filter-environment', 'DEV');
 
         expect(columnText(ORDER)).toEqual(['#BB-LEGACY-1']);
+      });
+
+      it('does not render a filter whose only option is the one already showing', async () => {
+        // A dropdown offering a single value narrows nothing; the customer column
+        // is the real case, since every entry in the file shares one address.
+        await flushHistory([entry({ orderNumber: 'BB-1' }), entry({ orderNumber: 'BB-2' })]);
+
+        expect(
+          fixture.nativeElement.querySelector('select[data-testid="history-filter-environment"]')
+        ).toBeNull();
+        expect(
+          fixture.nativeElement.querySelector('select[data-testid="history-filter-customer"]')
+        ).toBeNull();
       });
     });
 

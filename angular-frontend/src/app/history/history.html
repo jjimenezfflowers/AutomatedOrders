@@ -36,6 +36,19 @@
           <span class="text-sm text-muted-foreground">{{ formatDate(entry.date) }}</span>
         </ng-template>
 
+        <ng-template uiDataTableCell="delivery" let-entry>
+          @if (deliverySummary(entry); as delivery) {
+            @if (delivery.first) {
+              <span class="text-sm">{{ delivery.first }}</span>
+              @if (delivery.extra) {
+                <span class="ml-1 text-xs text-muted-foreground">+{{ delivery.extra }} more</span>
+              }
+            } @else {
+              <span class="text-sm text-muted-foreground">—</span>
+            }
+          }
+        </ng-template>
+
         <ng-template uiDataTableCell="products" let-entry let-count="value">
           <!-- The full list lives in the tooltip: a bulleted list does not fit a table row. -->
           <span class="cursor-help text-sm text-muted-foreground" [title]="productSummary(entry)">

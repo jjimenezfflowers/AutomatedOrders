@@ -14,6 +14,7 @@ interface HistoryProduct {
   productId: string;
   quantity: number;
   variant?: string;
+  deliveryDate?: string;
 }
 
 interface HistoryEntry {
@@ -25,6 +26,19 @@ interface HistoryEntry {
   products: HistoryProduct[];
   customer: string;
   total: string;
+}
+
+/*
+ * Delivery date is per product, and an order can span more than one (3 of the 476
+ * do). The earliest is what the order is scheduled for; the cell says "+N more"
+ * when they differ so the spread is visible rather than silently dropped.
+ */
+function deliveryDates(entry: HistoryEntry): string[] {
+  return [...new Set(entry.products.map((p) => p.deliveryDate).filter(Boolean) as string[])].sort();
+}
+
+function earliestDelivery(entry: HistoryEntry): string {
+  return deliveryDates(entry)[0] ?? '';
 }
 
 /** Entries written before the staging runs existed carry no environment; they were all dev. */
@@ -40,19 +54,38 @@ function timestamp(iso: string): number {
 
 /*
  * Entries written before the order-number capture was fixed stored whatever the
- * confirmation page's heading said — 362 of them read "Your order is confirmed",
- * 32 "Finalize order", 22 "Order summary". Rendering those as "#Your order is
- * confirmed" is worse than admitting the number was never captured, so anything
- * that is not shaped like an identifier is treated as missing.
+ * confirmation page's heading said. Most are useless — 362 read "Your order is
+ * confirmed", 32 "Finalize order", 22 "Order summary" — but 59 of them read
+ * "Your order number is: DEV-BB-50F2327" and do carry the real number.
  *
- * Same rule as tests/helpers/order-number.js, which decides what gets written.
+ * So this extracts rather than validates. An earlier version tested the whole
+ * string against the identifier shape, which is anchored, so every one of those
+ * 59 failed and rendered as "not captured" — throwing away information the file
+ * actually had.
+ *
+ * Same patterns as tests/helpers/order-number.js, which decides what gets written.
  */
-const ORDER_NUMBER_PATTERN = /^#?[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$|^#?\d{3,}$/;
+const ORDER_NUMBER_PATTERNS = [
+  // Environment-prefixed identifiers, e.g. DEV-BB-50F2327 / STAGE-BB-1204.
+  /\b([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)\b/,
+  // Classic Shopify order numbers, e.g. #1234.
+  /#\s*(\d{3,})\b/,
+];
 
 function usableOrderNumber(value: string | null): string | null {
-  const trimmed = (value ?? '').trim();
-  if (!trimmed || !ORDER_NUMBER_PATTERN.test(trimmed)) return null;
-  return /\d/.test(trimmed) ? trimmed : null;
+  const text = String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!text) return null;
+
+  for (const pattern of ORDER_NUMBER_PATTERNS) {
+    const match = text.match(pattern);
+    // An order number always carries a digit; this rejects tokens like "SHOP-NOW".
+    if (match && /\d/.test(match[1])) return match[1];
+  }
+
+  return null;
 }
 
 @Component({
@@ -71,6 +104,12 @@ export class HistoryComponent implements OnInit {
   readonly history = signal<HistoryEntry[]>([]);
   readonly loading = signal(true);
   readonly icons = { history: History };
+
+  /** The order's delivery date, and how many other dates it spans. */
+  deliverySummary(entry: HistoryEntry): { first: string; extra: number } {
+    const dates = deliveryDates(entry);
+    return { first: dates[0] ?? '', extra: Math.max(0, dates.length - 1) };
+  }
 
   /*
    * The date column's accessor hands the table the raw ISO string, not what the
@@ -106,12 +145,22 @@ export class HistoryComponent implements OnInit {
       sortable: true,
     },
     {
+      id: 'delivery',
+      header: 'Delivery',
+      width: 'minmax(150px,1fr)',
+      // Sorts on the raw ISO date, like the placed-at column, so August orders
+      // before September rather than after it.
+      accessor: (entry) => earliestDelivery(entry),
+      sortable: true,
+    },
+    {
       id: 'customer',
       header: 'Customer',
-      width: 'minmax(220px,1.5fr)',
+      width: 'minmax(200px,1.5fr)',
       accessor: (entry) => entry.customer,
       sortable: true,
-      filterable: true,
+      // Not filterable: every entry in the file carries the same address, so the
+      // dropdown would offer exactly one option.
     },
     {
       id: 'products',

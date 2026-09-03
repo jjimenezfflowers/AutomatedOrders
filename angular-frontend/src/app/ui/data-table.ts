@@ -192,15 +192,18 @@ const EMPTY_CLASS =
         />
 
         @for (column of filterableColumns(); track column.id) {
-          <ui-select
-            size="sm"
-            class="w-auto min-w-40"
-            [options]="filterOptions(column.id)"
-            [placeholder]="'All ' + column.header"
-            [testId]="scopedTestId('filter-' + column.id)"
-            [ngModel]="filterValue(column.id)"
-            (ngModelChange)="onFilterChange(column.id, $event)"
-          />
+          <!-- A dropdown whose only option is "All" narrows nothing; skip it. -->
+          @if (filterOptions(column.id).length > 1) {
+            <ui-select
+              size="sm"
+              class="w-auto min-w-40"
+              [options]="filterOptions(column.id)"
+              [placeholder]="'All ' + column.header"
+              [testId]="scopedTestId('filter-' + column.id)"
+              [ngModel]="filterValue(column.id)"
+              (ngModelChange)="onFilterChange(column.id, $event)"
+            />
+          }
         }
       </div>
 

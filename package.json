@@ -19,6 +19,12 @@
   "type": "commonjs",
   "dependencies": {
     "@playwright/test": "^1.61.1",
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "better-sqlite3": "^13.0.3",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "prisma": "^7.10.0"
   }
 }

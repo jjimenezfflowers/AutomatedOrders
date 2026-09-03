@@ -1,5 +1,6 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("fs").promises;
+const { randomUUID } = require("crypto");
 const path = require("path");
 const {
   clickAddToCart,
@@ -9,7 +10,7 @@ const {
   setQuantityFromOrder,
 } = require("./helpers/product-form");
 const { readCheckoutError } = require("./helpers/checkout");
-const { readCartToken } = require("./helpers/cart-token");
+const { readCartToken, stampCart } = require("./helpers/cart-token");
 const { captureOrder } = require("./helpers/order-capture");
 const { OrderLookup } = require("../lib/order-lookup");
 const { hasCredentials } = require("../lib/shopify");
@@ -80,6 +81,12 @@ test("Place order from config", async ({ page, context }) => {
   /* The cart's own token, which identifies the resulting order exactly. */
   let cartToken = null;
 
+  /*
+   * An id of this run's own making, stamped on the cart and read back off the
+   * order. Unlike the cart token it depends on nothing Shopify might withdraw.
+   */
+  const correlationId = randomUUID();
+
   for (let i = 0; i < orderConfig.orders.length; i++) {
     const order = orderConfig.orders[i];
     const product = products.find((p) => p.id === order.productId);
@@ -89,6 +96,17 @@ test("Place order from config", async ({ page, context }) => {
     }
 
     await page.goto(resolveProductUrl(product.url));
+
+    /*
+     * Stamped before anything is added, and only once. /cart/update.js makes the
+     * theme tear down its cart sidebar, and the checkout button never comes back,
+     * so doing this after add-to-cart strands the run on the product page. The
+     * attribute survives the add either way, which is what makes the earlier
+     * moment the right one.
+     */
+    if (i === 0 && (await stampCart(page, correlationId))) {
+      console.log(`  ✅ Carrito marcado para esta corrida`);
+    }
     await page.waitForLoadState('domcontentloaded');
     
     // Wait a moment for page to settle after navigation
@@ -160,6 +178,7 @@ test("Place order from config", async ({ page, context }) => {
     // Read every time: the token belongs to the cart, so the last read covers
     // every product the run added.
     cartToken = (await readCartToken(page)) ?? cartToken;
+
     
     // Close sidebar cart if not the last product
     if (i < orderConfig.orders.length - 1) {
@@ -276,6 +295,7 @@ test("Place order from config", async ({ page, context }) => {
     const order = await captureOrder({
       page,
       lookup,
+      correlationId,
       cartToken,
       checkoutUrl,
       since: runStartedAt,
@@ -313,6 +333,7 @@ test("Place order from config", async ({ page, context }) => {
       // How confidently the order was identified, so a weak match is never read
       // as a strong one.
       matchedBy: order.matchedBy ?? null,
+      correlationId,
       // Where the number came from, so a scraped one is never mistaken for the
       // store's own answer.
       source: order.source,

@@ -11,6 +11,8 @@
  * session, so the two look related and are not.
  */
 
+const { RUN_ATTRIBUTE } = require('../../lib/order-lookup');
+
 /**
  * Reads the cart token from the page's own session. Returns null rather than
  * throwing: a run that cannot read its cart token should still place the order and
@@ -38,4 +40,40 @@ async function readCartToken(page) {
   }
 }
 
-module.exports = { readCartToken };
+/**
+ * Stamps the cart with an id of the run's own making, so the resulting order can
+ * be identified without depending on any Shopify token surviving checkout.
+ *
+ * /cart/update.js is the documented Ajax API for cart attributes, and the
+ * attribute arrives on the order as a `customAttributes` entry. That the store's
+ * cart attributes do survive checkout was confirmed on a live order, which came
+ * through carrying admin_order_id and aws_logs_id set by the storefront.
+ *
+ * Returns whether it took. A run that cannot stamp its cart still places the
+ * order and falls back to the cart token.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} correlationId
+ * @returns {Promise<boolean>}
+ */
+async function stampCart(page, correlationId) {
+  if (!correlationId) return false;
+
+  try {
+    const cart = await page.evaluate(
+      ([key, value]) =>
+        fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ attributes: { [key]: value } }),
+        }).then((response) => (response.ok ? response.json() : null)),
+      [RUN_ATTRIBUTE, correlationId],
+    );
+
+    return cart?.attributes?.[RUN_ATTRIBUTE] === correlationId;
+  } catch {
+    return false;
+  }
+}
+
+module.exports = { readCartToken, stampCart, RUN_ATTRIBUTE };

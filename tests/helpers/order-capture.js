@@ -89,6 +89,7 @@ async function identifierCandidates(page) {
  * @param {object} options
  * @param {import('@playwright/test').Page} options.page
  * @param {object} [options.lookup] an OrderLookup; omit to skip the API entirely
+ * @param {string} [options.correlationId] the id this run stamped on its cart
  * @param {string} [options.cartToken] from /cart.js
  * @param {string} [options.checkoutUrl] the checkout URL, which carries the token
  * @param {Date} [options.since] when the run started
@@ -100,6 +101,7 @@ async function identifierCandidates(page) {
 async function captureOrder({
   page,
   lookup,
+  correlationId,
   cartToken,
   checkoutUrl,
   since,
@@ -141,6 +143,7 @@ async function captureOrder({
 
       try {
         const order = await lookup.findRunOrder({
+          correlationId,
           cartToken: token,
           statusUrl,
           since,

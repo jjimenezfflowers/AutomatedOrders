@@ -40,11 +40,11 @@
 
       <!-- Delivery Date -->
       <ui-field label="Delivery Date" controlId="order-delivery-date">
-        <ui-input
-          type="date"
+        <ui-date-picker
           inputId="order-delivery-date"
+          name="orderDeliveryDate"
           [(ngModel)]="deliveryDate"
-          title="Select delivery date" />
+          testId="order-delivery-date" />
       </ui-field>
 
       <!-- Selected Products -->
@@ -138,11 +138,11 @@
                       placeholder="1" />
                   </ui-field>
                   <ui-field label="Delivery Date" [controlId]="'delivery-date-' + item.id">
-                    <ui-input
-                      type="date"
+                    <ui-date-picker
                       [inputId]="'delivery-date-' + item.id"
+                      [name]="'deliveryDate-' + item.id"
                       [(ngModel)]="item.deliveryDate"
-                      title="Delivery date for this product" />
+                      [testId]="'delivery-date-' + item.id" />
                   </ui-field>
                 </div>
               </div>

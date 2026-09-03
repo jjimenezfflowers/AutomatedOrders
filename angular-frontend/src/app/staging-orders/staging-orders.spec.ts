@@ -196,7 +196,7 @@ describe('StagingOrdersComponent', () => {
 
       const all: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
       const owned: HTMLButtonElement[] = Array.from(
-        fixture.nativeElement.querySelectorAll('ui-button button')
+        fixture.nativeElement.querySelectorAll('ui-button button, ui-date-picker button')
       );
 
       expect(all.length).toBeGreaterThan(0);
@@ -210,18 +210,21 @@ describe('StagingOrdersComponent', () => {
       expect(query('ui-button button[data-testid="place-staging-order"]')).toBeTruthy();
     });
 
-    it('round-trips the delivery date through ui-input', async () => {
+    it('round-trips the delivery date through ui-date-picker', async () => {
       completeInit();
       await fixture.whenStable();
       detect();
 
-      const input = query<HTMLInputElement>('ui-input input#staging-delivery-date');
-      expect(input.type).toBe('date');
-      expect(input.value).toBe('2026-01-10');
+      const trigger = query<HTMLButtonElement>('button[data-testid="staging-delivery-date"]');
+      expect(trigger.textContent).toContain('Jan 10, 2026');
 
-      type(input, '2026-08-08');
+      trigger.click();
+      detect();
 
-      expect(component.deliveryDate).toBe('2026-08-08');
+      query<HTMLButtonElement>('[data-testid="staging-delivery-date-popover"] [data-day="2026-01-08"]').click();
+      detect();
+
+      expect(component.deliveryDate).toBe('2026-01-08');
     });
 
     it('round-trips the staging base url through ui-input', async () => {

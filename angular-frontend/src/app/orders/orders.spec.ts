@@ -441,8 +441,9 @@ describe('OrdersComponent', () => {
       completeInit();
 
       const all: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+      // ui-date-picker owns its trigger and day cells; they are kit markup too.
       const owned: HTMLButtonElement[] = Array.from(
-        fixture.nativeElement.querySelectorAll('ui-button button')
+        fixture.nativeElement.querySelectorAll('ui-button button, ui-date-picker button')
       );
 
       expect(all.length).toBeGreaterThan(0);
@@ -451,32 +452,41 @@ describe('OrdersComponent', () => {
       expect(owned.filter(b => b.textContent!.includes('Save Order')).length).toBe(1);
     });
 
-    it('round-trips the main delivery date through ui-input', async () => {
+    it('round-trips the main delivery date through ui-date-picker', async () => {
       completeInit();
       await fixture.whenStable();
       detect();
 
-      const input = query<HTMLInputElement>('ui-input input#order-delivery-date');
-      expect(input.type).toBe('date');
-      expect(input.value).toBe('2026-01-10');
+      // Delivery dates render through ui-date-picker now, not a native date input:
+      // the trigger shows the formatted date and picking a day goes through the grid.
+      const trigger = query<HTMLButtonElement>('button[data-testid="order-delivery-date"]');
+      expect(trigger.textContent).toContain('Jan 10, 2026');
 
-      type(input, '2026-06-06');
+      trigger.click();
+      detect();
 
-      expect(component.deliveryDate).toBe('2026-06-06');
+      const day = query<HTMLButtonElement>('[data-testid="order-delivery-date-popover"] [data-day="2026-01-06"]');
+      day.click();
+      detect();
+
+      expect(component.deliveryDate).toBe('2026-01-06');
     });
 
-    it('round-trips a per-product delivery date through ui-input', async () => {
+    it('round-trips a per-product delivery date through ui-date-picker', async () => {
       completeInit();
       await fixture.whenStable();
       detect();
 
-      const input = query<HTMLInputElement>('ui-input input#delivery-date-roses');
-      expect(input.type).toBe('date');
-      expect(input.value).toBe('2026-01-10');
+      const trigger = query<HTMLButtonElement>('button[data-testid="delivery-date-roses"]');
+      expect(trigger.textContent).toContain('Jan 10, 2026');
 
-      type(input, '2026-07-07');
+      trigger.click();
+      detect();
 
-      expect(component.orderItems[0].deliveryDate).toBe('2026-07-07');
+      query<HTMLButtonElement>('[data-testid="delivery-date-roses-popover"] [data-day="2026-01-07"]').click();
+      detect();
+
+      expect(component.orderItems[0].deliveryDate).toBe('2026-01-07');
     });
 
     it('round-trips a per-product quantity through ui-input', async () => {

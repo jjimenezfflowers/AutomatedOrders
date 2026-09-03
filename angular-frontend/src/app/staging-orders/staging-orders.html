@@ -18,11 +18,11 @@
     <!-- Delivery Date -->
     <div class="mb-4">
       <ui-field label="Delivery Date" controlId="staging-delivery-date">
-        <ui-input
-          type="date"
+        <ui-date-picker
           inputId="staging-delivery-date"
+          name="stagingDeliveryDate"
           [(ngModel)]="deliveryDate"
-          title="Select delivery date" />
+          testId="staging-delivery-date" />
       </ui-field>
     </div>
 

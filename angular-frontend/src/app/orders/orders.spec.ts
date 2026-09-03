@@ -280,7 +280,10 @@ describe('OrdersComponent', () => {
 
       httpMock.expectNone('/api/run-test');
       expect(component.isPlacingOrder).toBeFalse();
-      expect(window.alert).toHaveBeenCalledWith(jasmine.stringMatching(/Failed to run test/));
+      // Reported in the result panel rather than an alert(), which said only that
+      // something went wrong and then vanished.
+      expect(component.runError).toBeTruthy();
+      expect(window.alert).not.toHaveBeenCalled();
     });
 
     it('does not POST /api/run-test when the pre-save GET fails', () => {

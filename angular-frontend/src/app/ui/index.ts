@@ -7,6 +7,7 @@ export * from './breadcrumb';
 export * from './button';
 export * from './card';
 export * from './checkbox';
+export * from './confirm-dialog';
 export * from './field';
 export * from './input';
 export * from './label';

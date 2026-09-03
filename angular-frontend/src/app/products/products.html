@@ -121,3 +121,15 @@
 </ui-card>
 
 } <!-- end @else -->
+
+<ui-confirm-dialog
+  [open]="!!pendingDelete"
+  title="Delete this product?"
+  confirmLabel="Delete product"
+  testId="delete-product-dialog"
+  (confirm)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+>
+  {{ pendingDelete?.name }} will be removed from the catalogue and the change is saved
+  straight away. Orders already placed are not affected.
+</ui-confirm-dialog>

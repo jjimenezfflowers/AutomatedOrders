@@ -264,6 +264,8 @@ describe('ProductsComponent', () => {
 
       query('[data-testid="delete-product-roses"]')!.click();
       await settle();
+      query('[data-testid="delete-product-dialog-confirm"]')!.click();
+      await settle();
 
       const post = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/products');
       expect(post.request.body.map((p: { id: string }) => p.id)).toEqual(['tulips']);
@@ -513,6 +515,8 @@ describe('ProductsComponent', () => {
         expect(names()[0]).toBe('Anemones');
 
         await click('delete-product-anemones');
+        // Deleting asks first now.
+        await click('delete-product-dialog-confirm');
 
         const post = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/products');
         const persisted = post.request.body.map((p: { id: string }) => p.id);
@@ -602,5 +606,76 @@ describe('ProductsComponent', () => {
           .toBe('Showing 1-10 of 13');
       });
     });
+  });
+
+  describe('deleting a product', () => {
+    async function openConfirm(testId: string) {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+        `button[data-testid="${testId}"]`
+      );
+      button.click();
+      await settle();
+    }
+
+    function dialog(): HTMLElement | null {
+      return fixture.nativeElement.querySelector('[data-testid="delete-product-dialog"]');
+    }
+
+    async function clickDialog(suffix: string) {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+        `button[data-testid="delete-product-dialog-${suffix}"]`
+      );
+      button.click();
+      await settle();
+    }
+
+    beforeEach(async () => {
+      await completeInitAndSettle();
+    });
+
+    // Deleting saves immediately, so walking away does not undo it. It had no
+    // confirmation at all.
+    it('does not delete on the first click', async () => {
+      const before = component.products.length;
+
+      await openConfirm('delete-product-tulips');
+
+      expect(component.products.length).toBe(before);
+      httpMock.expectNone(r => r.method === 'POST');
+    });
+
+    it('asks first, naming the product', async () => {
+      await openConfirm('delete-product-tulips');
+
+      expect(dialog()).not.toBeNull();
+      expect(dialog()!.textContent).toContain('Tulips');
+    });
+
+    it('deletes and persists once confirmed', async () => {
+      const before = component.products.length;
+
+      await openConfirm('delete-product-tulips');
+      await clickDialog('confirm');
+
+      const post = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/products');
+      expect(post.request.body.length).toBe(before - 1);
+      expect(post.request.body.some((p: any) => p.id === 'tulips')).toBeFalse();
+      post.flush({});
+      await settle();
+
+      expect(dialog()).toBeNull();
+    });
+
+    it('leaves everything alone when cancelled', async () => {
+      const before = component.products.length;
+
+      await openConfirm('delete-product-tulips');
+      await clickDialog('cancel');
+
+      expect(component.products.length).toBe(before);
+      expect(dialog()).toBeNull();
+      httpMock.expectNone(r => r.method === 'POST');
+    });
+
   });
 });

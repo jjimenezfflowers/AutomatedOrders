@@ -7,6 +7,7 @@ import {
   UI_CARD,
   UiBadgeComponent,
   UiButtonComponent,
+  UiConfirmDialogComponent,
   UiDataTableCellDirective,
   UiDataTableComponent,
   type UiDataTableColumn,
@@ -45,6 +46,7 @@ interface Product {
     UiDataTableComponent,
     UiDataTableCellDirective,
     ...UI_CARD,
+    UiConfirmDialogComponent,
   ],
   templateUrl: './products.html',
   styleUrl: './products.css',
@@ -64,6 +66,9 @@ export class ProductsComponent implements OnInit {
   /* The page owns navigation; this component stays routing-agnostic. */
   @Output() createRequested = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<Product>();
+
+  /** The product a delete is pending on; null when no confirmation is open. */
+  pendingDelete: Product | null = null;
 
   private requestedForm: 'new' | 'edit' | null = null;
   private requestedProductId: string | null = null;
@@ -213,8 +218,22 @@ export class ProductsComponent implements OnInit {
     }
   }
 
+  /*
+   * Deleting saves immediately, so it is not recoverable by walking away — it needs
+   * a confirmation, which it did not have.
+   */
   deleteRow(product: Product) {
-    this.deleteProduct(this.indexOfProduct(product));
+    this.pendingDelete = product;
+  }
+
+  confirmDelete() {
+    if (!this.pendingDelete) return;
+    this.deleteProduct(this.indexOfProduct(this.pendingDelete));
+    this.pendingDelete = null;
+  }
+
+  cancelDelete() {
+    this.pendingDelete = null;
   }
 
   onProductCreated(newProduct: NewProduct) {

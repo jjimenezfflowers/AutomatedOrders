@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,10 @@ import {
   UiLabelComponent,
   UiSelectComponent,
 } from '../ui';
+import { FieldRule, firstError, positiveInteger, required, url } from '../ui/validators';
+
+/** The one non-repeating field; the rest are `quantity-<productId>`. */
+const STAGING_URL_FIELD = 'stagingBaseUrl';
 
 interface ProductOption {
   id: string;
@@ -99,6 +103,11 @@ export class StagingOrdersComponent implements OnInit {
   testOutput = '';
   testSuccess: boolean | null = null;
 
+  /** Keyed by field name; `quantity-<productId>` for the per-item quantities. */
+  errors: Record<string, string | undefined> = {};
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -162,13 +171,91 @@ export class StagingOrdersComponent implements OnInit {
       }
       return item;
     });
+
+    // Deselecting a product removes its quantity control, so its message has to go
+    // too — otherwise a save stays blocked by a field nobody can see or fix.
+    const live = new Set(this.orderItems.map(item => this.quantityField(item.id)));
+    for (const field of Object.keys(this.errors)) {
+      if (field !== STAGING_URL_FIELD && !live.has(field)) delete this.errors[field];
+    }
   }
 
   updateOrderItems() {
     this.syncOrderItemsFromSelection();
   }
 
+  /** The `errors` key for a product's quantity, shared by the template and the rules. */
+  quantityField(productId: string): string {
+    return `quantity-${productId}`;
+  }
+
+  /** Blur is the first moment a value is finished, so it is the first moment to judge it. */
+  onFieldBlur(field: string) {
+    this.validateField(field);
+  }
+
+  /*
+   * Only re-checks a field that is already showing a message. Validating every
+   * keystroke would flag "https:/" as a bad URL while it is still being typed.
+   */
+  onFieldInput(field: string) {
+    if (!this.errors[field]) return;
+    this.validateField(field);
+  }
+
+  private validateField(field: string) {
+    const message = firstError(this.currentValue(field), ...this.rulesFor(field));
+    if (message) {
+      this.errors[field] = message;
+    } else {
+      delete this.errors[field];
+    }
+  }
+
+  private validateAll(): boolean {
+    for (const field of this.fields) {
+      this.validateField(field);
+    }
+    return Object.keys(this.errors).length === 0;
+  }
+
+  private focusFirstInvalid() {
+    const field = this.fields.find(candidate => this.errors[candidate]);
+    if (!field) return;
+
+    const controlId = field === STAGING_URL_FIELD
+      ? 'staging-base-url'
+      : `staging-quantity-${field.slice('quantity-'.length)}`;
+
+    this.host.nativeElement.querySelector<HTMLElement>(`#${CSS.escape(controlId)}`)?.focus();
+  }
+
+  /** Template order, so a blocked save focuses the topmost problem. */
+  private get fields(): string[] {
+    return [STAGING_URL_FIELD, ...this.orderItems.map(item => this.quantityField(item.id))];
+  }
+
+  private rulesFor(field: string): FieldRule[] {
+    return field === STAGING_URL_FIELD
+      ? [required('Staging base URL'), url]
+      : [positiveInteger('Quantity')];
+  }
+
+  private currentValue(field: string): string {
+    if (field === STAGING_URL_FIELD) return this.stagingBaseUrl ?? '';
+
+    const item = this.orderItems.find(candidate => this.quantityField(candidate.id) === field);
+    return item?.quantity == null ? '' : String(item.quantity);
+  }
+
   saveConfig() {
+    // A schemeless base URL or a zero quantity does not fail here — it fails minutes
+    // later in the checkout run that reads this file back.
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
+      return;
+    }
+
     const uniqueOrders = new Map<string, any>();
     for (const item of this.orderItems) {
       if (uniqueOrders.has(item.id)) continue;
@@ -191,6 +278,12 @@ export class StagingOrdersComponent implements OnInit {
   runTest() {
     if (!this.stagingBaseUrl) {
       alert('Please set a Staging Base URL before running the test.');
+      this.validateAll();
+      return;
+    }
+    // The run types these values into the storefront, so the same rules gate it.
+    if (!this.validateAll()) {
+      this.focusFirstInvalid();
       return;
     }
     if (this.orderItems.length === 0) {

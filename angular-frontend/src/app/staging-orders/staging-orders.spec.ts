@@ -295,4 +295,169 @@ describe('StagingOrdersComponent', () => {
       expect(html).toContain('text-warning');
     });
   });
+
+  // --- Validation --------------------------------------------------------------------
+
+  describe('validation', () => {
+    /** ngModel writes into its control on a microtask, so the DOM lags one turn behind. */
+    async function settle() {
+      detect();
+      await fixture.whenStable();
+      detect();
+    }
+
+    async function ready() {
+      completeInit();
+      await settle();
+    }
+
+    function input(inputId: string): HTMLInputElement {
+      return fixture.nativeElement.querySelector(`input#${inputId}`) as HTMLInputElement;
+    }
+
+    /** ui-field renders its message as `<controlId>-error`, which is also what it labels. */
+    function message(controlId: string): string | null {
+      const alert = fixture.nativeElement.querySelector(`#${controlId}-error[role="alert"]`);
+      return alert ? alert.textContent!.trim() : null;
+    }
+
+    /** Drives a control the way a user would; `input` bubbles, as it does in a browser. */
+    async function type(element: HTMLInputElement, value: string) {
+      element.value = value;
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+      await settle();
+    }
+
+    /** Leaving a field: `focusout` is the bubbling half of blur, which is what the host sees. */
+    function leave(element: HTMLInputElement) {
+      element.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      detect();
+    }
+
+    it('still posts a valid config', async () => {
+      await ready();
+
+      component.saveConfig();
+
+      const post = httpMock.expectOne('/api/staging-order-config');
+      expect(post.request.body.stagingBaseUrl).toBe('https://staging.test');
+      post.flush({});
+    });
+
+    it('makes no request when the staging url has no scheme', async () => {
+      await ready();
+
+      component.stagingBaseUrl = 'staging-store.myshopify.com';
+      detect();
+      component.saveConfig();
+      detect();
+
+      httpMock.expectNone('/api/staging-order-config');
+      expect(message('staging-base-url')).toBe('Enter a valid URL, including https://');
+      expect(input('staging-base-url').getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('makes no request when the staging url is blank', async () => {
+      await ready();
+
+      component.stagingBaseUrl = '';
+      detect();
+      component.saveConfig();
+      detect();
+
+      httpMock.expectNone('/api/staging-order-config');
+      expect(message('staging-base-url')).toBe('Staging base URL is required.');
+    });
+
+    it('makes no request when a quantity is below one', async () => {
+      await ready();
+
+      component.orderItems[0].quantity = 0;
+      detect();
+      component.saveConfig();
+      detect();
+
+      httpMock.expectNone('/api/staging-order-config');
+      expect(message('staging-quantity-roses')).toBe('Quantity must be a whole number, 1 or more.');
+    });
+
+    it('moves focus to the first invalid field on a blocked save', async () => {
+      await ready();
+
+      component.stagingBaseUrl = 'staging-store.myshopify.com';
+      detect();
+      component.saveConfig();
+      detect();
+
+      expect(document.activeElement).toBe(input('staging-base-url'));
+    });
+
+    it('says nothing while the url is being typed, then speaks on blur', async () => {
+      await ready();
+      const url = input('staging-base-url');
+
+      await type(url, 'staging-store');
+      expect(message('staging-base-url')).toBeNull();
+
+      leave(url);
+      expect(message('staging-base-url')).toBe('Enter a valid URL, including https://');
+    });
+
+    it('clears the url message as soon as a scheme is added', async () => {
+      await ready();
+      const url = input('staging-base-url');
+
+      await type(url, 'staging-store.myshopify.com');
+      leave(url);
+      expect(message('staging-base-url')).toBe('Enter a valid URL, including https://');
+
+      await type(url, 'https://staging-store.myshopify.com');
+
+      expect(message('staging-base-url')).toBeNull();
+      expect(input('staging-base-url').getAttribute('aria-invalid')).toBeNull();
+    });
+
+    it('validates a per-item quantity on blur', async () => {
+      await ready();
+      const quantity = input('staging-quantity-roses');
+
+      await type(quantity, '0');
+      expect(message('staging-quantity-roses')).toBeNull();
+
+      leave(quantity);
+      expect(message('staging-quantity-roses')).toBe('Quantity must be a whole number, 1 or more.');
+
+      await type(quantity, '3');
+      expect(message('staging-quantity-roses')).toBeNull();
+    });
+
+    it('drops a quantity message when its product is deselected, so the save unblocks', async () => {
+      await ready();
+      const quantity = input('staging-quantity-roses');
+
+      await type(quantity, '0');
+      leave(quantity);
+      expect(message('staging-quantity-roses')).toBe('Quantity must be a whole number, 1 or more.');
+
+      const checkbox = fixture.nativeElement.querySelector(
+        'ui-checkbox input#staging-product-roses',
+      ) as HTMLInputElement;
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change'));
+      detect();
+
+      component.saveConfig();
+      httpMock.expectOne('/api/staging-order-config').flush({});
+    });
+
+    it('will not start a run against a schemeless url', async () => {
+      await ready();
+
+      component.stagingBaseUrl = 'staging-store.myshopify.com';
+      component.runTest();
+
+      httpMock.expectNone('/api/run-test');
+      expect(component.isRunning).toBeFalse();
+    });
+  });
 });

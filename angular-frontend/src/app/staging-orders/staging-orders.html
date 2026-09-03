@@ -6,12 +6,23 @@
   <ui-card-content>
     <!-- Staging URL -->
     <div class="mb-5 flex flex-col gap-1 rounded-lg border border-warning/30 bg-warning/10 p-4">
-      <ui-label for="staging-base-url" class="text-warning">Staging Base URL</ui-label>
-      <ui-input
-        type="url"
-        inputId="staging-base-url"
-        [(ngModel)]="stagingBaseUrl"
-        placeholder="https://staging-store.myshopify.com" />
+      <!-- text-warning sits on the wrapper so the label inherits it, and ui-field's own
+           destructive class still wins on the label when the field is invalid. -->
+      <ui-field
+        label="Staging Base URL"
+        controlId="staging-base-url"
+        class="text-warning"
+        [error]="errors['stagingBaseUrl']">
+        <ui-input
+          type="url"
+          inputId="staging-base-url"
+          [(ngModel)]="stagingBaseUrl"
+          [invalid]="!!errors['stagingBaseUrl']"
+          (focusout)="onFieldBlur('stagingBaseUrl')"
+          (input)="onFieldInput('stagingBaseUrl')"
+          testId="staging-base-url"
+          placeholder="https://staging-store.myshopify.com" />
+      </ui-field>
       <p class="mt-1 text-xs text-warning">Product URLs will have their domain replaced with this value at test run time.</p>
     </div>
 
@@ -96,13 +107,20 @@
             }
 
             <div class="mt-2 w-24">
-              <ui-field label="Quantity" [controlId]="'staging-quantity-' + item.id">
+              <ui-field
+                label="Quantity"
+                [controlId]="'staging-quantity-' + item.id"
+                [error]="errors[quantityField(item.id)]">
                 <ui-input
                   type="number"
                   [inputId]="'staging-quantity-' + item.id"
                   [(ngModel)]="item.quantity"
+                  [invalid]="!!errors[quantityField(item.id)]"
+                  (focusout)="onFieldBlur(quantityField(item.id))"
+                  (input)="onFieldInput(quantityField(item.id))"
                   min="1"
-                  placeholder="1" />
+                  placeholder="1"
+                  [testId]="'staging-quantity-' + item.id" />
               </ui-field>
             </div>
           </div>

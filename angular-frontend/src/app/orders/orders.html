@@ -6,10 +6,25 @@
 
       <!-- Available Products -->
       <div>
-        <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h3 class="text-sm font-semibold text-foreground">Available Products</h3>
-          <div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <span>Sort by</span>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-semibold text-foreground">Available Products</h3>
+            @if (selectedCount) {
+              <ui-badge variant="secondary" testId="selected-count">
+                {{ selectedCount }} selected
+              </ui-badge>
+              <ui-button variant="ghost" size="xs" (click)="clearSelection()" testId="clear-selection">
+                Clear
+              </ui-button>
+            }
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <ui-input
+              class="w-full sm:w-56"
+              placeholder="Search products..."
+              [(ngModel)]="productSearch"
+              testId="product-search" />
             <div class="w-36">
               <ui-select
                 size="sm"
@@ -19,21 +34,32 @@
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 rounded-lg border border-border bg-muted">
-          @for (product of sortedProducts; track product.id) {
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-              <ui-checkbox
-                [inputId]="'product-' + product.id"
-                [ngModel]="selectedProducts[product.id]"
-                (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()"
-                title="Select product" />
-              <span class="flex flex-col">
-                <span class="text-sm text-foreground">{{ product.name }}</span>
-                @if (hasOrigin(product.origin)) {
-                  <span class="text-xs text-muted-foreground">Origin: {{ formatOrigin(product.origin) }}</span>
-                }
-              </span>
-            </label>
+
+        <!-- Capped and scrollable: the full list ran ~550px and pushed the rest of
+             the form, including the delivery date, below the fold. -->
+        <div class="max-h-80 overflow-y-auto rounded-lg border border-border bg-muted p-4">
+          @if (visibleProducts.length) {
+            <div class="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+              @for (product of visibleProducts; track product.id) {
+                <label class="flex cursor-pointer select-none items-center gap-2 rounded-md px-1.5 py-1 transition-colors hover:bg-background">
+                  <ui-checkbox
+                    [inputId]="'product-' + product.id"
+                    [ngModel]="selectedProducts[product.id]"
+                    (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()"
+                    title="Select product" />
+                  <span class="flex min-w-0 flex-col">
+                    <span class="truncate text-sm text-foreground">{{ product.name }}</span>
+                    @if (hasOrigin(product.origin)) {
+                      <span class="text-xs text-muted-foreground">Origin: {{ formatOrigin(product.origin) }}</span>
+                    }
+                  </span>
+                </label>
+              }
+            </div>
+          } @else {
+            <p class="py-6 text-center text-sm text-muted-foreground" data-testid="no-products">
+              No products match "{{ productSearch }}"
+            </p>
           }
         </div>
       </div>

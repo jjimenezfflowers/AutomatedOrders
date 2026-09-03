@@ -93,6 +93,8 @@ export class OrdersComponent implements OnInit {
   readonly icons = { place: Play, random: Dices, calendar: CalendarDays };
   products: Product[] = [];
   productSort: ProductSortKey = 'entry';
+  /** Filters the picker; 24 products in a checkbox grid is more than anyone scans. */
+  productSearch = '';
   readonly productSortOptions: { value: ProductSortKey; label: string }[] = [
     { value: 'entry', label: 'Entry' },
     { value: 'origin', label: 'Origin' },
@@ -137,6 +139,28 @@ export class OrdersComponent implements OnInit {
       this.productEntryOrder = new Map(this.products.map((product, index) => [product.id, index]));
       this.syncOrderItemsFromSelection();
     });
+  }
+
+  /** How many of the available products are ticked, for the picker's header. */
+  get selectedCount(): number {
+    return this.products.filter((product) => this.selectedProducts[product.id]).length;
+  }
+
+  /** Sorted, then narrowed by the search box. */
+  get visibleProducts(): Product[] {
+    const term = this.productSearch.trim().toLowerCase();
+    if (!term) return this.sortedProducts;
+
+    return this.sortedProducts.filter((product) =>
+      `${product.name} ${product.id} ${this.formatOrigin(product.origin)}`
+        .toLowerCase()
+        .includes(term),
+    );
+  }
+
+  clearSelection(): void {
+    this.selectedProducts = {};
+    this.updateOrderItems();
   }
 
   get sortedProducts(): Product[] {

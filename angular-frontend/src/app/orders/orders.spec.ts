@@ -529,4 +529,118 @@ describe('OrdersComponent', () => {
       expect(html).not.toMatch(/(?:^|[\s"])(?:bg|text|border)-(?:gray|slate)-\d/);
     });
   });
+
+  describe('the available-products picker', () => {
+    function detectSync() {
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+    }
+
+    function options(): string[] {
+      return Array.from(
+        fixture.nativeElement.querySelectorAll('ui-checkbox input')
+      ).map((input: any) => input.getAttribute('id'));
+    }
+
+    async function search(term: string) {
+      const input: HTMLInputElement = fixture.nativeElement.querySelector(
+        'input[data-testid="product-search"]'
+      );
+      input.value = term;
+      input.dispatchEvent(new Event('input'));
+      detectSync();
+      await fixture.whenStable();
+      detectSync();
+    }
+
+    // 24 products in a checkbox grid is more than anyone scans, and the full list
+    // ran past the delivery date, so the field below it was off-screen.
+    it('lists every product before searching', () => {
+      completeInit();
+
+      expect(options().length).toBe(component.products.length);
+    });
+
+    it('narrows the list by name', async () => {
+      completeInit();
+
+      await search(component.products[0].name.slice(0, 6));
+
+      expect(options().length).toBeLessThan(component.products.length);
+      expect(options().length).toBeGreaterThan(0);
+    });
+
+    it('matches on the handle as well as the name', async () => {
+      completeInit();
+
+      await search(component.products[0].id);
+
+      expect(options()).toContain('product-' + component.products[0].id);
+    });
+
+    it('is case-insensitive', async () => {
+      completeInit();
+      const term = component.products[0].name.slice(0, 6);
+
+      await search(term.toUpperCase());
+      const upper = options().length;
+      await search(term.toLowerCase());
+
+      expect(options().length).toBe(upper);
+    });
+
+    it('says so when nothing matches, rather than showing an empty box', async () => {
+      completeInit();
+
+      await search('no-such-product-anywhere');
+
+      expect(options().length).toBe(0);
+      expect(fixture.nativeElement.querySelector('[data-testid="no-products"]')).not.toBeNull();
+    });
+
+    it('counts the selection, so it is visible without scanning the grid', () => {
+      completeInit();
+      // The saved config arrives with a product ticked; start from nothing.
+      component.clearSelection();
+      detectSync();
+
+      expect(fixture.nativeElement.querySelector('[data-testid="selected-count"]')).toBeNull();
+
+      component.selectedProducts[component.products[0].id] = true;
+      component.selectedProducts[component.products[1].id] = true;
+      detectSync();
+
+      expect(component.selectedCount).toBe(2);
+      expect(
+        fixture.nativeElement.querySelector('[data-testid="selected-count"]').textContent
+      ).toContain('2 selected');
+    });
+
+    it('clears the whole selection in one action', () => {
+      completeInit();
+      component.selectedProducts[component.products[0].id] = true;
+      component.updateOrderItems();
+      detectSync();
+
+      component.clearSelection();
+      detectSync();
+
+      expect(component.selectedCount).toBe(0);
+      expect(component.orderItems.length).toBe(0);
+    });
+
+    it('a filtered-out product stays selected, so searching never drops a choice', async () => {
+      completeInit();
+      component.clearSelection();
+      const chosen = component.products[0];
+      component.selectedProducts[chosen.id] = true;
+      component.updateOrderItems();
+      detectSync();
+
+      await search('no-such-product-anywhere');
+
+      expect(component.selectedCount).toBe(1);
+      expect(component.orderItems.length).toBe(1);
+    });
+  });
 });

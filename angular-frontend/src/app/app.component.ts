@@ -7,6 +7,7 @@ import { ENVIRONMENTS, Environment, NAV_GROUPS, SECTION_COPY } from './shell/nav
 // Imported from the files rather than the ui barrel: the barrel re-exports the
 // data table, and pulling it in here dragged TanStack into the initial bundle
 // even though the shell never renders a table.
+import { UiButtonComponent } from './ui/button';
 import { ThemeService } from './ui/theme.service';
 import { cx } from './ui/variants';
 
@@ -15,7 +16,7 @@ const SIDEBAR_STORAGE_KEY = 'bb-order-automation.sidebar';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule, UiButtonComponent],
   // Deliberately not OnPush: the feature components still assign plain fields inside
   // HTTP subscriptions. An OnPush shell is not marked dirty by those updates and
   // blocks change detection from reaching them, leaving lists empty.

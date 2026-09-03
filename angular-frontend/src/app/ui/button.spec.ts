@@ -148,4 +148,52 @@ describe('UiButtonComponent', () => {
 
     expect(button().getAttribute('data-testid')).toBe('place-order');
   });
+
+  describe('ARIA passthroughs', () => {
+    /*
+     * The host element is <ui-button>, so an aria attribute written there lands on
+     * the wrapper rather than the button assistive tech reads. The shell needs
+     * these on its switcher, its options and its icon-only toggles.
+     */
+    it('forwards aria-label onto the button, not the host', () => {
+      setInput('ariaLabel', 'Toggle sidebar');
+
+      expect(button().getAttribute('aria-label')).toBe('Toggle sidebar');
+      expect(fixture.nativeElement.getAttribute('aria-label')).toBeNull();
+    });
+
+    it('forwards aria-expanded', () => {
+      setInput('ariaExpanded', true);
+      expect(button().getAttribute('aria-expanded')).toBe('true');
+
+      setInput('ariaExpanded', false);
+      expect(button().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('forwards aria-haspopup', () => {
+      setInput('ariaHasPopup', 'listbox');
+
+      expect(button().getAttribute('aria-haspopup')).toBe('listbox');
+    });
+
+    it('forwards aria-selected and role, so a button can be a listbox option', () => {
+      setInput('role', 'option');
+      setInput('ariaSelected', true);
+
+      expect(button().getAttribute('role')).toBe('option');
+      expect(button().getAttribute('aria-selected')).toBe('true');
+    });
+
+    it('forwards title, used as the tooltip on a collapsed sidebar item', () => {
+      setInput('title', 'Products');
+
+      expect(button().getAttribute('title')).toBe('Products');
+    });
+
+    it('omits every passthrough when unset, rather than emitting empty attributes', () => {
+      for (const attr of ['aria-label', 'aria-expanded', 'aria-haspopup', 'aria-selected', 'role', 'title']) {
+        expect(button().getAttribute(attr)).withContext(attr).toBeNull();
+      }
+    });
+  });
 });

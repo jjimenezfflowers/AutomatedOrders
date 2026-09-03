@@ -16,13 +16,13 @@
 
       <!-- Environment switcher: the admin puts its org switcher in this slot. -->
       <div class="relative">
-        <button
-          type="button"
+        <ui-button
+          variant="outline"
+          class="h-auto w-full justify-between px-2 py-1.5 text-left text-sm shadow-xs"
           (click)="toggleEnvironmentMenu()"
-          class="flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2 py-1.5 text-left text-sm shadow-xs transition-colors hover:bg-accent"
-          [attr.aria-expanded]="environmentMenuOpen()"
-          aria-haspopup="listbox"
-          data-testid="environment-switcher"
+          [ariaExpanded]="environmentMenuOpen()"
+          ariaHasPopup="listbox"
+          testId="environment-switcher"
         >
           <span class="flex min-w-0 items-center gap-2">
             <span
@@ -38,7 +38,7 @@
           @if (sidebarOpen()) {
             <lucide-angular [img]="icons.chevron" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           }
-        </button>
+        </ui-button>
 
         @if (environmentMenuOpen()) {
           <ul
@@ -47,13 +47,13 @@
           >
             @for (item of environments; track item.id) {
               <li>
-                <button
-                  type="button"
+                <ui-button
+                  variant="ghost"
+                  class="h-auto w-full justify-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm"
                   (click)="selectEnvironment(item.id)"
-                  class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
                   role="option"
-                  [attr.aria-selected]="environment() === item.id"
-                  [attr.data-testid]="'environment-option-' + item.id"
+                  [ariaSelected]="environment() === item.id"
+                  [testId]="'environment-option-' + item.id"
                 >
                   <span
                     class="size-2 shrink-0 rounded-full"
@@ -63,7 +63,7 @@
                   ></span>
                   <span class="font-medium">{{ item.label }}</span>
                   <span class="ml-auto truncate text-xs text-muted-foreground">{{ item.store }}</span>
-                </button>
+                </ui-button>
               </li>
             }
           </ul>
@@ -110,15 +110,16 @@
       class="sticky top-0 z-10 flex h-12 w-full shrink-0 items-center justify-between gap-2 border-b bg-card px-2"
     >
       <div class="flex min-w-0 items-center gap-2">
-        <button
-          type="button"
+        <ui-button
+          variant="ghost"
+          size="icon"
+          class="hidden md:inline-flex"
           (click)="toggleSidebar()"
-          class="hidden rounded-md p-2 hover:bg-accent md:inline-flex"
-          aria-label="Toggle sidebar"
-          data-testid="sidebar-toggle"
+          ariaLabel="Toggle sidebar"
+          testId="sidebar-toggle"
         >
           <lucide-angular [img]="icons.menu" class="size-4" aria-hidden="true" />
-        </button>
+        </ui-button>
         <div class="hidden h-6 items-center md:flex"><div class="mr-2 h-full w-px bg-border"></div></div>
         <span class="truncate text-sm font-semibold">{{ pageTitle() }}</span>
       </div>
@@ -136,15 +137,15 @@
             {{ activeEnvironment().label }}
           </span>
         }
-        <button
-          type="button"
+        <ui-button
+          variant="ghost"
+          size="icon"
           (click)="cycleTheme()"
-          class="rounded-md p-2 hover:bg-accent"
-          [attr.aria-label]="'Theme: ' + theme() + '. Change theme'"
-          data-testid="theme-toggle"
+          [ariaLabel]="'Theme: ' + theme() + '. Change theme'"
+          testId="theme-toggle"
         >
           <lucide-angular [img]="themeIcon()" class="size-4" aria-hidden="true" />
-        </button>
+        </ui-button>
       </div>
     </header>
 

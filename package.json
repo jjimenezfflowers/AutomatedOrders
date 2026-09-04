@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:unit": "node --test tests/unit/",
+    "test:unit": "node --test tests/unit/*.test.js",
     "test:ui-smoke": "node tests/ui-smoke.js",
     "test:product-form": "playwright test tests/product-form-helpers.spec.js --project=chromium",
     "test:mini-calla": "playwright test tests/mini-calla-product-options.spec.js --project=chromium",

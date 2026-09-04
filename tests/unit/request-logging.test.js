@@ -3,6 +3,21 @@ const assert = require('node:assert/strict');
 
 const { start, shouldLogRequest } = require('../../server');
 
+async function startTestServer() {
+  const server = start(0);
+  if (!server.listening) {
+    await new Promise((resolve, reject) => {
+      server.once('listening', resolve);
+      server.once('error', reject);
+    });
+  }
+
+  return {
+    server,
+    baseUrl: `http://127.0.0.1:${server.address().port}`,
+  };
+}
+
 describe('shouldLogRequest', () => {
   // Regression: the middleware recorded every request, including GET /api/logs,
   // which the Logs tab polls every 2s. At 30 entries/min an idle open tab
@@ -32,9 +47,7 @@ describe('log buffer under polling (integration)', () => {
   let baseUrl;
 
   before(async () => {
-    server = start(0);
-    await new Promise((resolve) => server.once('listening', resolve));
-    baseUrl = `http://127.0.0.1:${server.address().port}`;
+    ({ server, baseUrl } = await startTestServer());
   });
 
   after(async () => {
@@ -113,9 +126,7 @@ describe('log entry identity', () => {
   let baseUrl;
 
   before(async () => {
-    server = start(0);
-    await new Promise((resolve) => server.once('listening', resolve));
-    baseUrl = `http://127.0.0.1:${server.address().port}`;
+    ({ server, baseUrl } = await startTestServer());
   });
 
   after(async () => {
@@ -167,9 +178,7 @@ describe('error handling', () => {
   let baseUrl;
 
   before(async () => {
-    server = start(0);
-    await new Promise((resolve) => server.once('listening', resolve));
-    baseUrl = `http://127.0.0.1:${server.address().port}`;
+    ({ server, baseUrl } = await startTestServer());
   });
 
   after(async () => {

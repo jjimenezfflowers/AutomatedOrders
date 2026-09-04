@@ -69,6 +69,9 @@
       "Wedding Combo Box"
     ],
     "defaultVariant": "Wedding Combo Box",
+    "origin": [
+      "EC"
+    ],
     "productOptions": [
       {
         "id": "vo_0_1381",
@@ -354,24 +357,6 @@
     ],
     "quantitySelector": "#quantity-8173251297420-2",
     "defaultQuantity": 1
-  },
-  {
-    "id": "babys-breath-flower-new-love",
-    "name": "Baby's Breath Flower New Love",
-    "url": "https://bloom-brain-dev.myshopify.com/products/babys-breath-flower-new-love-3",
-    "quantitySelector": "#quantity-9196556419212-2",
-    "defaultQuantity": 1,
-    "variantSelector": "#option-0",
-    "variants": [
-      "2 Bunches",
-      "5 Bunches",
-      "10 Bunches",
-      "15 Bunches",
-      "20 Bunches",
-      "30 Bunches"
-    ],
-    "defaultVariant": "2 Bunches",
-    "type": ""
   },
   {
     "id": "light-blue-delphinium-flower",
@@ -852,6 +837,48 @@
     ],
     "defaultVariant": "5 Bunches - $139.99",
     "quantitySelector": "#quantity-9411421012108-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "burgundy-blush-wedding-diy-flower-kit-2",
+    "name": "Burgundy Blush Wedding DIY Flower Kit",
+    "url": "https://bloom-brain-dev.myshopify.com/products/burgundy-blush-wedding-diy-flower-kit-2",
+    "origin": [
+      "CO",
+      "EC"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "Small Pack - $344.99",
+      "Medium Pack - $504.99",
+      "Large Pack - $974.99",
+      "XL Pack - $1,779.99"
+    ],
+    "defaultVariant": "Small Pack - $344.99",
+    "quantitySelector": "#quantity-8354964668556-2",
+    "defaultQuantity": 1
+  },
+  {
+    "id": "white-ranunculus-fresh-cut-flower",
+    "name": "White Ranunculus Fresh Cut Flower",
+    "url": "https://bloom-brain-dev.myshopify.com/products/white-ranunculus-fresh-cut-flower",
+    "origin": [
+      "US",
+      "EC"
+    ],
+    "type": "",
+    "variantSelector": "#option-0",
+    "variants": [
+      "20 Stems (2 Bunches) - $104.99",
+      "50 Stems (5 Bunches) - $159.99",
+      "100 Stems (10 Bunches) - $274.99",
+      "150 Stems (15 Bunches) - $359.99",
+      "200 Stems (20 Bunches) - $459.99",
+      "300 Stems (30 Bunches) - $644.99"
+    ],
+    "defaultVariant": "20 Stems (2 Bunches) - $104.99",
+    "quantitySelector": "#quantity-8228167254156-2",
     "defaultQuantity": 1
   }
 ]

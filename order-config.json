@@ -1,5 +1,5 @@
 {
-  "deliveryDate": "2026-09-09",
+  "deliveryDate": "2026-09-12",
   "customerInfo": {
     "email": "jose@fiftyflowers.com",
     "phone": "(208) 391-2924",
@@ -15,5 +15,12 @@
     "cvv": "123",
     "expiry": "1226"
   },
-  "orders": []
+  "orders": [
+    {
+      "productId": "white-ranunculus-fresh-cut-flower",
+      "quantity": 2,
+      "variant": "300 Stems (30 Bunches) - $644.99",
+      "deliveryDate": "2026-09-14"
+    }
+  ]
 }

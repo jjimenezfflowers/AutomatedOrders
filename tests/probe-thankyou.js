@@ -18,6 +18,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const { chromium } = require('@playwright/test');
 
+const store = require('../lib/store');
+const { disconnect } = require('../lib/db');
+
 const {
   clickAddToCart,
   selectDeliveryDate,
@@ -36,16 +39,12 @@ function redact(value) {
     .replace(/\b\d{13,19}\b/g, '<card>');
 }
 
-async function loadJson(file) {
-  return JSON.parse(await fs.readFile(path.join(ROOT, file), 'utf8'));
-}
-
 async function main() {
-  const config = await loadJson('order-config.json');
-  const products = await loadJson('products.json');
+  const config = await store.getOrderConfig('dev');
+  const products = await store.getProducts('dev');
 
   const order = config.orders[0];
-  if (!order) throw new Error('order-config.json has no orders; configure one first.');
+  if (!order) throw new Error('The order draft is empty; configure one first.');
   const product = products.find((p) => p.id === order.productId);
   if (!product) throw new Error(`Product ${order.productId} not found.`);
 
@@ -161,6 +160,7 @@ async function main() {
     inventory.scriptHints.forEach((h) => console.log('  ' + redact(h)));
   } finally {
     await browser.close();
+    await disconnect();
   }
 }
 

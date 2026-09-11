@@ -16,12 +16,13 @@ const fs = require('fs').promises;
 const path = require('path');
 const { chromium } = require('@playwright/test');
 
+const store = require('../lib/store');
+const { disconnect } = require('../lib/db');
+
 const { RUN_ATTRIBUTE } = require('../lib/order-lookup');
 
 async function main() {
-  const products = JSON.parse(
-    await fs.readFile(path.join(__dirname, '..', 'products.json'), 'utf8'),
-  );
+  const products = await store.getProducts('dev');
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
@@ -60,6 +61,7 @@ async function main() {
     );
   } finally {
     await browser.close();
+    await disconnect();
   }
 }
 

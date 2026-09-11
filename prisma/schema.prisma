@@ -1,0 +1,309 @@
+// The store behind the automation tool.
+//
+// It replaces a set of JSON files that were read, mutated in memory and written
+// back whole. That pattern lost data: five runs finishing at once left two
+// entries, because each one read the file before the others had written it. It
+// also let the shape drift, so 480 history entries ended up in five different
+// shapes, 144 of them with no environment recorded at all.
+//
+// The structures that drifted are columns and rows here rather than nested
+// objects, so a field cannot quietly stop being written. SQLite gives the
+// atomic writes; the schema gives the shape.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // Relative to this file, so it resolves the same whatever directory the
+  // process was started from. The server used to read its JSON with bare
+  // relative paths and picked up nothing when started from elsewhere.
+  url      = env("DATABASE_URL")
+}
+
+/// A product the automation can order, per store.
+model Product {
+  id     Int    @id @default(autoincrement())
+  /// The handle used in configs and history, e.g. "floreana-white-spray-roses".
+  slug   String
+  /// "dev" or "staging". Was a separate file per store; the split is data now.
+  environment String
+
+  name             String
+  url              String
+  variantSelector  String?
+  defaultVariant   String?
+  quantitySelector String?
+  defaultQuantity  Int     @default(1)
+  type             String?
+
+  /// The catalogue is hand-ordered, and a list has an order a table does not.
+  position Int @default(0)
+
+  variants ProductVariant[]
+  options  ProductOption[]
+  origins  ProductOrigin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([environment, slug])
+  @@index([environment, position])
+}
+
+/// Where a product ships from, e.g. "EC".
+///
+/// A list, because it always was: across 27 products the JSON held a bare string
+/// once, an array 21 times and nothing at all 5 times, for the same field. Rows
+/// end that, and the UI already accepted either shape.
+model ProductOrigin {
+  id        Int    @id @default(autoincrement())
+  productId Int
+  value     String
+  position  Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, value])
+  @@index([productId, position])
+}
+
+/// One selectable variant, e.g. "20 stems (2 Bunches)".
+model ProductVariant {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  value     String
+  position  Int     @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, value])
+  @@index([productId, position])
+}
+
+/// A per-product choice the storefront asks for, such as "Choose 5 Soft Greenery Bunches".
+model ProductOption {
+  id        Int    @id @default(autoincrement())
+  productId Int
+  /// The storefront's own id for the option, e.g. "vo_0_1381". Order items
+  /// reference it, so it is kept rather than replaced with a row id.
+  externalId   String
+  label        String
+  selector     String
+  defaultValue String?
+  position     Int     @default(0)
+
+  choices ProductOptionChoice[]
+  product Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, externalId])
+  @@index([productId, position])
+}
+
+/// One value an option can take.
+///
+/// `label` and `price` are set only where the storefront charges extra for the
+/// choice. The file mixed both shapes inside a single array — "White" next to
+/// { value: "Cream", label: "Cream Add $9.00", price: 9 } — so a reader had to
+/// test the type of every element. Here the columns are always there and simply
+/// hold nothing when there is nothing to hold.
+model ProductOptionChoice {
+  id       Int     @id @default(autoincrement())
+  optionId Int
+  value    String
+  label    String?
+  price    Float?
+  position Int     @default(0)
+
+  option ProductOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, value])
+  @@index([optionId, position])
+}
+
+/// The order currently being built for a store: one per environment.
+model OrderDraft {
+  environment  String   @id
+  deliveryDate String?
+  updatedAt    DateTime @updatedAt
+
+  items OrderDraftItem[]
+}
+
+/// A line of that draft.
+model OrderDraftItem {
+  id          Int     @id @default(autoincrement())
+  environment String
+  productSlug String
+  quantity    Int     @default(1)
+  variant     String?
+  deliveryDate String?
+  position    Int     @default(0)
+
+  selectedOptions OrderDraftItemOption[]
+  draft           OrderDraft            @relation(fields: [environment], references: [environment], onDelete: Cascade)
+
+  @@index([environment, position])
+}
+
+/// A product option chosen for a draft line, keyed by the storefront's option id.
+model OrderDraftItemOption {
+  id               Int    @id @default(autoincrement())
+  orderDraftItemId Int
+  optionExternalId String
+  value            String
+
+  item OrderDraftItem @relation(fields: [orderDraftItemId], references: [id], onDelete: Cascade)
+
+  @@unique([orderDraftItemId, optionExternalId])
+}
+
+/// The person every automated order is placed as. One row.
+model CustomerProfile {
+  id        Int    @id @default(1)
+  email     String
+  phone     String
+  firstName String
+  lastName  String
+  address   String
+  city      String
+  state     String
+  zipCode   String
+
+  updatedAt DateTime @updatedAt
+}
+
+/// The card every automated order is paid with. One row.
+///
+/// A test card, as it was in order-config.json before this. Worth knowing that
+/// this table lives in a database the repository commits: a real card must never
+/// be put here.
+model PaymentProfile {
+  id         Int    @id @default(1)
+  cardNumber String
+  cvv        String
+  expiry     String
+
+  updatedAt DateTime @updatedAt
+}
+
+/// Loose application settings, such as the staging base URL.
+model Setting {
+  key   String @id
+  value String
+
+  updatedAt DateTime @updatedAt
+}
+
+/// One completed run, and what the store said it created.
+///
+/// Was order-history.json. The nullable columns are nullable because runs before
+/// the Admin API integration genuinely have no answer for them, not because the
+/// shape is optional.
+model OrderRun {
+  id       Int      @id @default(autoincrement())
+  placedAt DateTime
+  /// Absent on 144 of the migrated entries, which predate the staging store.
+  environment String?
+
+  orderNumber        String?
+  confirmationNumber String?
+  /// The Shopify global id, e.g. gid://shopify/Order/6103339008140.
+  orderId            String?
+  adminUrl           String?
+  statusUrl          String?
+  /// The id the run stamped on its own cart.
+  correlationId      String?
+  /// How confidently the order was identified: cartToken, correlationId,
+  /// orderStatusToken, productsAndTime, mostRecent.
+  matchedBy          String?
+  /// "api" when the store answered, "page" when the number was scraped.
+  source             String?
+
+  customerEmail     String?
+  financialStatus   String?
+  fulfillmentStatus String?
+  destination       String?
+  shippingMethod    String?
+
+  subtotal  String?
+  shipping  String?
+  tax       String?
+  discounts String?
+  total     String?
+
+  requestedItems OrderRunRequestedItem[]
+  lineItems      OrderRunLineItem[]
+  tags           OrderRunTag[]
+
+  createdAt DateTime @default(now())
+
+  @@index([placedAt])
+  @@index([environment])
+  @@index([orderNumber])
+}
+
+/// What the run asked for. Carries the per-product delivery dates the store does
+/// not report back.
+model OrderRunRequestedItem {
+  id           Int     @id @default(autoincrement())
+  orderRunId   Int
+  productSlug  String
+  quantity     Int     @default(1)
+  variant      String?
+  deliveryDate String?
+  position     Int     @default(0)
+
+  selectedOptions OrderRunRequestedItemOption[]
+  run             OrderRun                     @relation(fields: [orderRunId], references: [id], onDelete: Cascade)
+
+  @@index([orderRunId, position])
+}
+
+/// A product option the run asked for, keyed by the storefront's option id.
+///
+/// Kept because the history held them: 189 selections across the migrated runs
+/// recorded which greenery and which colours a kit was ordered with, and a run
+/// cannot be reproduced without them.
+model OrderRunRequestedItemOption {
+  id               Int    @id @default(autoincrement())
+  requestedItemId  Int
+  optionExternalId String
+  value            String
+
+  item OrderRunRequestedItem @relation(fields: [requestedItemId], references: [id], onDelete: Cascade)
+
+  @@unique([requestedItemId, optionExternalId])
+}
+
+/// What the store actually charged for, which is not always the same thing.
+model OrderRunLineItem {
+  id         Int     @id @default(autoincrement())
+  orderRunId Int
+  title      String
+  quantity   Int     @default(1)
+  variant    String?
+  sku        String?
+  unitPrice  String?
+  image      String?
+  position   Int     @default(0)
+
+  run OrderRun @relation(fields: [orderRunId], references: [id], onDelete: Cascade)
+
+  @@index([orderRunId, position])
+}
+
+/// A tag Shopify put on the order.
+model OrderRunTag {
+  id         Int    @id @default(autoincrement())
+  orderRunId Int
+  value      String
+  /// Shopify returns tags in a particular order and the history recorded it, so
+  /// it is kept rather than left to whatever order rows come back in.
+  position   Int    @default(0)
+
+  run OrderRun @relation(fields: [orderRunId], references: [id], onDelete: Cascade)
+
+  @@unique([orderRunId, value])
+}

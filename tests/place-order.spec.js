@@ -14,19 +14,28 @@ const { readCartToken, stampCart } = require("./helpers/cart-token");
 const { captureOrder } = require("./helpers/order-capture");
 const { OrderLookup } = require("../lib/order-lookup");
 const { hasCredentials } = require("../lib/shopify");
+const store = require("../lib/store");
+const { disconnect } = require("../lib/db");
 
 // When STAGING_BASE_URL is set, rewrite product URLs to point at the staging store.
 const STAGING_BASE_URL = process.env.STAGING_BASE_URL
   ? process.env.STAGING_BASE_URL.replace(/\/$/, '')
   : null;
 
-// Which environment config file to use (set by server when staging=true)
-const STAGING_CONFIG = process.env.STAGING_CONFIG || null;
-const ENVIRONMENT = STAGING_CONFIG ? 'staging' : 'dev';
-const ORDER_CONFIG = process.env.ORDER_CONFIG || null;
-const ORDER_CONFIG_FILE = STAGING_CONFIG || ORDER_CONFIG || 'order-config.json';
+/*
+ * Which store this run is for. The server names it directly now that the drafts
+ * live in the database; STAGING_CONFIG still implies staging so the older way of
+ * invoking a staging run keeps working.
+ */
+const ENVIRONMENT =
+  process.env.RUN_ENVIRONMENT || (process.env.STAGING_CONFIG ? 'staging' : 'dev');
 
-const PRODUCTS_FILE = STAGING_CONFIG ? 'products-staging.json' : 'products.json';
+/*
+ * A named config file still overrides the draft. `npm run test:peach-sorbet` and
+ * ORDER_CONFIG=… select a run by filename, and those are run inputs rather than
+ * application state, so they stayed as files.
+ */
+const CONFIG_FILE = process.env.STAGING_CONFIG || process.env.ORDER_CONFIG || null;
 
 function resolveProductUrl(url) {
   if (!STAGING_BASE_URL) return url;
@@ -42,24 +51,25 @@ function resolveProductUrl(url) {
 }
 
 async function loadOrderConfig() {
-  const configData = await fs.readFile(path.join(__dirname, '..', ORDER_CONFIG_FILE), 'utf8');
-  const config = JSON.parse(configData);
+  if (!CONFIG_FILE) return store.getOrderConfig(ENVIRONMENT);
 
-  // Merge customer info and payment from the main config when alternate configs keep only order data.
-  if (ORDER_CONFIG_FILE !== 'order-config.json' && (!config.customerInfo || !config.payment)) {
-    const mainData = await fs.readFile(path.join(__dirname, '..', 'order-config.json'), 'utf8');
-    const mainConfig = JSON.parse(mainData);
-    config.customerInfo = config.customerInfo || mainConfig.customerInfo;
-    config.payment = config.payment || mainConfig.payment;
-  }
+  const config = JSON.parse(await fs.readFile(path.join(__dirname, '..', CONFIG_FILE), 'utf8'));
+
+  // The alternate configs carry order lines only, so the customer and the card
+  // come from the store, which is where the UI keeps them.
+  config.customerInfo ??= await store.getCustomerProfile();
+  config.payment ??= await store.getPaymentProfile();
 
   return config;
 }
 
-async function loadProducts() {
-  const data = await fs.readFile(path.join(__dirname, '..', PRODUCTS_FILE), 'utf8');
-  return JSON.parse(data);
-}
+const loadProducts = () => store.getProducts(ENVIRONMENT);
+
+// Playwright waits for the process to be idle; an open database connection is
+// not idle, so the run would hang after the order was already placed.
+test.afterAll(async () => {
+  await disconnect();
+});
 
 test("Place order from config", async ({ page, context }) => {
   
@@ -339,16 +349,12 @@ test("Place order from config", async ({ page, context }) => {
       source: order.source,
     };
 
-    let history = [];
-    try {
-      const data = await fs.readFile("order-history.json", "utf8");
-      history = JSON.parse(data);
-    } catch (e) {
-      // File doesn't exist yet
-    }
-
-    history.push(historyEntry);
-    await fs.writeFile("order-history.json", JSON.stringify(history, null, 2));
+    /*
+     * One insert. The file version read the whole history, pushed onto it and
+     * wrote it back, so runs finishing together overwrote each other: five at
+     * once left two entries.
+     */
+    await store.addOrderRun(historyEntry);
 
     console.log("✅ Order placed successfully! Order #:", order.orderNumber || "(not captured)");
   } catch (error) {

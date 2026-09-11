@@ -130,11 +130,12 @@ describe('checked-in order configs stay valid over time', () => {
   const fs = require('node:fs');
   const path = require('node:path');
 
-  const configs = [
-    'order-config-peach-sorbet.json',
-    'order-config-staging.json',
-    'order-config-example-with-options.json',
-  ];
+  /*
+   * The staging config moved into the database with the rest of the application
+   * state, so the same guard for its draft lives in tests/integration/store.
+   * These two remain files because npm scripts select them by name.
+   */
+  const configs = ['order-config-peach-sorbet.json', 'order-config-example-with-options.json'];
 
   for (const file of configs) {
     test(`${file} does not pin a date that can expire`, () => {

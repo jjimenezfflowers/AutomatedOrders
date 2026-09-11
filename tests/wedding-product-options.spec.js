@@ -1,13 +1,24 @@
 const { test } = require("@playwright/test");
 const { clickAddToCart } = require("./helpers/product-form");
-const products = require("../products.json");
-const orderConfig = require("../order-config.json");
+const store = require("../lib/store");
+const { disconnect } = require("../lib/db");
 
 const PRODUCT_ID = "wedding-flower-kit";
-const product = products.find((p) => p.id === PRODUCT_ID);
+/** Looks a product up in the store, which is where the catalogue lives now. */
+async function loadProduct(slug) {
+  const products = await store.getProducts('dev');
+  const product = products.find((candidate) => candidate.id === slug);
+  if (!product) throw new Error(`Product not found: ${slug}`);
+  return product;
+}
+
+test.afterAll(async () => {
+  await disconnect();
+});
 
 test("wedding: product-options (debug)", async ({ page }) => {
-  if (!product) throw new Error(`Product not found: ${PRODUCT_ID}`);
+  const product = await loadProduct(PRODUCT_ID);
+  const orderConfig = await store.getOrderConfig('dev');
 
   // Open product page
   await page.goto(product.url);

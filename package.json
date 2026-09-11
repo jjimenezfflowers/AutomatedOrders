@@ -10,7 +10,13 @@
     "test:product-form": "playwright test tests/product-form-helpers.spec.js --project=chromium",
     "test:mini-calla": "playwright test tests/mini-calla-product-options.spec.js --project=chromium",
     "test:peach-sorbet": "ORDER_CONFIG=order-config-peach-sorbet.json playwright test tests/place-order.spec.js --project=chromium",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:integration": "node --test tests/integration/",
+    "db:migrate": "DATABASE_URL=file:./db.sqlite prisma migrate deploy",
+    "db:studio": "DATABASE_URL=file:./db.sqlite prisma studio",
+    "db:generate": "DATABASE_URL=file:./db.sqlite prisma generate",
+    "db:seed": "node prisma/seed-from-json.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +24,10 @@
   "type": "commonjs",
   "dependencies": {
     "@playwright/test": "^1.61.1",
+    "@prisma/client": "^6.19.3",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
   }
 }

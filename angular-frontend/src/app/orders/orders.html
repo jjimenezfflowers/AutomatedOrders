@@ -224,3 +224,10 @@
     </ui-card-footer>
 
   </ui-card>
+
+  <!-- What the run placed, once the store has confirmed it -->
+  @if (placedOrder || runError) {
+    <div class="pt-6">
+      <order-result [order]="placedOrder" [error]="runError" />
+    </div>
+  }

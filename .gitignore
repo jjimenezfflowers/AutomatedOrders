@@ -34,3 +34,9 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# SQLite's sidecar files are per-process state, not data. The database itself is
+# committed; these would only ever conflict.
+prisma/db.sqlite-journal
+prisma/db.sqlite-wal
+prisma/db.sqlite-shm

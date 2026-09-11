@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { LucideAngularModule, CalendarDays, Dices, Play } from 'lucide-angular';
 import { Observable, map, switchMap, tap } from 'rxjs';
 
+import { OrderResultComponent, PlacedOrder } from './order-result';
+
 import {
   UI_CARD,
   UiBadgeComponent,
@@ -86,6 +88,8 @@ interface OrderConfigEntry {
 interface RunTestResponse {
   success: boolean;
   output?: string;
+  /** What the run placed, read back from the store. Absent on older servers. */
+  order?: PlacedOrder | null;
 }
 
 type ProductSortKey = 'entry' | 'origin' | 'name';
@@ -105,12 +109,21 @@ type ProductSortKey = 'entry' | 'origin' | 'name';
     UiLabelComponent,
     UiSelectComponent,
     UiDatePickerComponent,
+    OrderResultComponent,
   ],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
 export class OrdersComponent implements OnInit {
   readonly icons = { place: Play, random: Dices, calendar: CalendarDays };
+
+  /*
+   * The result of the last run. A run used to report itself through a native
+   * alert() that said only "the test completed without errors" and then vanished;
+   * it could not say what was placed, because nothing was captured.
+   */
+  placedOrder: PlacedOrder | null = null;
+  runError: string | null = null;
   products: Product[] = [];
   productSort: ProductSortKey = 'entry';
   /** Filters the picker; 24 products in a checkbox grid is more than anyone scans. */
@@ -433,6 +446,10 @@ export class OrdersComponent implements OnInit {
     console.log('Starting Playwright test...');
 
     this.isPlacingOrder = true;
+    // Clear the previous run's result, so a failure never leaves the last
+    // success on screen looking like it belongs to this run.
+    this.placedOrder = null;
+    this.runError = null;
     // The Playwright run reads order-config.json from disk, so the on-screen state has to be
     // persisted first; only run the test once the save has actually succeeded.
     this.persistOrderConfig().pipe(
@@ -442,17 +459,21 @@ export class OrdersComponent implements OnInit {
         this.isPlacingOrder = false;
 
         if (response.success) {
-          alert('✅ Order placed successfully!\n\nThe test completed without errors.');
+          this.placedOrder = response.order ?? null;
+          // A run that succeeded but reported no order still needs saying: the
+          // order exists, and silence would read as nothing having happened.
+          this.runError = response.order
+            ? null
+            : 'The run completed, but the store returned no order for it. Check History and the Logs page.';
           return;
         }
 
-        const output = response.output || 'No output available';
-        alert(`❌ Order placement failed:\n\n${output.substring(0, 500)}${output.length > 500 ? '...' : ''}\n\nCheck the Logs tab for full details.`);
+        this.runError = response.output || 'No output available';
       },
       error: (err) => {
         this.isPlacingOrder = false;
         console.error('Test execution error:', err);
-        alert(`❌ Failed to run test:\n\n${err.message || 'Unknown error'}\n\nCheck the Logs tab for details.`);
+        this.runError = err.message || 'Unknown error';
       }
     });
   }

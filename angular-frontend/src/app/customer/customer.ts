@@ -19,6 +19,7 @@ const ADDRESS_FIELDS: CustomerField[] = ['address', 'city', 'state', 'zipCode'];
 
 interface OrderConfig {
   deliveryDate?: string;
+  purpose?: string;
   customerInfo: {
     email: string;
     phone: string;

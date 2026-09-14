@@ -72,6 +72,7 @@ interface OrderItem {
 
 interface OrderConfig {
   deliveryDate: string;
+  purpose?: string;
   customerInfo?: Record<string, string>;
   payment?: Record<string, string>;
   orders: OrderConfigEntry[];
@@ -93,6 +94,7 @@ interface RunTestResponse {
 }
 
 type ProductSortKey = 'entry' | 'origin' | 'name';
+type OrderRunSnapshot = Pick<OrderConfig, 'deliveryDate' | 'purpose' | 'orders'>;
 
 @Component({
   selector: 'app-orders',
@@ -141,13 +143,18 @@ export class OrdersComponent implements OnInit {
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];
   deliveryDate: string = '';
+  purpose = '';
   orderConfig: OrderConfig = {
     deliveryDate: '',
+    purpose: '',
     orders: []
   };
   isSavingOrder = false;
   isPlacingOrder = false;
+  readonly maxQueuedOrderRuns = 4;
   configLoaded = false;
+  private orderRunQueue: OrderRunSnapshot[] = [];
+  private activeOrderRun: OrderRunSnapshot | null = null;
   private readonly originOptions = ['US', 'CO', 'EC'];
   private readonly collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
   private productEntryOrder = new Map<string, number>();
@@ -182,6 +189,14 @@ export class OrdersComponent implements OnInit {
   /** How many of the available products are ticked, for the picker's header. */
   get selectedCount(): number {
     return this.products.filter((product) => this.selectedProducts[product.id]).length;
+  }
+
+  get pendingOrderCount(): number {
+    return this.orderRunQueue.length + (this.activeOrderRun ? 1 : 0);
+  }
+
+  get orderQueueFull(): boolean {
+    return this.pendingOrderCount >= this.maxQueuedOrderRuns;
   }
 
   /** Sorted, then narrowed by the search box. */
@@ -276,12 +291,14 @@ export class OrdersComponent implements OnInit {
 
         this.orderConfig = {
           deliveryDate: data.deliveryDate || '',
+          purpose: data.purpose || '',
           customerInfo: data.customerInfo || {},
           payment: data.payment || {},
           orders
         };
 
         this.deliveryDate = this.orderConfig.deliveryDate;
+        this.purpose = this.orderConfig.purpose || '';
         this.selectedProducts = {};
         for (const order of orders) {
           this.selectedProducts[order.productId] = true;
@@ -392,16 +409,35 @@ export class OrdersComponent implements OnInit {
     return Array.from(uniqueOrders.values());
   }
 
-  // The server rewrites order-config.json wholesale, so re-read it and merge on top of the
-  // current contents. Otherwise a stale cached config would drop customerInfo/payment.
-  private persistOrderConfig(): Observable<OrderConfig> {
-    const orders = this.buildOrders();
+  private buildOrderConfigSnapshot(): OrderRunSnapshot {
+    return {
+      deliveryDate: this.deliveryDate,
+      purpose: this.purpose,
+      orders: this.cloneOrders(this.buildOrders())
+    };
+  }
+
+  private cloneOrders(orders: OrderConfigEntry[]): OrderConfigEntry[] {
+    return orders.map(order => {
+      const copy: OrderConfigEntry = { ...order };
+      if (order.productOptions) {
+        copy.productOptions = { ...order.productOptions };
+      }
+      return copy;
+    });
+  }
+
+  // Re-read the current config and merge on top of it. Otherwise a stale cached
+  // config would drop customerInfo/payment.
+  private persistOrderConfig(snapshot = this.buildOrderConfigSnapshot()): Observable<OrderConfig> {
+    const orders = this.cloneOrders(snapshot.orders);
 
     return this.http.get<Partial<OrderConfig>>('/api/order-config').pipe(
       switchMap(currentConfig => {
         const orderConfig: OrderConfig = {
           ...currentConfig,
-          deliveryDate: this.deliveryDate,
+          deliveryDate: snapshot.deliveryDate,
+          purpose: snapshot.purpose,
           orders
         };
 
@@ -424,7 +460,8 @@ export class OrdersComponent implements OnInit {
   }
 
   runTest() {
-    if (this.isPlacingOrder) {
+    if (this.orderQueueFull) {
+      alert(`The order queue is full. Please wait for one of the ${this.maxQueuedOrderRuns} orders to finish.`);
       return;
     }
 
@@ -445,19 +482,30 @@ export class OrdersComponent implements OnInit {
 
     console.log('Starting Playwright test...');
 
+    this.orderRunQueue.push(this.buildOrderConfigSnapshot());
+    this.runError = null;
+    this.processNextOrderRun();
+  }
+
+  private processNextOrderRun(): void {
+    if (this.activeOrderRun || this.orderRunQueue.length === 0) {
+      this.isPlacingOrder = !!this.activeOrderRun || this.orderRunQueue.length > 0;
+      return;
+    }
+
+    const run = this.orderRunQueue.shift()!;
+    this.activeOrderRun = run;
     this.isPlacingOrder = true;
     // Clear the previous run's result, so a failure never leaves the last
     // success on screen looking like it belongs to this run.
     this.placedOrder = null;
     this.runError = null;
-    // The Playwright run reads order-config.json from disk, so the on-screen state has to be
+    // The Playwright run reads the saved order config, so the queued snapshot has to be
     // persisted first; only run the test once the save has actually succeeded.
-    this.persistOrderConfig().pipe(
+    this.persistOrderConfig(run).pipe(
       switchMap(() => this.http.post<RunTestResponse>('/api/run-test', {}))
     ).subscribe({
       next: (response) => {
-        this.isPlacingOrder = false;
-
         if (response.success) {
           this.placedOrder = response.order ?? null;
           // A run that succeeded but reported no order still needs saying: the
@@ -465,17 +513,25 @@ export class OrdersComponent implements OnInit {
           this.runError = response.order
             ? null
             : 'The run completed, but the store returned no order for it. Check History and the Logs page.';
+          this.finishOrderRun();
           return;
         }
 
         this.runError = response.output || 'No output available';
+        this.finishOrderRun();
       },
       error: (err) => {
-        this.isPlacingOrder = false;
         console.error('Test execution error:', err);
         this.runError = err.message || 'Unknown error';
+        this.finishOrderRun();
       }
     });
+  }
+
+  private finishOrderRun(): void {
+    this.activeOrderRun = null;
+    this.isPlacingOrder = this.orderRunQueue.length > 0;
+    this.processNextOrderRun();
   }
 
   getProductById(id: string): Product | undefined {

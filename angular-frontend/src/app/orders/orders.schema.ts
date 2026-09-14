@@ -50,6 +50,7 @@ export const orderItemSchema = z.object({
 
 export const orderConfigSchema = z.object({
   deliveryDate: deliveryDateSchema,
+  purpose: z.string().trim().optional(),
   orders: z.array(orderItemSchema).min(1, 'Select at least one product.'),
 });
 

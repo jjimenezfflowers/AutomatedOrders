@@ -101,12 +101,23 @@ describe('OrdersPageComponent', () => {
         expect(spy).toHaveBeenCalled();
       });
 
-      it('disables Place Order while a run is in flight', async () => {
+      it('keeps Place Order clickable while a run is in flight', async () => {
         const feature: any = (fixture.componentInstance as any).orders();
 
         expect(button('page-place-order')!.disabled).toBeFalse();
 
         feature.isPlacingOrder = true;
+        detect();
+
+        expect(button('page-place-order')!.disabled).toBeFalse();
+      });
+
+      it('disables Place Order when the queue is full', async () => {
+        const feature: any = (fixture.componentInstance as any).orders();
+
+        expect(button('page-place-order')!.disabled).toBeFalse();
+
+        spyOnProperty(feature, 'orderQueueFull', 'get').and.returnValue(true);
         detect();
 
         expect(button('page-place-order')!.disabled).toBeTrue();

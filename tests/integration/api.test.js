@@ -133,6 +133,7 @@ describe('the HTTP API', () => {
   describe('the order config', () => {
     const CONFIG = {
       deliveryDate: '2026-09-15',
+      purpose: 'Checkout QA',
       customerInfo: {
         email: 'jose@fiftyflowers.com',
         phone: '(208) 391-2924',

@@ -292,8 +292,23 @@ app.use((err, req, res, next) => {
 
 // Guarded so tests can require this module without binding a port.
 function start(port = PORT) {
-  return app.listen(port, '0.0.0.0', function onListening() {
-    const boundPort = this.address().port;
+  return app.listen(port, '0.0.0.0', function onListening(error) {
+    if (error) {
+      console.error(`[ERROR] Failed to start server on port ${port}: ${error.message}`);
+      addLog('error', `Failed to start server on port ${port}: ${error.message}`);
+      process.exitCode = 1;
+      return;
+    }
+
+    const address = this.address();
+    if (!address || typeof address === 'string') {
+      console.error(`[ERROR] Server started but did not expose a TCP address.`);
+      addLog('error', 'Server started without a TCP address.');
+      process.exitCode = 1;
+      return;
+    }
+
+    const boundPort = address.port;
     const timestamp = new Date().toISOString();
 
     console.log('\n' + '='.repeat(50));

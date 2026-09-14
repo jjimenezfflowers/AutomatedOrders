@@ -43,6 +43,7 @@ const STORED_PAYMENT = {
 
 const STORED_CONFIG = {
   deliveryDate: '2026-01-10',
+  purpose: 'Checkout QA',
   customerInfo: STORED_CUSTOMER_INFO,
   payment: STORED_PAYMENT,
   orders: [{ productId: 'roses', quantity: 3, deliveryDate: '2026-01-10' }]
@@ -151,6 +152,18 @@ describe('OrdersComponent', () => {
       expect(post.request.body.customerInfo).toEqual(STORED_CUSTOMER_INFO);
       expect(post.request.body.payment).toEqual(STORED_PAYMENT);
       expect(post.request.body.deliveryDate).toBe('2026-02-02');
+      post.flush({});
+    });
+
+    it('saves the optional purpose with the draft', () => {
+      completeInit();
+
+      component.purpose = 'Inventory rehearsal';
+      component.saveOrder();
+
+      httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+      const post = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config');
+      expect(post.request.body.purpose).toBe('Inventory rehearsal');
       post.flush({});
     });
 
@@ -319,7 +332,7 @@ describe('OrdersComponent', () => {
       expect(component.isPlacingOrder).toBeFalse();
     });
 
-    // --- Defect 4: in-flight guard -------------------------------------------------
+    // --- Small queue: keep the UI quick without running checkout flows in parallel.
 
     it('sets isPlacingOrder while the run is in flight and clears it on success', () => {
       completeInit();
@@ -334,21 +347,67 @@ describe('OrdersComponent', () => {
       expect(component.isPlacingOrder).toBeFalse();
     });
 
-    it('ignores a second runTest call while one is already in flight', () => {
+    it('queues a second runTest call while one is already in flight', () => {
       completeInit();
 
       component.runTest();
       httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
       httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
+      const firstRun = httpMock.expectOne('/api/run-test');
 
+      component.orderItems[0].quantity = 8;
+      component.purpose = 'Second queued run';
       component.runTest(); // double click
+      component.orderItems[0].quantity = 99;
+      component.purpose = 'Changed after queueing';
 
-      // A second run would issue a second POST; matching finds exactly one.
-      expect(httpMock.match('/api/run-test').length).toBe(1);
+      expect(component.pendingOrderCount).toBe(2);
+      expect(httpMock.match('/api/run-test').length).toBe(0);
       expect(window.alert).not.toHaveBeenCalled();
+
+      firstRun.flush({ success: true });
+
+      httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+      const secondSave = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config');
+      expect(secondSave.request.body.purpose).toBe('Second queued run');
+      expect(secondSave.request.body.orders).toEqual([
+        { productId: 'roses', quantity: 8, deliveryDate: '2026-01-10' }
+      ]);
+      secondSave.flush({});
+      httpMock.expectOne('/api/run-test').flush({ success: true });
+
+      expect(component.pendingOrderCount).toBe(0);
     });
 
-    it('disables the Place Order button while a run is in flight', () => {
+    it('caps the queued order runs at four', () => {
+      completeInit();
+
+      component.runTest();
+      httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+      httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
+      const firstRun = httpMock.expectOne('/api/run-test');
+
+      component.runTest();
+      component.runTest();
+      component.runTest();
+
+      expect(component.pendingOrderCount).toBe(4);
+      expect(component.orderQueueFull).toBeTrue();
+
+      component.runTest();
+
+      expect(window.alert).toHaveBeenCalledWith(jasmine.stringMatching(/queue is full/i));
+      expect(component.pendingOrderCount).toBe(4);
+
+      firstRun.flush({ success: true });
+      for (let i = 0; i < 3; i++) {
+        httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+        httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
+        httpMock.expectOne('/api/run-test').flush({ success: true });
+      }
+    });
+
+    it('keeps the Place Order button enabled while processing until the queue is full', () => {
       completeInit();
 
       // The second Place Order button now lives in the page header; see
@@ -363,15 +422,26 @@ describe('OrdersComponent', () => {
       detect();
 
       expect(buttons().length).toBe(1);
-      expect(buttons().every(b => b.disabled)).toBeTrue();
-      // ui-button keeps the label static and signals the in-flight run with a
-      // spinner plus aria-busy, instead of swapping the text to 'Placing Order...'.
-      expect(buttons().every(b => b.getAttribute('aria-busy') === 'true')).toBeTrue();
+      expect(buttons().every(b => b.disabled)).toBeFalse();
+      expect(buttons().every(b => b.getAttribute('aria-busy') === null)).toBeTrue();
       expect(buttons().every(b => b.textContent!.includes('Place Order'))).toBeTrue();
+
+      component.runTest();
+      component.runTest();
+      component.runTest();
+      detect();
+
+      expect(buttons().every(b => b.disabled)).toBeTrue();
+      expect(buttons().every(b => b.textContent!.includes('(4/4)'))).toBeTrue();
 
       httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
       httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
       httpMock.expectOne('/api/run-test').flush({ success: true });
+      for (let i = 0; i < 3; i++) {
+        httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+        httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
+        httpMock.expectOne('/api/run-test').flush({ success: true });
+      }
       detect();
 
       expect(buttons().every(b => b.disabled)).toBeFalse();

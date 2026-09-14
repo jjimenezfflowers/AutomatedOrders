@@ -45,13 +45,14 @@ import { SECTION_COPY } from '../navigation';
           <ui-button
             size="sm"
             (click)="orders.runTest()"
-            [loading]="orders.isPlacingOrder"
+            [disabled]="orders.orderQueueFull"
             testId="page-place-order"
           >
-            @if (!orders.isPlacingOrder) {
-              <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-            }
+            <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
             Place Order
+            @if (orders.pendingOrderCount) {
+              <span class="text-xs opacity-80">({{ orders.pendingOrderCount }}/{{ orders.maxQueuedOrderRuns }})</span>
+            }
           </ui-button>
         }
         @if (staging(); as staging) {

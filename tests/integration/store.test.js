@@ -165,6 +165,7 @@ describe('the store', () => {
     test('round-trips a draft with its customer and card', async () => {
       const config = {
         deliveryDate: '2026-09-15',
+        purpose: 'Checkout QA',
         customerInfo: CUSTOMER,
         payment: PAYMENT,
         orders: [{ productId: 'roses', quantity: 2, variant: '20 stems' }],
@@ -173,6 +174,13 @@ describe('the store', () => {
       await store.saveOrderConfig('dev', config, client);
 
       assert.deepEqual(await store.getOrderConfig('dev', client), config);
+    });
+
+    test('does not require a draft purpose', async () => {
+      await store.saveOrderConfig('dev', { deliveryDate: '2026-09-15', orders: [] }, client);
+
+      const back = await store.getOrderConfig('dev', client);
+      assert.ok(!('purpose' in back));
     });
 
     test('keeps the option selections a line carries', async () => {

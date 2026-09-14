@@ -126,6 +126,7 @@ model ProductOptionChoice {
 model OrderDraft {
   environment  String   @id
   deliveryDate String?
+  purpose      String?
   updatedAt    DateTime @updatedAt
 
   items OrderDraftItem[]

@@ -80,6 +80,15 @@
           testId="order-delivery-date" />
       </ui-field>
 
+      <ui-field label="Purpose" controlId="order-purpose">
+        <ui-input
+          inputId="order-purpose"
+          name="orderPurpose"
+          [(ngModel)]="purpose"
+          placeholder="Optional"
+          testId="order-purpose" />
+      </ui-field>
+
       <!-- Selected Products -->
       @if (orderItems.length > 0) {
         <div>
@@ -214,11 +223,12 @@
           size="sm"
           testId="place-order"
           (click)="runTest()"
-          [loading]="isPlacingOrder">
-          @if (!isPlacingOrder) {
-            <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-          }
+          [disabled]="orderQueueFull">
+          <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
           Place Order
+          @if (pendingOrderCount) {
+            <span class="text-xs opacity-80">({{ pendingOrderCount }}/{{ maxQueuedOrderRuns }})</span>
+          }
         </ui-button>
       </div>
     </ui-card-footer>

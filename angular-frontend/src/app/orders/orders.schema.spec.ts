@@ -1,5 +1,6 @@
 import {
   deliveryDateError,
+  orderConfigSchema,
   orderFormErrors,
   quantityError,
   quantityField,
@@ -126,6 +127,25 @@ describe('order form schema', () => {
       });
 
       expect(Object.keys(errors).sort()).toEqual(['deliveryDate', 'quantity-a', 'quantity-b']);
+    });
+  });
+
+  describe('orderConfigSchema', () => {
+    it('keeps purpose optional', () => {
+      expect(
+        orderConfigSchema.safeParse({
+          deliveryDate: '2026-09-10',
+          orders: [{ productId: 'roses', quantity: 1 }],
+        }).success,
+      ).toBeTrue();
+
+      expect(
+        orderConfigSchema.safeParse({
+          deliveryDate: '2026-09-10',
+          purpose: 'Checkout QA',
+          orders: [{ productId: 'roses', quantity: 1 }],
+        }).success,
+      ).toBeTrue();
     });
   });
 });

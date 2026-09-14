@@ -76,7 +76,11 @@ async function seedDraft(client, environment, config) {
   if (!config) return 0;
 
   await client.orderDraft.create({
-    data: { environment, deliveryDate: config.deliveryDate || null },
+    data: {
+      environment,
+      deliveryDate: config.deliveryDate || null,
+      purpose: config.purpose ? String(config.purpose).trim() || null : null,
+    },
   });
 
   const items = Array.isArray(config.orders) ? config.orders : [];

@@ -29,6 +29,8 @@ function createTestDatabase() {
     fs.mkdtempSync(path.join(os.tmpdir(), 'automated-orders-')),
     'test.sqlite',
   );
+  // Prisma 6.19 does not create a missing SQLite file for an absolute URL.
+  fs.closeSync(fs.openSync(file, 'wx'));
   const url = `file:${file}`;
 
   execFileSync('npx', ['prisma', 'migrate', 'deploy'], {

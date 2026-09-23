@@ -151,6 +151,11 @@ describe('ProductsCreation', () => {
       }
     });
 
+    it('offers USA/Holex as an origin option', () => {
+      expect(component.originOptions).toContain('USA/Holex');
+      expect(input('product-origin-USA/Holex')).not.toBeNull();
+    });
+
     it('renders the number field as a real number input, keeping its min', () => {
       expect(input('product-default-quantity').type).toBe('number');
       expect(input('product-default-quantity').min).toBe('1');
@@ -382,11 +387,13 @@ describe('ProductsCreation', () => {
 
       await check(input('product-origin-US'), true);
       await check(input('product-origin-CO'), true);
-      expect(component.product.origin).toEqual(['US', 'CO']);
+      await check(input('product-origin-USA/Holex'), true);
+      expect(component.product.origin).toEqual(['US', 'CO', 'USA/Holex']);
       expect(input('product-origin-US').checked).toBeTrue();
+      expect(input('product-origin-USA/Holex').checked).toBeTrue();
 
       await check(input('product-origin-US'), false);
-      expect(component.product.origin).toEqual(['CO']);
+      expect(component.product.origin).toEqual(['CO', 'USA/Holex']);
       expect(input('product-origin-US').checked).toBeFalse();
 
       await type(input('product-id'), 'lilies');
@@ -394,7 +401,7 @@ describe('ProductsCreation', () => {
       await type(input('product-url'), 'https://example.test/lilies');
       await click('save-product');
 
-      expect(created[0].origin).toEqual(['CO']);
+      expect(created[0].origin).toEqual(['CO', 'USA/Holex']);
     });
 
     it('shows the product-options note only for that type', async () => {

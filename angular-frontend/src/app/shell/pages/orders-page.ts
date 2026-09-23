@@ -49,7 +49,7 @@ import { SECTION_COPY } from '../navigation';
             testId="page-place-order"
           >
             <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-            Place Order
+            {{ orders.placeOrderLabel }}
             @if (orders.pendingOrderCount) {
               <span class="text-xs opacity-80">({{ orders.pendingOrderCount }}/{{ orders.maxQueuedOrderRuns }})</span>
             }
@@ -72,7 +72,7 @@ import { SECTION_COPY } from '../navigation';
             [disabled]="!staging.stagingBaseUrl"
             testId="page-place-staging-order"
           >
-            Place Staging Order
+            {{ staging.placeOrderLabel }}
           </ui-button>
         }
       </ng-container>

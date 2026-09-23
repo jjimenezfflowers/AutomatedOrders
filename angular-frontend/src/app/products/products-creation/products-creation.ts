@@ -88,7 +88,7 @@ export class ProductsCreation implements OnInit, OnChanges {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   variantsText = '';
   errors: Record<string, string | undefined> = {};
-  readonly originOptions = ['US', 'CO', 'EC'];
+  readonly originOptions = ['US', 'CO', 'EC', 'USA/Holex'];
   readonly icons = { save: Check };
 
   get isEditMode(): boolean {

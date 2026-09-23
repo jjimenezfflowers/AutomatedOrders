@@ -152,12 +152,20 @@ app.post('/api/staging-order-config', handle('Save staging order config', async 
 
 app.get('/api/order-history', handle('Get order history', () => store.getOrderHistory()));
 
+app.patch('/api/order-history/:id/purpose', handle('Update order purpose', (req) =>
+  store.updateOrderRunPurpose(req.params.id, req.body?.purpose),
+));
+
 // Run test
 app.post('/api/run-test', async (req, res) => {
   console.log('\n' + '='.repeat(60));
   console.log('🧪 INICIANDO TEST DE PLAYWRIGHT');
   console.log('='.repeat(60) + '\n');
-  addLog('info', '🧪 Starting Playwright test', { staging: req.body?.staging || false });
+  const placementMethod = req.body?.method === 'bb' ? 'bb' : 'storefront';
+  addLog('info', '🧪 Starting Playwright test', {
+    staging: req.body?.staging || false,
+    method: placementMethod,
+  });
 
   /*
    * Which store the run is for. It used to be named by handing the spec a file
@@ -176,7 +184,10 @@ app.post('/api/run-test', async (req, res) => {
     // Force headless on Linux (Docker) since there's no display server
     const headless = process.env.HEADLESS === 'true' || process.platform === 'linux';
     // construct base args
-    const args = ['playwright', 'test', 'tests/place-order.spec.js', '--project=chromium', '--reporter=line'];
+    const spec = placementMethod === 'bb'
+      ? 'tests/place-bb-draft-order.spec.js'
+      : 'tests/place-order.spec.js';
+    const args = ['playwright', 'test', spec, '--project=chromium', '--reporter=line'];
     if (!headless) {
       args.push('--headed');
     }

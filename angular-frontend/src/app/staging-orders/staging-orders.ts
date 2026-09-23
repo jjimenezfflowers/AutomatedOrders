@@ -2,7 +2,8 @@ import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Circle, CircleCheck, CircleX, Rocket, Save } from 'lucide-angular';
+import { LucideAngularModule, CalendarDays, Circle, CircleCheck, CircleX, Dices, Rocket, Save } from 'lucide-angular';
+import { Observable, switchMap, tap } from 'rxjs';
 
 import {
   UI_CARD,
@@ -36,6 +37,7 @@ interface Product {
   id: string;
   name: string;
   url: string;
+  origin?: string | string[];
   type?: string;
   variantSelector?: string;
   variants?: string[];
@@ -50,16 +52,21 @@ interface OrderItem {
   name: string;
   variant?: string;
   quantity: number;
+  deliveryDate?: string;
   productOptions?: { [key: string]: string };
 }
+
+type PlacementMethod = 'storefront' | 'bb';
 
 interface StagingOrderConfig {
   stagingBaseUrl: string;
   deliveryDate: string;
+  placementMethod: PlacementMethod;
   orders: {
     productId: string;
     variant?: string;
     quantity: number;
+    deliveryDate?: string;
     productOptions?: { [key: string]: string };
   }[];
 }
@@ -68,6 +75,11 @@ interface RunTestResponse {
   success: boolean;
   output?: string;
 }
+
+type ProductSortKey = 'entry' | 'origin' | 'name';
+
+const MIN_LEAD_DAYS = 8;
+const MAX_LEAD_DAYS = 12;
 
 @Component({
   selector: 'app-staging-orders',
@@ -95,15 +107,36 @@ export class StagingOrdersComponent implements OnInit {
     place: Rocket,
     passed: CircleCheck,
     failed: CircleX,
+    random: Dices,
+    calendar: CalendarDays,
   };
   products: Product[] = [];
+  productSearch = '';
+  productSort: ProductSortKey = 'entry';
+  placementMethod: PlacementMethod = 'storefront';
+  readonly productSortOptions: { value: ProductSortKey; label: string }[] = [
+    { value: 'entry', label: 'Entry' },
+    { value: 'origin', label: 'Origin' },
+    { value: 'name', label: 'Name' },
+  ];
+  readonly placementMethodOptions: { value: PlacementMethod; label: string }[] = [
+    { value: 'storefront', label: 'Storefront checkout' },
+    { value: 'bb', label: 'BB Draft Order' },
+  ];
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];
   deliveryDate: string = '';
   stagingBaseUrl: string = '';
-  stagingOrderConfig: StagingOrderConfig = { stagingBaseUrl: '', deliveryDate: '', orders: [] };
+  stagingOrderConfig: StagingOrderConfig = {
+    stagingBaseUrl: '',
+    deliveryDate: '',
+    placementMethod: 'storefront',
+    orders: [],
+  };
 
   isRunning = false;
+  isSavingOrder = false;
+  configLoaded = false;
   testOutput = '';
   testSuccess: boolean | null = null;
 
@@ -111,6 +144,9 @@ export class StagingOrdersComponent implements OnInit {
   errors: Record<string, string | undefined> = {};
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly originOptions = ['US', 'CO', 'EC', 'USA/Holex'];
+  private readonly collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+  private productEntryOrder = new Map<string, number>();
 
   constructor(private http: HttpClient) {}
 
@@ -129,25 +165,35 @@ export class StagingOrdersComponent implements OnInit {
         uniqueProducts.set(p.id, p);
       }
       this.products = Array.from(uniqueProducts.values());
+      this.productEntryOrder = new Map(this.products.map((product, index) => [product.id, index]));
       this.syncOrderItemsFromSelection();
     });
   }
 
   loadConfig() {
-    this.http.get<Partial<StagingOrderConfig>>('/api/staging-order-config').subscribe(data => {
-      const orders = Array.isArray(data.orders) ? data.orders : [];
-      this.stagingOrderConfig = {
-        stagingBaseUrl: data.stagingBaseUrl || '',
-        deliveryDate: data.deliveryDate || '',
-        orders
-      };
-      this.stagingBaseUrl = this.stagingOrderConfig.stagingBaseUrl;
-      this.deliveryDate = this.stagingOrderConfig.deliveryDate;
-      this.selectedProducts = {};
-      for (const order of orders) {
-        this.selectedProducts[order.productId] = true;
-      }
-      this.syncOrderItemsFromSelection();
+    this.http.get<Partial<StagingOrderConfig>>('/api/staging-order-config').subscribe({
+      next: data => {
+        const orders = Array.isArray(data.orders) ? data.orders : [];
+        this.stagingOrderConfig = {
+          stagingBaseUrl: data.stagingBaseUrl || '',
+          deliveryDate: data.deliveryDate || '',
+          placementMethod: data.placementMethod === 'bb' ? 'bb' : 'storefront',
+          orders,
+        };
+        this.stagingBaseUrl = this.stagingOrderConfig.stagingBaseUrl;
+        this.deliveryDate = this.stagingOrderConfig.deliveryDate;
+        this.placementMethod = this.stagingOrderConfig.placementMethod;
+        this.selectedProducts = {};
+        for (const order of orders) {
+          this.selectedProducts[order.productId] = true;
+        }
+        this.configLoaded = true;
+        this.syncOrderItemsFromSelection();
+      },
+      error: err => {
+        console.error('Failed to load staging order config:', err);
+        alert('Failed to load the saved staging order: ' + (err.message || 'Unknown error'));
+      },
     });
   }
 
@@ -165,7 +211,8 @@ export class StagingOrdersComponent implements OnInit {
         id: product.id,
         name: product.name,
         variant: savedOrder?.variant ?? product.defaultVariant,
-        quantity: savedOrder?.quantity ?? product.defaultQuantity
+        quantity: savedOrder?.quantity ?? product.defaultQuantity,
+        deliveryDate: savedOrder?.deliveryDate ?? this.deliveryDate,
       };
       if (product.type === 'product-options' && product.productOptions) {
         item.productOptions = {};
@@ -186,6 +233,28 @@ export class StagingOrdersComponent implements OnInit {
 
   updateOrderItems() {
     this.syncOrderItemsFromSelection();
+  }
+
+  get selectedCount(): number {
+    return this.products.filter(product => this.selectedProducts[product.id]).length;
+  }
+
+  get visibleProducts(): Product[] {
+    const term = this.productSearch.trim().toLowerCase();
+    if (!term) return this.sortedProducts;
+
+    return this.sortedProducts.filter(product =>
+      `${product.name} ${product.id} ${this.formatOrigin(product.origin)}`.toLowerCase().includes(term),
+    );
+  }
+
+  get sortedProducts(): Product[] {
+    return [...this.products].sort((a, b) => this.compareProducts(a, b));
+  }
+
+  clearSelection(): void {
+    this.selectedProducts = {};
+    this.updateOrderItems();
   }
 
   /** Re-exported for the template, which keys ui-field's `error` by the same name. */
@@ -253,6 +322,11 @@ export class StagingOrdersComponent implements OnInit {
   }
 
   saveConfig() {
+    if (!this.configLoaded) {
+      alert('The saved staging order has not loaded yet. Please wait a moment and try again.');
+      return;
+    }
+
     // A schemeless base URL or a zero quantity does not fail here — it fails minutes
     // later in the checkout run that reads this file back.
     if (!this.validateAll()) {
@@ -260,26 +334,78 @@ export class StagingOrdersComponent implements OnInit {
       return;
     }
 
-    const uniqueOrders = new Map<string, any>();
-    for (const item of this.orderItems) {
-      if (uniqueOrders.has(item.id)) continue;
-      const order: any = { productId: item.id, quantity: Number(item.quantity) || 1 };
-      if (item.variant) order.variant = item.variant;
-      if (item.productOptions) order.productOptions = item.productOptions;
-      uniqueOrders.set(item.id, order);
-    }
-    const config: StagingOrderConfig = {
-      stagingBaseUrl: this.stagingBaseUrl,
-      deliveryDate: this.deliveryDate,
-      orders: Array.from(uniqueOrders.values())
-    };
-    this.http.post('/api/staging-order-config', config).subscribe(() => {
-      this.stagingOrderConfig = config;
-      alert('Staging order saved!');
+    const config = this.buildConfig();
+    this.isSavingOrder = true;
+    this.persistConfig(config).subscribe({
+      next: () => {
+        this.isSavingOrder = false;
+        alert('Staging order saved!');
+      },
+      error: err => {
+        this.isSavingOrder = false;
+        alert('Failed to save staging order: ' + (err.message || 'Unknown error'));
+      },
     });
   }
 
+  private buildConfig(): StagingOrderConfig {
+    const uniqueOrders = new Map<string, StagingOrderConfig['orders'][number]>();
+    for (const item of this.orderItems) {
+      if (uniqueOrders.has(item.id)) continue;
+      const order: StagingOrderConfig['orders'][number] = {
+        productId: item.id,
+        quantity: Number(item.quantity) || 1,
+      };
+      if (item.variant) order.variant = item.variant;
+      if (item.deliveryDate) order.deliveryDate = item.deliveryDate;
+      if (item.productOptions) order.productOptions = item.productOptions;
+      uniqueOrders.set(item.id, order);
+    }
+
+    return {
+      stagingBaseUrl: this.stagingBaseUrl,
+      deliveryDate: this.deliveryDate,
+      placementMethod: this.placementMethod,
+      orders: Array.from(uniqueOrders.values()),
+    };
+  }
+
+  private persistConfig(config = this.buildConfig()): Observable<unknown> {
+    return this.http.post('/api/staging-order-config', config).pipe(
+      tap(() => {
+        this.stagingOrderConfig = config;
+      }),
+    );
+  }
+
+  applyDateToAll() {
+    if (!this.deliveryDate) {
+      alert('Please select a main delivery date first');
+      return;
+    }
+    this.orderItems.forEach(item => item.deliveryDate = this.deliveryDate);
+  }
+
+  randomDateAndApply() {
+    const today = new Date();
+    const span = MAX_LEAD_DAYS - MIN_LEAD_DAYS + 1;
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + Math.floor(Math.random() * span) + MIN_LEAD_DAYS);
+    if (targetDate.getDay() === 0) targetDate.setDate(targetDate.getDate() + 1);
+
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    this.deliveryDate = `${year}-${month}-${day}`;
+    this.orderItems.forEach(item => item.deliveryDate = this.deliveryDate);
+  }
+
   runTest() {
+    if (!this.configLoaded) {
+      alert('The saved staging order has not loaded yet. Please wait a moment and try again.');
+      return;
+    }
+
     if (!this.stagingBaseUrl) {
       alert('Please set a Staging Base URL before running the test.');
       this.validateAll();
@@ -304,7 +430,13 @@ export class StagingOrdersComponent implements OnInit {
     this.testSuccess = null;
     console.log('Starting staging Playwright test...');
 
-    this.http.post<RunTestResponse>('/api/run-test', { staging: true }).subscribe({
+    const config = this.buildConfig();
+    this.persistConfig(config).pipe(
+      switchMap(() => this.http.post<RunTestResponse>('/api/run-test', {
+        staging: true,
+        method: this.placementMethod,
+      })),
+    ).subscribe({
       next: response => {
         this.isRunning = false;
         this.testSuccess = response.success;
@@ -326,8 +458,20 @@ export class StagingOrdersComponent implements OnInit {
     });
   }
 
+  get placeOrderLabel(): string {
+    return this.placementMethod === 'bb' ? 'Place through BB' : 'Place Staging Order';
+  }
+
   getProductById(id: string): Product | undefined {
     return this.products.find(p => p.id === id);
+  }
+
+  hasOrigin(origin: string | string[] | undefined): boolean {
+    return this.normalizeOrigins(origin).length > 0;
+  }
+
+  formatOrigin(origin: string | string[] | undefined): string {
+    return this.normalizeOrigins(origin).join(' - ');
   }
 
   getOptionValue(opt: string | { value: string; label: string; price?: number }): string {
@@ -340,5 +484,36 @@ export class StagingOrdersComponent implements OnInit {
 
   hasPrice(opt: string | { value: string; label: string; price?: number }): boolean {
     return typeof opt !== 'string' && opt.price !== undefined;
+  }
+
+  private normalizeOrigins(origin: string | string[] | undefined): string[] {
+    const origins = Array.isArray(origin) ? origin : origin ? [origin] : [];
+    return this.originOptions.filter(option => origins.includes(option));
+  }
+
+  private compareProducts(a: Product, b: Product): number {
+    if (this.productSort === 'name') {
+      return this.collator.compare(a.name, b.name) || this.compareByEntry(a, b);
+    }
+    if (this.productSort === 'origin') {
+      const aOrigin = this.normalizeOrigins(a.origin);
+      const bOrigin = this.normalizeOrigins(b.origin);
+      if (!aOrigin.length && bOrigin.length) return 1;
+      if (aOrigin.length && !bOrigin.length) return -1;
+      const originOrder = this.originIndex(aOrigin[0]) - this.originIndex(bOrigin[0]);
+      return originOrder || this.collator.compare(aOrigin.join(' - '), bOrigin.join(' - '))
+        || this.collator.compare(a.name, b.name) || this.compareByEntry(a, b);
+    }
+    return this.compareByEntry(a, b);
+  }
+
+  private compareByEntry(a: Product, b: Product): number {
+    return (this.productEntryOrder.get(a.id) ?? Number.MAX_SAFE_INTEGER)
+      - (this.productEntryOrder.get(b.id) ?? Number.MAX_SAFE_INTEGER);
+  }
+
+  private originIndex(origin: string | undefined): number {
+    const index = origin ? this.originOptions.indexOf(origin) : -1;
+    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
   }
 }

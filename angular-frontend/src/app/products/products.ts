@@ -324,7 +324,7 @@ export class ProductsComponent implements OnInit {
   }
 
   private normalizeOrigins(origin: string | string[] | undefined): string[] {
-    const originOptions = ['US', 'CO', 'EC'];
+    const originOptions = ['US', 'CO', 'EC', 'USA/Holex'];
     const origins = Array.isArray(origin) ? origin : origin ? [origin] : [];
     return originOptions.filter(option => origins.includes(option));
   }

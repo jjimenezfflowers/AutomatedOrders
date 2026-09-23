@@ -127,6 +127,7 @@ model OrderDraft {
   environment  String   @id
   deliveryDate String?
   purpose      String?
+  placementMethod String @default("storefront")
   updatedAt    DateTime @updatedAt
 
   items OrderDraftItem[]
@@ -207,8 +208,12 @@ model OrderRun {
   placedAt DateTime
   /// Absent on 144 of the migrated entries, which predate the staging store.
   environment String?
+  /// Optional label from the draft, so history says what job this run belonged to.
+  purpose     String?
 
   orderNumber        String?
+  /// The numeric Shopify order shown on the checkout confirmation, e.g. "Order 16808".
+  shopifyOrderNumber String?
   confirmationNumber String?
   /// The Shopify global id, e.g. gid://shopify/Order/6103339008140.
   orderId            String?

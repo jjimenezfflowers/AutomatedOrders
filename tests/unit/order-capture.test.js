@@ -1,13 +1,23 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { captureOrder, readOrderNumberFromPage, identifierCandidates } = require('../helpers/order-capture');
+const {
+  captureOrder,
+  readOrderIdentifiersFromPage,
+  readOrderNumberFromPage,
+  identifierCandidates,
+} = require('../helpers/order-capture');
 
 /**
  * Stands in for a Playwright page. `selectors` maps a selector to the text its
  * first match holds; `body` is the whole page's text.
  */
-function fakePage({ selectors = {}, body = '', url = 'https://shop.myshopify.com/637/orders/abc' } = {}) {
+function fakePage({
+  selectors = {},
+  attributes = {},
+  body = '',
+  url = 'https://shop.myshopify.com/637/orders/abc',
+} = {}) {
   return {
     url: () => url,
     locator: (selector) => ({
@@ -15,6 +25,11 @@ function fakePage({ selectors = {}, body = '', url = 'https://shop.myshopify.com
         async textContent() {
           if (!(selector in selectors)) throw new Error(`no match for ${selector}`);
           return selectors[selector];
+        },
+        async getAttribute(name) {
+          const value = attributes[selector]?.[name];
+          if (value == null) throw new Error(`no attribute ${name} for ${selector}`);
+          return value;
         },
       }),
     }),
@@ -69,6 +84,46 @@ describe('readOrderNumberFromPage', () => {
   });
 });
 
+describe('readOrderIdentifiersFromPage', () => {
+  test('reads both the BB id and numeric Shopify order from the confirmation text', async () => {
+    const page = fakePage({
+      body: 'Your order number is: DEV-BB-50F6086 Copy order number DEV-BB-50F6086 (Order 16808) Order 16808',
+    });
+
+    assert.deepEqual(await readOrderIdentifiersFromPage(page), {
+      orderNumber: 'DEV-BB-50F6086',
+      shopifyOrderNumber: '16808',
+      confirmationNumber: null,
+    });
+  });
+
+  test('reads both ids from the copy button aria label when text is sparse', async () => {
+    const page = fakePage({
+      attributes: {
+        'button[aria-label*="Copy order number"]': {
+          'aria-label': 'Copy order number DEV-BB-50F6086 (Order 16808)',
+        },
+      },
+    });
+
+    assert.deepEqual(await readOrderIdentifiersFromPage(page), {
+      orderNumber: 'DEV-BB-50F6086',
+      shopifyOrderNumber: '16808',
+      confirmationNumber: null,
+    });
+  });
+
+  test('keeps a confirmation code out of the BB order field', async () => {
+    const page = fakePage({ body: 'Thank you. Confirmation # DV2-SLTB' });
+
+    assert.deepEqual(await readOrderIdentifiersFromPage(page), {
+      orderNumber: null,
+      shopifyOrderNumber: null,
+      confirmationNumber: 'DV2-SLTB',
+    });
+  });
+});
+
 describe('identifierCandidates', () => {
   test('reports identifier-shaped tokens only', async () => {
     const page = fakePage({ body: 'DEV-BB-50F5472 and ORDER-9 shipped' });
@@ -112,11 +167,15 @@ describe('captureOrder', () => {
 
   test('prefers the store, and says so', async () => {
     const lookup = { findRunOrder: async () => apiOrder };
-    const page = fakePage({ selectors: { '.notice__text': 'Your order number is: WRONG-1' } });
+    const page = fakePage({
+      body: 'Your order number is: DEV-BB-50F5472 Order 16808',
+      selectors: { '.notice__text': 'Your order number is: WRONG-1' },
+    });
 
     const captured = await captureOrder({ page, lookup, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-50F5472');
+    assert.equal(captured.shopifyOrderNumber, '16808');
     assert.equal(captured.confirmationNumber, 'JLIF0508C');
     assert.equal(captured.total, '205.79 USD');
     assert.equal(captured.source, 'api');
@@ -155,16 +214,17 @@ describe('captureOrder', () => {
     assert.equal(captured.source, 'page');
   });
 
-  test('falls back when the store answers with an order carrying no number', async () => {
-    // A match that cannot name the order is not a usable answer, and recording it
-    // would report source 'api' for an entry with no order number in it.
+  test('uses page ids when the store match carries no number', async () => {
+    // The API match still has useful details; the fleeting confirmation page
+    // fills in the ids humans need in History.
     const lookup = { findRunOrder: async () => ({ id: 'gid://1', orderNumber: null }) };
-    const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-5' } });
+    const page = fakePage({ body: 'Your order number is: DEV-BB-5 Order 16808' });
 
     const captured = await captureOrder({ page, lookup, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-5');
-    assert.equal(captured.source, 'page');
+    assert.equal(captured.shopifyOrderNumber, '16808');
+    assert.equal(captured.source, 'api');
   });
 
   test('falls back when the store simply has no matching order', async () => {
@@ -175,11 +235,12 @@ describe('captureOrder', () => {
   });
 
   test('reads the page when no lookup is configured at all', async () => {
-    const page = fakePage({ selectors: { '.notice__text': 'Your order number is: DEV-BB-3' } });
+    const page = fakePage({ body: 'Your order number is: DEV-BB-3 Order 16808' });
 
     const captured = await captureOrder({ page, ...now });
 
     assert.equal(captured.orderNumber, 'DEV-BB-3');
+    assert.equal(captured.shopifyOrderNumber, '16808');
     assert.equal(captured.source, 'page');
   });
 

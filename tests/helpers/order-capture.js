@@ -14,7 +14,11 @@
  * what `source` is for.
  */
 
-const { extractOrderNumber } = require('./order-number');
+const {
+  extractConfirmationNumber,
+  extractOrderNumber,
+  extractShopifyOrderNumber,
+} = require('./order-number');
 const { cartTokenFromCheckoutUrl, normaliseCartToken } = require('../../lib/order-lookup');
 
 /*
@@ -32,25 +36,80 @@ const ORDER_NUMBER_SELECTORS = [
   'span:has-text("#")',
 ];
 
-/** Reads the order number out of the confirmation page, or null. */
-async function readOrderNumberFromPage(page) {
-  for (const selector of ORDER_NUMBER_SELECTORS) {
+const CONFIRMATION_IDENTIFIER_SELECTORS = [
+  'button[aria-label*="Copy order number"]',
+  ...ORDER_NUMBER_SELECTORS,
+];
+
+function hasAnyIdentifier(identifiers) {
+  return Boolean(identifiers?.orderNumber || identifiers?.shopifyOrderNumber);
+}
+
+function mergePageIdentifiers(order, identifiers) {
+  return {
+    ...order,
+    orderNumber: identifiers.orderNumber ?? order.orderNumber ?? null,
+    shopifyOrderNumber: identifiers.shopifyOrderNumber ?? order.shopifyOrderNumber ?? null,
+    confirmationNumber: identifiers.confirmationNumber ?? order.confirmationNumber ?? null,
+  };
+}
+
+async function readLocatorText(page, selector, timeout = 700) {
+  const locator = page.locator(selector).first();
+  const parts = [];
+
+  try {
+    parts.push(await locator.textContent({ timeout }));
+  } catch {
+    // Not every checkout template exposes every selector.
+  }
+
+  if (typeof locator.getAttribute === 'function') {
     try {
-      const text = await page.locator(selector).first().textContent({ timeout: 3000 });
-      // These selectors also match headings like "Order summary", so keep looking
-      // until one yields something shaped like an order number.
-      const orderNumber = extractOrderNumber(text);
-      if (orderNumber) return orderNumber;
+      parts.push(await locator.getAttribute('aria-label', { timeout }));
     } catch {
-      continue;
+      // The copy button is useful when present, but not required.
     }
   }
 
+  return parts.filter(Boolean).join('\n');
+}
+
+/** Reads both confirmation identifiers out of the page, or nulls. */
+async function readOrderIdentifiersFromPage(page) {
+  const parts = [];
+
+  const current = () => {
+    const text = parts.filter(Boolean).join('\n');
+    return {
+      orderNumber: extractOrderNumber(text),
+      shopifyOrderNumber: extractShopifyOrderNumber(text),
+      confirmationNumber: extractConfirmationNumber(text),
+    };
+  };
+
   try {
-    return extractOrderNumber(await page.textContent('body'));
+    parts.push(await page.textContent('body', { timeout: 1_000 }));
   } catch {
-    return null;
+    // The page may already have navigated away or closed.
   }
+
+  let identifiers = current();
+  if (identifiers.orderNumber && identifiers.shopifyOrderNumber) return identifiers;
+
+  for (const selector of CONFIRMATION_IDENTIFIER_SELECTORS) {
+    parts.push(await readLocatorText(page, selector, 300));
+    identifiers = current();
+
+    if (identifiers.orderNumber && identifiers.shopifyOrderNumber) return identifiers;
+  }
+
+  return identifiers;
+}
+
+/** Reads the BB order id out of the confirmation page, or null. */
+async function readOrderNumberFromPage(page) {
+  return (await readOrderIdentifiersFromPage(page)).orderNumber;
 }
 
 /**
@@ -119,6 +178,8 @@ async function captureOrder({
     statusUrl = null;
   }
 
+  let pageIdentifiers = await readOrderIdentifiersFromPage(page);
+
   // The checkout URL carries the cart token for the whole of checkout, so it is
   // the steadier of the two sources; /cart.js needs the storefront session.
   const token = normaliseCartToken(cartToken) ?? cartTokenFromCheckoutUrl(checkoutUrl) ?? cartTokenFromCheckoutUrl(statusUrl);
@@ -150,10 +211,13 @@ async function captureOrder({
           productTitles,
         });
 
-        const strong = order?.orderNumber && order.matchedBy !== 'mostRecent';
-        if (strong || (order?.orderNumber && Date.now() >= deadline)) {
-          log(`🧾 Order ${order.orderNumber} (confirmation ${order.confirmationNumber ?? '—'}) via ${order.matchedBy}`);
-          return { ...order, source: 'api' };
+        const captured = order ? mergePageIdentifiers(order, pageIdentifiers) : null;
+        const identified = captured?.orderNumber || captured?.shopifyOrderNumber;
+        const strong = identified && order.matchedBy !== 'mostRecent';
+        if (strong || (identified && Date.now() >= deadline)) {
+          const shopify = captured.shopifyOrderNumber ? ` / Shopify ${captured.shopifyOrderNumber}` : '';
+          log(`🧾 Order ${captured.orderNumber ?? '—'}${shopify} (confirmation ${captured.confirmationNumber ?? '—'}) via ${order.matchedBy}`);
+          return { ...captured, source: 'api' };
         }
       } catch (error) {
         // A credentials or network problem must not fail a run that placed a real
@@ -172,9 +236,11 @@ async function captureOrder({
     }
   }
 
-  const orderNumber = await readOrderNumberFromPage(page);
+  if (!hasAnyIdentifier(pageIdentifiers)) {
+    pageIdentifiers = await readOrderIdentifiersFromPage(page);
+  }
 
-  if (!orderNumber) {
+  if (!hasAnyIdentifier(pageIdentifiers)) {
     log('⚠️  Could not capture a valid order number; recording the order without one');
     const candidates = await identifierCandidates(page);
     log(
@@ -185,18 +251,20 @@ async function captureOrder({
   }
 
   return {
-    orderNumber: orderNumber ?? null,
-    confirmationNumber: null,
+    orderNumber: pageIdentifiers.orderNumber ?? null,
+    shopifyOrderNumber: pageIdentifiers.shopifyOrderNumber ?? null,
+    confirmationNumber: pageIdentifiers.confirmationNumber ?? null,
     id: null,
     total: null,
     statusUrl,
-    matchedBy: orderNumber ? 'pageText' : null,
+    matchedBy: hasAnyIdentifier(pageIdentifiers) ? 'pageText' : null,
     source: 'page',
   };
 }
 
 module.exports = {
   captureOrder,
+  readOrderIdentifiersFromPage,
   readOrderNumberFromPage,
   identifierCandidates,
   ORDER_NUMBER_SELECTORS,

@@ -166,6 +166,7 @@ describe('the store', () => {
       const config = {
         deliveryDate: '2026-09-15',
         purpose: 'Checkout QA',
+        placementMethod: 'bb',
         customerInfo: CUSTOMER,
         payment: PAYMENT,
         orders: [{ productId: 'roses', quantity: 2, variant: '20 stems' }],
@@ -181,6 +182,7 @@ describe('the store', () => {
 
       const back = await store.getOrderConfig('dev', client);
       assert.ok(!('purpose' in back));
+      assert.equal(back.placementMethod, 'storefront');
     });
 
     test('keeps the option selections a line carries', async () => {
@@ -243,6 +245,7 @@ describe('the store', () => {
     test('reads back empty rather than throwing before anything is saved', async () => {
       assert.deepEqual(await store.getOrderConfig('dev', client), {
         deliveryDate: '',
+        placementMethod: 'storefront',
         customerInfo: {},
         payment: {},
         orders: [],
@@ -259,6 +262,8 @@ describe('the store', () => {
       orderNumber: 'DEV-BB-1',
       date: '2026-09-03T02:37:08.000Z',
       environment: 'dev',
+      purpose: 'Checkout QA',
+      shopifyOrderNumber: '16808',
       customer: CUSTOMER.email,
       products: [{ productId: 'roses', quantity: 1, variant: '20 stems' }],
       total: '114.86 USD',
@@ -270,6 +275,8 @@ describe('the store', () => {
 
       const [entry] = await store.getOrderHistory(client);
       assert.equal(entry.orderNumber, 'DEV-BB-1');
+      assert.equal(entry.shopifyOrderNumber, '16808');
+      assert.equal(entry.purpose, 'Checkout QA');
       assert.equal(entry.total, '114.86 USD');
       assert.equal(entry.products[0].variant, '20 stems');
     });
@@ -360,6 +367,28 @@ describe('the store', () => {
       await store.addOrderRun(run({ orderNumber: null }), client);
 
       assert.equal((await store.getOrderHistory(client)).length, 1);
+    });
+
+    test('does not require a purpose for older runs', async () => {
+      await store.addOrderRun(run({ purpose: '' }), client);
+
+      assert.ok(!('purpose' in (await store.getOrderHistory(client))[0]));
+    });
+
+    test('updates and clears the purpose of an existing run', async () => {
+      const created = await store.addOrderRun(run(), client);
+
+      const updated = await store.updateOrderRunPurpose(created.id, 'Customer replacement', client);
+      assert.equal(updated.purpose, 'Customer replacement');
+      assert.equal((await store.getOrderHistory(client))[0].purpose, 'Customer replacement');
+
+      const cleared = await store.updateOrderRunPurpose(created.id, '   ', client);
+      assert.ok(!('purpose' in cleared));
+    });
+
+    test('refuses to update a purpose without a valid run id', async () => {
+      await assert.rejects(() => store.updateOrderRunPurpose('nope', 'QA', client), TypeError);
+      await assert.rejects(() => store.updateOrderRunPurpose(999, 'QA', client), /does not exist/);
     });
 
     test('refuses something that is not a run', async () => {

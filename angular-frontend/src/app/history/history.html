@@ -13,7 +13,7 @@
     } @else {
       <ui-data-table
         testId="history"
-        searchPlaceholder="Search order number or customer..."
+        searchPlaceholder="Search order, customer, purpose..."
         [data]="history()"
         [columns]="columns"
         [loading]="loading()"
@@ -23,6 +23,14 @@
             <span class="font-semibold text-foreground">#{{ entry.orderNumber }}</span>
           } @else {
             <span class="font-semibold italic text-muted-foreground">order number not captured</span>
+          }
+        </ng-template>
+
+        <ng-template uiDataTableCell="shopifyOrderNumber" let-entry>
+          @if (entry.shopifyOrderNumber) {
+            <span class="font-medium text-foreground">#{{ entry.shopifyOrderNumber }}</span>
+          } @else {
+            <span class="text-sm text-muted-foreground">—</span>
           }
         </ng-template>
 
@@ -71,6 +79,69 @@
           <ui-badge [variant]="entry.environment === 'staging' ? 'warning' : 'success'">
             {{ label }}
           </ui-badge>
+        </ng-template>
+
+        <ng-template uiDataTableCell="purpose" let-entry>
+          @if (editingPurposeEntry() === entry) {
+            <div class="flex min-w-[244px] items-center gap-1">
+              <div class="w-[172px] shrink-0">
+                <ui-input
+                  inputId="purpose-{{ entry.id }}"
+                  name="purpose-{{ entry.id }}"
+                  [(ngModel)]="purposeDraft"
+                  placeholder="Add purpose"
+                  [testId]="'purpose-input-' + entry.id"
+                />
+              </div>
+              <ui-button
+                variant="default"
+                size="icon"
+                class="size-8"
+                [loading]="savingPurposeId() === entry.id"
+                [ariaLabel]="'Save purpose for order ' + (entry.orderNumber ?? entry.id)"
+                title="Save purpose"
+                [testId]="'save-purpose-' + entry.id"
+                (click)="savePurpose(entry)"
+              >
+                <lucide-angular [img]="icons.save" class="size-4" aria-hidden="true" />
+              </ui-button>
+              <ui-button
+                variant="ghost"
+                size="icon"
+                class="size-8"
+                [disabled]="savingPurposeId() === entry.id"
+                [ariaLabel]="'Cancel purpose editing for order ' + (entry.orderNumber ?? entry.id)"
+                title="Cancel"
+                [testId]="'cancel-purpose-' + entry.id"
+                (click)="cancelPurposeEdit()"
+              >
+                <lucide-angular [img]="icons.cancel" class="size-4" aria-hidden="true" />
+              </ui-button>
+            </div>
+            @if (purposeError()) {
+              <span class="mt-1 block text-xs text-destructive" role="alert">{{ purposeError() }}</span>
+            }
+          } @else {
+            <div class="flex items-center gap-1.5">
+              @if (entry.purpose) {
+                <span class="text-sm text-foreground">{{ entry.purpose }}</span>
+              } @else {
+                <span class="text-sm text-muted-foreground">—</span>
+              }
+              @if (entry.id) {
+                <ui-button
+                  variant="ghost"
+                  size="icon"
+                  class="size-7"
+                  [ariaLabel]="'Edit purpose for order ' + (entry.orderNumber ?? entry.id)"
+                  [testId]="'edit-purpose-' + entry.id"
+                  (click)="editPurpose(entry)"
+                >
+                  <lucide-angular [img]="icons.edit" class="size-3.5" aria-hidden="true" />
+                </ui-button>
+              }
+            </div>
+          }
         </ng-template>
 
         <ng-template uiDataTableCell="date" let-entry>

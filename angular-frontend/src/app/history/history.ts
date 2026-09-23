@@ -1,12 +1,16 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LucideAngularModule, History, ExternalLink } from 'lucide-angular';
+import { FormsModule } from '@angular/forms';
+import { Check, ExternalLink, History, Pencil, X } from 'lucide-angular';
+import { LucideAngularModule } from 'lucide-angular';
 
 import {
   UI_CARD,
   UiBadgeComponent,
+  UiButtonComponent,
   UiDataTableCellDirective,
   UiDataTableComponent,
+  UiInputComponent,
   type UiDataTableColumn,
 } from '../ui';
 
@@ -27,14 +31,18 @@ interface HistoryLineItem {
 }
 
 interface HistoryEntry {
+  id: number;
   // Null when the confirmation page did not expose a usable order number; the
   // order was still placed, so the entry is kept rather than dropped.
   orderNumber: string | null;
+  // The numeric Shopify order shown beside the BB id on the confirmation page.
+  shopifyOrderNumber?: string | null;
   // Shopify's own confirmation reference, which only entries captured through the
   // Admin API carry — the confirmation page never exposed it to scraping.
   confirmationNumber?: string | null;
   date: string;
   environment?: 'dev' | 'staging';
+  purpose?: string | null;
   products: HistoryProduct[];
   customer: string;
   total: string;
@@ -91,8 +99,8 @@ function timestamp(iso: string): number {
  * Same patterns as tests/helpers/order-number.js, which decides what gets written.
  */
 const ORDER_NUMBER_PATTERNS = [
-  // Environment-prefixed identifiers, e.g. DEV-BB-50F2327 / STAGE-BB-1204.
-  /\b([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)\b/,
+  // Store order names, e.g. DEV-BB-50F2327 / STAGE-BB-1204.
+  /\b((?:DEV|STG|STAGE|STAGING)-BB-[A-Z0-9-]*\d[A-Z0-9-]*)\b/i,
   /*
    * Classic Shopify order numbers, e.g. "Order #1234". The word is required: a
    * bare /#\d{3,}/ also matches a hex colour like #303030.
@@ -119,11 +127,14 @@ function usableOrderNumber(value: string | null): string | null {
 @Component({
   selector: 'app-history',
   imports: [
+    FormsModule,
     LucideAngularModule,
     ...UI_CARD,
     UiBadgeComponent,
+    UiButtonComponent,
     UiDataTableComponent,
     UiDataTableCellDirective,
+    UiInputComponent,
   ],
   templateUrl: './history.html',
   styleUrl: './history.css',
@@ -131,7 +142,11 @@ function usableOrderNumber(value: string | null): string | null {
 export class HistoryComponent implements OnInit {
   readonly history = signal<HistoryEntry[]>([]);
   readonly loading = signal(true);
-  readonly icons = { history: History, external: ExternalLink };
+  readonly editingPurposeEntry = signal<HistoryEntry | null>(null);
+  readonly savingPurposeId = signal<number | null>(null);
+  readonly purposeError = signal('');
+  readonly icons = { history: History, external: ExternalLink, edit: Pencil, save: Check, cancel: X };
+  purposeDraft = '';
 
   /** The order's delivery date, and how many other dates it spans. */
   deliverySummary(entry: HistoryEntry): { first: string; extra: number } {
@@ -151,11 +166,18 @@ export class HistoryComponent implements OnInit {
   readonly columns: UiDataTableColumn<HistoryEntry>[] = [
     {
       id: 'orderNumber',
-      header: 'Order',
+      header: 'BB Order',
       width: 'minmax(220px,2fr)',
       // '' rather than null so a missing number searches and sorts as empty text
       // instead of stringifying to "null".
       accessor: (entry) => entry.orderNumber ?? '',
+      sortable: true,
+    },
+    {
+      id: 'shopifyOrderNumber',
+      header: 'Shopify Order',
+      width: 'minmax(150px,1fr)',
+      accessor: (entry) => entry.shopifyOrderNumber ?? '',
       sortable: true,
     },
     {
@@ -183,6 +205,13 @@ export class HistoryComponent implements OnInit {
       width: '150px',
       accessor: environmentLabel,
       filterable: true,
+    },
+    {
+      id: 'purpose',
+      header: 'Purpose',
+      width: 'minmax(280px,1.5fr)',
+      accessor: (entry) => entry.purpose ?? '',
+      sortable: true,
     },
     {
       id: 'date',
@@ -243,6 +272,39 @@ export class HistoryComponent implements OnInit {
   ];
 
   constructor(private http: HttpClient) {}
+
+  editPurpose(entry: HistoryEntry): void {
+    this.editingPurposeEntry.set(entry);
+    this.purposeDraft = entry.purpose ?? '';
+    this.purposeError.set('');
+  }
+
+  cancelPurposeEdit(): void {
+    this.editingPurposeEntry.set(null);
+    this.purposeDraft = '';
+    this.purposeError.set('');
+  }
+
+  savePurpose(entry: HistoryEntry): void {
+    const purpose = this.purposeDraft.trim();
+    this.savingPurposeId.set(entry.id);
+    this.purposeError.set('');
+
+    this.http.patch<HistoryEntry>(`/api/order-history/${entry.id}/purpose`, { purpose }).subscribe({
+      next: updated => {
+        this.history.update(entries =>
+          entries.map(current => current.id === entry.id ? { ...current, purpose: updated.purpose } : current),
+        );
+        this.savingPurposeId.set(null);
+        this.editingPurposeEntry.set(null);
+        this.purposeDraft = '';
+      },
+      error: () => {
+        this.savingPurposeId.set(null);
+        this.purposeError.set('Could not save purpose. Try again.');
+      },
+    });
+  }
 
   /** PARTIALLY_REFUNDED reads as "Partially refunded". */
   humanise(status: string | null | undefined): string {

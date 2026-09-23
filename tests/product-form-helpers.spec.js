@@ -97,6 +97,38 @@ test("keeps regular select variant and quantity controls working", async ({ page
   await expect(page.locator("#quantity-select")).toHaveValue("4");
 });
 
+test("matches the same stem quantity when Shopify adds bunches without changing price", async ({ page }) => {
+  await page.setContent(`
+    <select id="option-0">
+      <option value="50 Stems (5 Bunches)">50 Stems (5 Bunches) - $129.99</option>
+      <option value="150 Stems (15 Bunches)">150 Stems (15 Bunches) - $234.99</option>
+    </select>
+  `);
+
+  await selectVariantFromOrder(
+    page,
+    { variantSelector: "#option-0" },
+    { variant: "150 Stems - $234.99" },
+  );
+
+  await expect(page.locator("#option-0")).toHaveValue("150 Stems (15 Bunches)");
+});
+
+test("rejects a changed variant price and shows the live options", async ({ page }) => {
+  await page.setContent(`
+    <select id="option-0">
+      <option value="50 Stems (5 Bunches)">50 Stems (5 Bunches) - $144.99</option>
+      <option value="150 Stems (15 Bunches)">150 Stems (15 Bunches) - $259.99</option>
+    </select>
+  `);
+
+  await expect(selectVariantFromOrder(
+    page,
+    { variantSelector: "#option-0" },
+    { variant: "50 Stems - $129.99" },
+  )).rejects.toThrow(/Opciones disponibles:.*50 Stems \(5 Bunches\) - \$144\.99/);
+});
+
 test("loads the selected Shopify variant URL for non-default variants", async ({ page }) => {
   await page.route("https://example.test/products/test-flower**", async (route) => {
     const requestUrl = new URL(route.request().url());

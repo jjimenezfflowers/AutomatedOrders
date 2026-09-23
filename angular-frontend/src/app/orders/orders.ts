@@ -70,9 +70,12 @@ interface OrderItem {
   productOptions?: { [key: string]: string };
 }
 
+type PlacementMethod = 'storefront' | 'bb';
+
 interface OrderConfig {
   deliveryDate: string;
   purpose?: string;
+  placementMethod: PlacementMethod;
   customerInfo?: Record<string, string>;
   payment?: Record<string, string>;
   orders: OrderConfigEntry[];
@@ -94,7 +97,10 @@ interface RunTestResponse {
 }
 
 type ProductSortKey = 'entry' | 'origin' | 'name';
-type OrderRunSnapshot = Pick<OrderConfig, 'deliveryDate' | 'purpose' | 'orders'>;
+type OrderRunSnapshot = Pick<
+  OrderConfig,
+  'deliveryDate' | 'purpose' | 'orders' | 'placementMethod'
+>;
 
 @Component({
   selector: 'app-orders',
@@ -128,6 +134,7 @@ export class OrdersComponent implements OnInit {
   runError: string | null = null;
   products: Product[] = [];
   productSort: ProductSortKey = 'entry';
+  placementMethod: PlacementMethod = 'storefront';
   /** Filters the picker; 24 products in a checkbox grid is more than anyone scans. */
   productSearch = '';
 
@@ -140,6 +147,10 @@ export class OrdersComponent implements OnInit {
     { value: 'origin', label: 'Origin' },
     { value: 'name', label: 'Name' }
   ];
+  readonly placementMethodOptions: { value: PlacementMethod; label: string }[] = [
+    { value: 'storefront', label: 'Storefront checkout' },
+    { value: 'bb', label: 'BB Draft Order' },
+  ];
   selectedProducts: { [key: string]: boolean } = {};
   orderItems: OrderItem[] = [];
   deliveryDate: string = '';
@@ -147,6 +158,7 @@ export class OrdersComponent implements OnInit {
   orderConfig: OrderConfig = {
     deliveryDate: '',
     purpose: '',
+    placementMethod: 'storefront',
     orders: []
   };
   isSavingOrder = false;
@@ -155,7 +167,7 @@ export class OrdersComponent implements OnInit {
   configLoaded = false;
   private orderRunQueue: OrderRunSnapshot[] = [];
   private activeOrderRun: OrderRunSnapshot | null = null;
-  private readonly originOptions = ['US', 'CO', 'EC'];
+  private readonly originOptions = ['US', 'CO', 'EC', 'USA/Holex'];
   private readonly collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
   private productEntryOrder = new Map<string, number>();
 
@@ -292,6 +304,7 @@ export class OrdersComponent implements OnInit {
         this.orderConfig = {
           deliveryDate: data.deliveryDate || '',
           purpose: data.purpose || '',
+          placementMethod: data.placementMethod === 'bb' ? 'bb' : 'storefront',
           customerInfo: data.customerInfo || {},
           payment: data.payment || {},
           orders
@@ -299,6 +312,7 @@ export class OrdersComponent implements OnInit {
 
         this.deliveryDate = this.orderConfig.deliveryDate;
         this.purpose = this.orderConfig.purpose || '';
+        this.placementMethod = this.orderConfig.placementMethod;
         this.selectedProducts = {};
         for (const order of orders) {
           this.selectedProducts[order.productId] = true;
@@ -413,7 +427,8 @@ export class OrdersComponent implements OnInit {
     return {
       deliveryDate: this.deliveryDate,
       purpose: this.purpose,
-      orders: this.cloneOrders(this.buildOrders())
+      orders: this.cloneOrders(this.buildOrders()),
+      placementMethod: this.placementMethod,
     };
   }
 
@@ -438,6 +453,7 @@ export class OrdersComponent implements OnInit {
           ...currentConfig,
           deliveryDate: snapshot.deliveryDate,
           purpose: snapshot.purpose,
+          placementMethod: snapshot.placementMethod,
           orders
         };
 
@@ -503,7 +519,9 @@ export class OrdersComponent implements OnInit {
     // The Playwright run reads the saved order config, so the queued snapshot has to be
     // persisted first; only run the test once the save has actually succeeded.
     this.persistOrderConfig(run).pipe(
-      switchMap(() => this.http.post<RunTestResponse>('/api/run-test', {}))
+      switchMap(() => this.http.post<RunTestResponse>('/api/run-test', {
+        method: run.placementMethod,
+      }))
     ).subscribe({
       next: (response) => {
         if (response.success) {
@@ -526,6 +544,10 @@ export class OrdersComponent implements OnInit {
         this.finishOrderRun();
       }
     });
+  }
+
+  get placeOrderLabel(): string {
+    return this.placementMethod === 'bb' ? 'Place through BB' : 'Place Order';
   }
 
   private finishOrderRun(): void {

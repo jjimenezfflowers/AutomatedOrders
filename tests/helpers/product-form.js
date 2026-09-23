@@ -94,9 +94,22 @@ async function selectVariantSelect(page, locator, targetVariant, selector) {
     return direct.text || direct.label || direct.value;
   }
 
-  const match = bestTextMatch(targetVariant, candidates);
+  let match = bestTextMatch(targetVariant, candidates);
   if (match.score < 60) {
-    throw new Error(`No se encontro la variante "${targetVariant}" en el selector ${selector}`);
+    const targetStems = targetVariant.trim().match(/^(\d+)\s+stems?\b/i)?.[1];
+    const targetPrice = targetVariant.match(/\$\s*([\d,]+\.\d{2})/)?.[1];
+    if (targetStems && targetPrice) {
+      const quantityMatches = candidates.filter((candidate) => {
+        const label = candidate.label || candidate.text || candidate.value;
+        return label.trim().match(/^(\d+)\s+stems?\b/i)?.[1] === targetStems
+          && label.match(/\$\s*([\d,]+\.\d{2})/)?.[1] === targetPrice;
+      });
+      if (quantityMatches.length === 1) match = { ...quantityMatches[0], score: 60 };
+    }
+  }
+  if (match.score < 60) {
+    const available = candidates.map((candidate) => candidate.label || candidate.text || candidate.value);
+    throw new Error(`No se encontro la variante "${targetVariant}" en el selector ${selector}. Opciones disponibles: ${available.join(' | ')}`);
   }
 
   await locator.first().selectOption(match.value);

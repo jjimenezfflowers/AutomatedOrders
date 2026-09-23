@@ -164,7 +164,9 @@ describe('runToJson', () => {
   const row = {
     placedAt: new Date('2026-09-03T02:37:08.000Z'),
     environment: 'dev',
+    purpose: 'Checkout QA',
     orderNumber: 'DEV-BB-50F5474',
+    shopifyOrderNumber: '16808',
     confirmationNumber: 'FUY0HXCMI',
     orderId: 'gid://shopify/Order/1',
     adminUrl: 'https://admin.shopify.com/store/s/orders/1',
@@ -208,7 +210,9 @@ describe('runToJson', () => {
     const json = runToJson(row);
 
     assert.equal(json.orderNumber, 'DEV-BB-50F5474');
+    assert.equal(json.shopifyOrderNumber, '16808');
     assert.equal(json.date, '2026-09-03T02:37:08.000Z');
+    assert.equal(json.purpose, 'Checkout QA');
     assert.equal(json.customer, 'jose@fiftyflowers.com');
     assert.deepEqual(json.tags, ['bb-1', 'PRO10']);
   });
@@ -235,5 +239,9 @@ describe('runToJson', () => {
   test('leaves environment undefined on the entries that never had one', () => {
     // 144 of the migrated runs predate the staging store.
     assert.equal(runToJson({ ...row, environment: null }).environment, undefined);
+  });
+
+  test('omits purpose on entries that predate the field', () => {
+    assert.equal(runToJson({ ...row, purpose: null }).purpose, undefined);
   });
 });

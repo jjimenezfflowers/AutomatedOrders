@@ -89,6 +89,15 @@
           testId="order-purpose" />
       </ui-field>
 
+      <ui-field label="Placement Method" controlId="order-placement-method">
+        <ui-select
+          inputId="order-placement-method"
+          size="sm"
+          [options]="placementMethodOptions"
+          [(ngModel)]="placementMethod"
+          testId="order-placement-method" />
+      </ui-field>
+
       <!-- Selected Products -->
       @if (orderItems.length > 0) {
         <div>
@@ -225,7 +234,7 @@
           (click)="runTest()"
           [disabled]="orderQueueFull">
           <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-          Place Order
+          {{ placeOrderLabel }}
           @if (pendingOrderCount) {
             <span class="text-xs opacity-80">({{ pendingOrderCount }}/{{ maxQueuedOrderRuns }})</span>
           }

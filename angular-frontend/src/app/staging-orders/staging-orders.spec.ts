@@ -18,6 +18,7 @@ const PRODUCTS = [
 const CONFIG = {
   stagingBaseUrl: 'https://staging.test',
   deliveryDate: '2026-01-10',
+  placementMethod: 'storefront' as const,
   orders: [{ productId: 'roses', quantity: 2 }]
 };
 
@@ -42,6 +43,14 @@ describe('StagingOrdersComponent', () => {
     return fixture.nativeElement.querySelector(
       'button[data-testid="place-staging-order"]'
     ) as HTMLButtonElement;
+  }
+
+  function flushRunConfigSave() {
+    const savePost = httpMock.expectOne('/api/staging-order-config');
+    expect(savePost.request.body.orders).toEqual([
+      { productId: 'roses', quantity: 2, deliveryDate: '2026-01-10' }
+    ]);
+    savePost.flush({});
   }
 
   beforeEach(async () => {
@@ -90,6 +99,7 @@ describe('StagingOrdersComponent', () => {
     expect(placeOrderButton().getAttribute('aria-busy')).toBe('true');
     expect(placeOrderButton().textContent).toContain('Place Staging Order');
 
+    flushRunConfigSave();
     httpMock.expectOne('/api/run-test').flush({ success: true });
     detect();
 
@@ -101,6 +111,7 @@ describe('StagingOrdersComponent', () => {
     completeInit();
 
     component.runTest();
+    flushRunConfigSave();
     httpMock.expectOne('/api/run-test').flush('boom', { status: 500, statusText: 'Server Error' });
 
     expect(component.isRunning).toBeFalse();
@@ -111,10 +122,23 @@ describe('StagingOrdersComponent', () => {
     completeInit();
 
     component.runTest();
+    flushRunConfigSave();
     httpMock.expectOne('/api/run-test').flush({ success: false, output: 'cart empty' });
 
     expect(component.isRunning).toBeFalse();
     expect(component.testOutput).toBe('cart empty');
+  });
+
+  it('sends the BB placement method selected on screen', () => {
+    completeInit();
+    component.placementMethod = 'bb';
+
+    component.runTest();
+    flushRunConfigSave();
+
+    const runPost = httpMock.expectOne('/api/run-test');
+    expect(runPost.request.body).toEqual({ staging: true, method: 'bb' });
+    runPost.flush({ success: true });
   });
 
   it('stays disabled while stagingBaseUrl is empty', () => {
@@ -143,8 +167,43 @@ describe('StagingOrdersComponent', () => {
     component.saveConfig();
 
     const post = httpMock.expectOne('/api/staging-order-config');
-    expect(post.request.body.orders).toEqual([{ productId: 'roses', quantity: 7 }]);
+    expect(post.request.body.orders).toEqual([
+      { productId: 'roses', quantity: 7, deliveryDate: '2026-01-10' }
+    ]);
     post.flush({});
+  });
+
+  it('persists and restores the selected placement method', () => {
+    httpMock.expectOne('/api/staging-products').flush(PRODUCTS);
+    httpMock.expectOne('/api/staging-order-config').flush({ ...CONFIG, placementMethod: 'bb' });
+    detect();
+
+    expect(component.placementMethod).toBe('bb');
+    component.saveConfig();
+
+    const post = httpMock.expectOne('/api/staging-order-config');
+    expect(post.request.body.placementMethod).toBe('bb');
+    post.flush({});
+  });
+
+  it('refuses to save before the staging draft has loaded', () => {
+    httpMock.expectOne('/api/staging-products').flush(PRODUCTS);
+    const pendingConfig = httpMock.expectOne('/api/staging-order-config');
+
+    component.saveConfig();
+
+    httpMock.expectNone(r => r.method === 'POST' && r.url === '/api/staging-order-config');
+    expect(window.alert).toHaveBeenCalled();
+    pendingConfig.flush(CONFIG);
+  });
+
+  it('offers the same product picker controls as the dev order form', () => {
+    completeInit();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="staging-product-search"]')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[data-testid="staging-selected-count"]')?.textContent).toContain('1 selected');
+    expect(fixture.nativeElement.querySelector('[data-testid="staging-clear-selection"]')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[data-testid="staging-delivery-date-roses"]')).toBeTruthy();
   });
 
   describe('loadProducts', () => {

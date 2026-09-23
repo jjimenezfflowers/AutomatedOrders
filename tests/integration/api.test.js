@@ -40,6 +40,13 @@ const post = (path, body) =>
     body: JSON.stringify(body),
   }).then(async (r) => ({ status: r.status, body: await r.json() }));
 
+const patch = (path, body) =>
+  fetch(`${BASE}${path}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then(async (r) => ({ status: r.status, body: await r.json() }));
+
 /** Waits for the server to answer, rather than guessing at a sleep. */
 async function waitForServer(deadlineMs = 20_000) {
   const deadline = Date.now() + deadlineMs;
@@ -134,6 +141,7 @@ describe('the HTTP API', () => {
     const CONFIG = {
       deliveryDate: '2026-09-15',
       purpose: 'Checkout QA',
+      placementMethod: 'bb',
       customerInfo: {
         email: 'jose@fiftyflowers.com',
         phone: '(208) 391-2924',
@@ -159,7 +167,13 @@ describe('the HTTP API', () => {
       const { status, body } = await get('/api/order-config');
 
       assert.equal(status, 200);
-      assert.deepEqual(body, { deliveryDate: '', customerInfo: {}, payment: {}, orders: [] });
+      assert.deepEqual(body, {
+        deliveryDate: '',
+        placementMethod: 'storefront',
+        customerInfo: {},
+        payment: {},
+        orders: [],
+      });
     });
 
     test('the staging config carries its base URL, and one row backs both endpoints', async () => {
@@ -198,7 +212,13 @@ describe('the HTTP API', () => {
     test('serves what the runs recorded, oldest first', async () => {
       const store = require('../../lib/store');
       await store.addOrderRun(
-        { orderNumber: 'older', date: '2026-09-01T00:00:00Z', products: [] },
+        {
+          orderNumber: 'older',
+          shopifyOrderNumber: '16808',
+          date: '2026-09-01T00:00:00Z',
+          purpose: 'Checkout QA',
+          products: [],
+        },
         database.client,
       );
       await store.addOrderRun(
@@ -208,6 +228,25 @@ describe('the HTTP API', () => {
 
       const { body } = await get('/api/order-history');
       assert.deepEqual(body.map((entry) => entry.orderNumber), ['older', 'newer']);
+      assert.equal(body[0].shopifyOrderNumber, '16808');
+      assert.equal(body[0].purpose, 'Checkout QA');
+      assert.equal(typeof body[0].id, 'number');
+    });
+
+    test('updates a completed run purpose', async () => {
+      const store = require('../../lib/store');
+      const created = await store.addOrderRun(
+        { orderNumber: 'DEV-BB-1', date: '2026-09-01T00:00:00Z', purpose: 'QA', products: [] },
+        database.client,
+      );
+
+      const response = await patch(`/api/order-history/${created.id}/purpose`, {
+        purpose: 'Customer replacement',
+      });
+
+      assert.equal(response.status, 200);
+      assert.equal(response.body.purpose, 'Customer replacement');
+      assert.equal((await get('/api/order-history')).body[0].purpose, 'Customer replacement');
     });
   });
 

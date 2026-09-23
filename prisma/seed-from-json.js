@@ -112,7 +112,11 @@ async function seedHistory(client, entries) {
       data: {
         placedAt: entry.date ? new Date(entry.date) : new Date(0),
         environment: entry.environment ?? null,
+        purpose: entry.purpose ? String(entry.purpose).trim() || null : null,
         orderNumber: entry.orderNumber ?? null,
+        shopifyOrderNumber: entry.shopifyOrderNumber
+          ? String(entry.shopifyOrderNumber).trim() || null
+          : null,
         confirmationNumber: entry.confirmationNumber ?? null,
         orderId: entry.orderId ?? null,
         adminUrl: entry.adminUrl ?? null,

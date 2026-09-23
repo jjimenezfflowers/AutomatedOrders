@@ -56,7 +56,7 @@ export const SECTION_COPY: Record<SectionId, { title: string; description: strin
   },
   orders: {
     title: 'Orders',
-    description: 'Build an order and place it against the storefront.',
+    description: 'Build an order and place it through the storefront or BB.',
   },
   customer: {
     title: 'Customer Info',

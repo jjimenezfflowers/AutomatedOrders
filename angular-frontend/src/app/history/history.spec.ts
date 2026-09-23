@@ -153,8 +153,10 @@ describe('HistoryComponent', () => {
     };
 
     const ORDER = columnIndex('orderNumber');
+    const SHOPIFY_ORDER = columnIndex('shopifyOrderNumber');
     const CONFIRMATION = columnIndex('confirmationNumber');
     const ENVIRONMENT = columnIndex('environment');
+    const PURPOSE = columnIndex('purpose');
     const DATE = columnIndex('date');
     const DELIVERY = columnIndex('delivery');
     const CUSTOMER = columnIndex('customer');
@@ -164,9 +166,12 @@ describe('HistoryComponent', () => {
     const PRODUCTS = columnIndex('products');
 
     interface EntryOverrides {
+      id?: number;
       orderNumber?: string | null;
+      shopifyOrderNumber?: string | null;
       date?: string;
       environment?: string;
+      purpose?: string | null;
       customer?: string;
       productCount?: number;
       confirmationNumber?: string | null;
@@ -184,9 +189,12 @@ describe('HistoryComponent', () => {
 
     function entry(overrides: EntryOverrides = {}) {
       const {
+        id = 1,
         orderNumber = 'DEV-BB-50F2327',
+        shopifyOrderNumber = null,
         date = '2026-09-02T19:55:34.826Z',
         environment = 'dev',
+        purpose = null,
         customer = 'jose@fiftyflowers.com',
         productCount = 1,
         confirmationNumber = null,
@@ -203,10 +211,13 @@ describe('HistoryComponent', () => {
       } = overrides;
 
       return {
+        id,
         orderNumber,
+        shopifyOrderNumber,
         confirmationNumber,
         date,
         environment,
+        purpose,
         customer,
         total,
         adminUrl,
@@ -297,9 +308,24 @@ describe('HistoryComponent', () => {
 
     describe('search', () => {
       const entries = [
-        entry({ orderNumber: 'DEV-BB-50F2327', customer: 'jose@fiftyflowers.com' }),
-        entry({ orderNumber: 'DEV-BB-50F2328', customer: 'alice@fiftyflowers.com' }),
-        entry({ orderNumber: 'STG-BB-90210', customer: 'bob@example.com' })
+        entry({
+          orderNumber: 'DEV-BB-50F2327',
+          shopifyOrderNumber: '16807',
+          customer: 'jose@fiftyflowers.com',
+          purpose: 'Checkout QA',
+        }),
+        entry({
+          orderNumber: 'DEV-BB-50F2328',
+          shopifyOrderNumber: '16808',
+          customer: 'alice@fiftyflowers.com',
+          purpose: 'Inventory check',
+        }),
+        entry({
+          orderNumber: 'STG-BB-90210',
+          shopifyOrderNumber: '16809',
+          customer: 'bob@example.com',
+          purpose: 'Regression run',
+        })
       ];
 
       it('matches the order number', async () => {
@@ -309,11 +335,25 @@ describe('HistoryComponent', () => {
         expect(columnText(ORDER)).toEqual(['#DEV-BB-50F2328']);
       });
 
+      it('matches the Shopify order number', async () => {
+        await flushHistory(entries);
+        await type('16808');
+
+        expect(columnText(ORDER)).toEqual(['#DEV-BB-50F2328']);
+      });
+
       it('matches the customer email', async () => {
         await flushHistory(entries);
         await type('alice@');
 
         expect(columnText(CUSTOMER)).toEqual(['alice@fiftyflowers.com']);
+      });
+
+      it('matches the run purpose', async () => {
+        await flushHistory(entries);
+        await type('inventory');
+
+        expect(columnText(ORDER)).toEqual(['#DEV-BB-50F2328']);
       });
 
       it('is case-insensitive', async () => {
@@ -385,6 +425,84 @@ describe('HistoryComponent', () => {
     });
 
     describe('what the Admin API adds', () => {
+      it('shows the numeric Shopify order captured from checkout', async () => {
+        await flushHistory([entry({ shopifyOrderNumber: '16808' })]);
+
+        expect(cellText(0, SHOPIFY_ORDER)).toBe('#16808');
+      });
+
+      it('shows a dash when a run has no Shopify order number', async () => {
+        await flushHistory([entry({ shopifyOrderNumber: null })]);
+
+        expect(cellText(0, SHOPIFY_ORDER)).toBe('—');
+      });
+
+      it('shows the purpose saved with the run', async () => {
+        await flushHistory([entry({ purpose: 'Checkout QA' })]);
+
+        expect(cellText(0, PURPOSE)).toBe('Checkout QA');
+      });
+
+      it('shows a dash for older runs without a purpose', async () => {
+        await flushHistory([entry({ purpose: null })]);
+
+        expect(cellText(0, PURPOSE)).toBe('—');
+      });
+
+      it('edits and saves the purpose in place', async () => {
+        await flushHistory([entry({ id: 42, purpose: 'Checkout QA' })]);
+
+        await click('edit-purpose-42');
+        const input = query<HTMLInputElement>('input[data-testid="purpose-input-42"]');
+        input.value = 'Customer replacement';
+        input.dispatchEvent(new Event('input'));
+        await detect();
+        await click('save-purpose-42');
+
+        const request = httpMock.expectOne('/api/order-history/42/purpose');
+        expect(request.request.method).toBe('PATCH');
+        expect(request.request.body).toEqual({ purpose: 'Customer replacement' });
+        request.flush(entry({ id: 42, purpose: 'Customer replacement' }));
+        await detect();
+
+        expect(cellText(0, PURPOSE)).toContain('Customer replacement');
+        expect(query('button[data-testid="edit-purpose-42"]')).toBeTruthy();
+      });
+
+      it('opens the editor for only the selected row', async () => {
+        await flushHistory([
+          entry({ id: 41, purpose: 'First purpose' }),
+          entry({ id: 42, purpose: 'Second purpose', date: '2026-09-01T19:55:34.826Z' }),
+        ]);
+
+        await click('edit-purpose-41');
+
+        expect(fixture.nativeElement.querySelectorAll('input[data-testid^="purpose-input-"]').length).toBe(1);
+        expect(query('input[data-testid="purpose-input-41"]')).toBeTruthy();
+        expect(query('button[data-testid="edit-purpose-42"]')).toBeTruthy();
+      });
+
+      it('does not offer editing when an older backend omits the run id', async () => {
+        const legacy = entry({ purpose: 'Legacy purpose' }) as Record<string, unknown>;
+        delete legacy['id'];
+        await flushHistory([legacy]);
+
+        expect(fixture.nativeElement.querySelector('button[data-testid^="edit-purpose-"]')).toBeNull();
+        expect(cellText(0, PURPOSE)).toBe('Legacy purpose');
+      });
+
+      it('keeps the editor open and reports a failed save', async () => {
+        await flushHistory([entry({ id: 42, purpose: 'Checkout QA' })]);
+
+        await click('edit-purpose-42');
+        await click('save-purpose-42');
+        httpMock.expectOne('/api/order-history/42/purpose').flush({}, { status: 500, statusText: 'Error' });
+        await detect();
+
+        expect(query('input[data-testid="purpose-input-42"]')).toBeTruthy();
+        expect(cellText(0, PURPOSE)).toContain('Could not save purpose');
+      });
+
       it('shows the confirmation number the store reported', async () => {
         // Scraping never had access to this: it is Shopify's own reference, and
         // the confirmation page does not expose it in a form worth reading.

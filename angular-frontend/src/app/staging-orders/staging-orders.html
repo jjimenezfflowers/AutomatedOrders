@@ -1,165 +1,173 @@
-<ui-card class="mb-6">
-  <ui-card-header>
-    <ui-card-description>Configure and place orders against the staging store. Customer info &amp; payment are shared from the Shared → Customer Info tab.</ui-card-description>
-  </ui-card-header>
-
-  <ui-card-content>
-    <!-- Staging URL -->
-    <div class="mb-5 flex flex-col gap-1 rounded-lg border border-warning/30 bg-warning/10 p-4">
-      <!-- text-warning sits on the wrapper so the label inherits it, and ui-field's own
-           destructive class still wins on the label when the field is invalid. -->
-      <ui-field
-        label="Staging Base URL"
-        controlId="staging-base-url"
-        class="text-warning"
-        [error]="errors['stagingBaseUrl']">
-        <ui-input
-          type="url"
-          inputId="staging-base-url"
-          [(ngModel)]="stagingBaseUrl"
-          [invalid]="!!errors['stagingBaseUrl']"
-          (focusout)="onFieldBlur('stagingBaseUrl')"
-          (input)="onFieldInput('stagingBaseUrl')"
-          testId="staging-base-url"
+<ui-card>
+  <ui-card-content class="flex flex-col gap-6">
+    <div class="rounded-lg border border-warning/30 bg-warning/10 p-4 text-warning">
+      <ui-field label="Staging Base URL" controlId="staging-base-url" [error]="errors['stagingBaseUrl']">
+        <ui-input type="url" inputId="staging-base-url" [(ngModel)]="stagingBaseUrl"
+          [invalid]="!!errors['stagingBaseUrl']" (focusout)="onFieldBlur('stagingBaseUrl')"
+          (input)="onFieldInput('stagingBaseUrl')" testId="staging-base-url"
           placeholder="https://staging-store.myshopify.com" />
       </ui-field>
-      <p class="mt-1 text-xs text-warning">Product URLs will have their domain replaced with this value at test run time.</p>
+      <p class="mt-2 text-xs">Product URLs use this domain when the staging order runs.</p>
     </div>
 
-    <!-- Delivery Date -->
-    <div class="mb-4">
-      <ui-field label="Delivery Date" controlId="staging-delivery-date">
-        <ui-date-picker
-          inputId="staging-delivery-date"
-          name="stagingDeliveryDate"
-          [(ngModel)]="deliveryDate"
-          testId="staging-delivery-date" />
-      </ui-field>
-    </div>
-
-    <!-- Available Products -->
-    <div class="mb-4">
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Available Products</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 p-4 bg-muted rounded-lg">
-        @for (product of products; track product.id) {
-          <div class="flex items-center">
-            <ui-checkbox
-              [inputId]="'staging-product-' + product.id"
-              [label]="product.name"
-              [ngModel]="selectedProducts[product.id]"
-              (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()"
-              title="Select product" />
+    <div>
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-semibold text-foreground">Available Products</h3>
+          @if (selectedCount) {
+            <ui-badge variant="secondary" testId="staging-selected-count">{{ selectedCount }} selected</ui-badge>
+            <ui-button variant="ghost" size="xs" (click)="clearSelection()" testId="staging-clear-selection">Clear</ui-button>
+          }
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <ui-input class="w-full sm:w-56" placeholder="Search products..." [(ngModel)]="productSearch" testId="staging-product-search" />
+          <div class="w-36">
+            <ui-select size="sm" [options]="productSortOptions" [(ngModel)]="productSort" title="Sort available products" />
           </div>
-        }
+        </div>
       </div>
 
-      <h3 class="mb-3 text-sm font-semibold text-foreground">Selected Products</h3>
-      <div class="space-y-3">
-        @for (item of orderItems; track item.id) {
-          <div class="p-3 bg-muted rounded">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-foreground">{{ item.name }}</span>
-              @if (getProductById(item.id)?.type === 'product-options') {
-                <ui-badge variant="secondary">Product Options</ui-badge>
-              }
-            </div>
-
-            @if (item.variant) {
-              <div class="mb-2 flex flex-col gap-1">
-                <ui-label [for]="'staging-variant-' + item.id" class="text-muted-foreground">Variant</ui-label>
-                @if (getProductById(item.id)?.variants?.length) {
-                  <ui-select size="sm" [inputId]="'staging-variant-' + item.id" [(ngModel)]="item.variant">
-                    @for (v of getProductById(item.id)?.variants; track v) {
-                      <option [value]="v">{{ v }}</option>
-                    }
-                  </ui-select>
-                } @else {
-                  <ui-input
-                    type="text"
-                    [inputId]="'staging-variant-' + item.id"
-                    [(ngModel)]="item.variant"
-                    placeholder="Variant" />
-                }
-              </div>
+      <div class="max-h-80 overflow-y-auto rounded-lg border border-border bg-muted p-4">
+        @if (visibleProducts.length) {
+          <div class="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+            @for (product of visibleProducts; track product.id) {
+              <label class="flex cursor-pointer select-none items-center gap-2 rounded-md px-1.5 py-1 transition-colors hover:bg-background">
+                <ui-checkbox [inputId]="'staging-product-' + product.id" [ngModel]="selectedProducts[product.id]"
+                  (ngModelChange)="selectedProducts[product.id] = $event; updateOrderItems()" title="Select product" />
+                <span class="flex min-w-0 flex-col">
+                  <span class="truncate text-sm text-foreground">{{ product.name }}</span>
+                  @if (hasOrigin(product.origin)) {
+                    <span class="text-xs text-muted-foreground">Origin: {{ formatOrigin(product.origin) }}</span>
+                  }
+                </span>
+              </label>
             }
+          </div>
+        } @else {
+          <p class="py-6 text-center text-sm text-muted-foreground" data-testid="staging-no-products">No products match "{{ productSearch }}"</p>
+        }
+      </div>
+    </div>
 
-            @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
-              <div class="mb-2">
-                <p class="text-xs font-semibold text-foreground mb-1">Product Options:</p>
-                <div class="space-y-2">
-                  @for (option of getProductById(item.id)!.productOptions; track option.id) {
-                    <div class="flex flex-col gap-1">
-                      <ui-label [for]="'staging-' + item.id + '-' + option.id" class="text-muted-foreground">{{ option.label }}</ui-label>
-                      <ui-select
-                        size="sm"
-                        [inputId]="'staging-' + item.id + '-' + option.id"
-                        [(ngModel)]="item.productOptions![option.id]">
-                        @for (opt of option.options; track $index) {
-                          <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">
-                            {{ getOptionLabel(opt) }}
-                          </option>
-                        }
-                      </ui-select>
-                    </div>
+    <ui-field label="Delivery Date" controlId="staging-delivery-date">
+      <ui-date-picker inputId="staging-delivery-date" name="stagingDeliveryDate"
+        [(ngModel)]="deliveryDate" testId="staging-delivery-date" />
+    </ui-field>
+
+    <ui-field label="Placement Method" controlId="staging-placement-method">
+      <ui-select
+        inputId="staging-placement-method"
+        size="sm"
+        [options]="placementMethodOptions"
+        [(ngModel)]="placementMethod"
+        testId="staging-placement-method" />
+    </ui-field>
+
+    @if (orderItems.length > 0) {
+      <div>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-semibold text-foreground">Selected Products</h3>
+          <div class="flex flex-wrap gap-2">
+            <ui-button variant="outline" size="xs" (click)="randomDateAndApply()"
+              title="Pick a random delivery date 8-12 days ahead and apply it to every product">
+              <lucide-angular [img]="icons.random" class="size-3.5" aria-hidden="true" />
+              Random (8-12 days)
+            </ui-button>
+            <ui-button variant="outline" size="xs" (click)="applyDateToAll()" title="Apply main delivery date to all products">
+              <lucide-angular [img]="icons.calendar" class="size-3.5" aria-hidden="true" />
+              Apply Date to All
+            </ui-button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          @for (item of orderItems; track item.id) {
+            <div class="rounded-lg border border-border bg-muted p-4">
+              <div class="mb-3 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-foreground">{{ item.name }}</p>
+                  @if (hasOrigin(getProductById(item.id)?.origin)) {
+                    <p class="text-xs text-muted-foreground">Origin: {{ formatOrigin(getProductById(item.id)?.origin) }}</p>
                   }
                 </div>
+                @if (getProductById(item.id)?.type === 'product-options') {
+                  <ui-badge variant="secondary">Product Options</ui-badge>
+                }
               </div>
-            }
 
-            <div class="mt-2 w-24">
-              <ui-field
-                label="Quantity"
-                [controlId]="'staging-quantity-' + item.id"
-                [error]="errors[quantityField(item.id)]">
-                <ui-input
-                  type="number"
-                  [inputId]="'staging-quantity-' + item.id"
-                  [(ngModel)]="item.quantity"
-                  [invalid]="!!errors[quantityField(item.id)]"
-                  (focusout)="onFieldBlur(quantityField(item.id))"
-                  (input)="onFieldInput(quantityField(item.id))"
-                  min="1"
-                  placeholder="1"
-                  [testId]="'staging-quantity-' + item.id" />
-              </ui-field>
+              @if (getProductById(item.id)?.variants?.length || item.variant) {
+                <div class="mb-3 flex flex-col gap-1">
+                  <ui-label [for]="'staging-variant-' + item.id">Variant</ui-label>
+                  @if (getProductById(item.id)?.variants?.length) {
+                    <ui-select size="sm" [inputId]="'staging-variant-' + item.id" [(ngModel)]="item.variant">
+                      @for (v of getProductById(item.id)?.variants; track v) { <option [value]="v">{{ v }}</option> }
+                    </ui-select>
+                  } @else {
+                    <ui-input type="text" [inputId]="'staging-variant-' + item.id" [(ngModel)]="item.variant" placeholder="Variant" />
+                  }
+                </div>
+              }
+
+              @if (getProductById(item.id)?.type === 'product-options' && getProductById(item.id)?.productOptions) {
+                <div class="mb-3">
+                  <p class="mb-2 text-xs font-semibold text-foreground">Product Options</p>
+                  <div class="flex flex-col gap-2">
+                    @for (option of getProductById(item.id)!.productOptions; track option.id) {
+                      <div class="flex flex-col gap-1">
+                        <ui-label [for]="'staging-' + item.id + '-' + option.id" class="text-muted-foreground">{{ option.label }}</ui-label>
+                        <ui-select size="sm" [inputId]="'staging-' + item.id + '-' + option.id" [(ngModel)]="item.productOptions![option.id]">
+                          @for (opt of option.options; track $index) {
+                            <option [value]="getOptionValue(opt)" [style.color]="hasPrice(opt) ? 'green' : 'inherit'">{{ getOptionLabel(opt) }}</option>
+                          }
+                        </ui-select>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <ui-field label="Quantity" [controlId]="'staging-quantity-' + item.id" [error]="errors[quantityField(item.id)]">
+                  <ui-input type="number" [inputId]="'staging-quantity-' + item.id" [(ngModel)]="item.quantity"
+                    [invalid]="!!errors[quantityField(item.id)]" (focusout)="onFieldBlur(quantityField(item.id))"
+                    (input)="onFieldInput(quantityField(item.id))" min="1" placeholder="1"
+                    [testId]="'staging-quantity-' + item.id" />
+                </ui-field>
+                <ui-field label="Delivery Date" [controlId]="'staging-delivery-date-' + item.id">
+                  <ui-date-picker [inputId]="'staging-delivery-date-' + item.id" [name]="'stagingDeliveryDate-' + item.id"
+                    [(ngModel)]="item.deliveryDate" [testId]="'staging-delivery-date-' + item.id" />
+                </ui-field>
+              </div>
             </div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex flex-wrap gap-3 mb-4">
-      <ui-button variant="outline" size="md" (click)="saveConfig()">
-        <lucide-angular [img]="icons.save" class="size-4" aria-hidden="true" />
-        Save Order
-      </ui-button>
-      <ui-button
-        variant="warning"
-        size="md"
-        testId="place-staging-order"
-        (click)="runTest()"
-        [loading]="isRunning"
-        [disabled]="!stagingBaseUrl">
-        @if (!isRunning) {
-          <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" />
-        }
-        Place Staging Order
-      </ui-button>
-    </div>
-
-    <!-- Inline output -->
-    @if (testOutput) {
-      <div>
-        <h3
-          class="flex items-center gap-1.5 text-sm font-semibold mb-2"
-          [class.text-success]="testSuccess === true"
-          [class.text-destructive]="testSuccess === false">
-          <lucide-angular [img]="testSuccess ? icons.passed : icons.failed" class="size-4" aria-hidden="true" />
-          {{ testSuccess ? 'Test passed' : 'Test failed' }}
-        </h3>
-        <pre class="bg-muted text-foreground border border-border p-4 rounded overflow-auto font-mono text-xs max-h-96 whitespace-pre-wrap">{{ testOutput }}</pre>
+          }
+        </div>
       </div>
     }
   </ui-card-content>
+
+  <ui-card-footer class="border-t border-border">
+    <div class="flex w-full items-center justify-end gap-2 pt-6">
+      <ui-button variant="outline" size="sm" (click)="saveConfig()" [loading]="isSavingOrder">Save Order</ui-button>
+      <ui-button variant="warning" size="sm" testId="place-staging-order" (click)="runTest()"
+        [loading]="isRunning" [disabled]="!stagingBaseUrl">
+        @if (!isRunning) { <lucide-angular [img]="icons.place" class="size-4" aria-hidden="true" /> }
+        {{ placeOrderLabel }}
+      </ui-button>
+    </div>
+  </ui-card-footer>
 </ui-card>
+
+@if (testOutput) {
+  <div class="pt-6">
+    <ui-card [class.border-success]="testSuccess === true" [class.border-destructive]="testSuccess === false">
+      <ui-card-content class="pt-6">
+        <h3 class="mb-2 flex items-center gap-1.5 text-sm font-semibold"
+          [class.text-success]="testSuccess === true" [class.text-destructive]="testSuccess === false">
+          <lucide-angular [img]="testSuccess ? icons.passed : icons.failed" class="size-4" aria-hidden="true" />
+          {{ testSuccess ? 'Test passed' : 'Test failed' }}
+        </h3>
+        <pre class="max-h-96 overflow-auto whitespace-pre-wrap rounded-md bg-muted p-4 font-mono text-xs text-foreground">{{ testOutput }}</pre>
+      </ui-card-content>
+    </ui-card>
+  </div>
+}

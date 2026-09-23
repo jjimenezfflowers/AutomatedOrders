@@ -1,7 +1,11 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { extractOrderNumber } = require('../helpers/order-number');
+const {
+  extractConfirmationNumber,
+  extractOrderNumber,
+  extractShopifyOrderNumber,
+} = require('../helpers/order-number');
 
 describe('extractOrderNumber', () => {
   describe('regression: prose from the confirmation page is not an order number', () => {
@@ -43,6 +47,10 @@ describe('extractOrderNumber', () => {
       assert.equal(extractOrderNumber('Your order number is: STAGE-BB-1204'), 'STAGE-BB-1204');
     });
 
+    test('handles the BB Staging identifier order used by Order Manager', () => {
+      assert.equal(extractOrderNumber('Order BB-STAGE-50F1412'), 'BB-STAGE-50F1412');
+    });
+
     test('collapses newlines and surrounding whitespace', () => {
       const text = '\n  Your order number is:\n\n   DEV-BB-50F2340  \n';
 
@@ -59,6 +67,10 @@ describe('extractOrderNumber', () => {
       assert.equal(extractOrderNumber('SHOP-NOW'), null);
     });
 
+    test('does not mistake a confirmation code for the BB order', () => {
+      assert.equal(extractOrderNumber('Confirmation # DV2-SLTB'), null);
+    });
+
     test('rejects short bare numbers that are not order numbers', () => {
       assert.equal(extractOrderNumber('Arrives in 3 days'), null);
     });
@@ -66,6 +78,12 @@ describe('extractOrderNumber', () => {
     test('tolerates null and undefined', () => {
       assert.equal(extractOrderNumber(null), null);
       assert.equal(extractOrderNumber(undefined), null);
+    });
+
+    test('rejects the fake checkout event identifier seen in History', () => {
+      assert.equal(extractOrderNumber('DEV-BB-50F0000Event'), null);
+      assert.equal(extractOrderNumber('DEV-BB-50F6163Ref'), null);
+      assert.equal(extractOrderNumber('DEV-BB-50F0000'), null);
     });
   });
 
@@ -105,5 +123,40 @@ describe('regression: a hex colour is not an order number', () => {
     const page = '<style>.a{color:#303030}</style> Your order number is: DEV-BB-50F5137';
 
     assert.equal(extractOrderNumber(page), 'DEV-BB-50F5137');
+  });
+});
+
+describe('extractShopifyOrderNumber', () => {
+  test('reads the numeric Shopify order from the confirmation metadata', () => {
+    assert.equal(extractShopifyOrderNumber('Order 16808'), '16808');
+  });
+
+  test('reads the numeric Shopify order from the copy button label', () => {
+    assert.equal(
+      extractShopifyOrderNumber('Copy order number DEV-BB-50F6086 (Order 16808)'),
+      '16808',
+    );
+  });
+
+  test('does not confuse the BB order id with the Shopify order number', () => {
+    assert.equal(extractShopifyOrderNumber('Your order number is: DEV-BB-50F6086'), null);
+  });
+});
+
+describe('extractConfirmationNumber', () => {
+  test('reads a hyphenated confirmation code by its label', () => {
+    assert.equal(extractConfirmationNumber('Confirmation # DV2-SLTB'), 'DV2-SLTB');
+  });
+
+  test('reads a compact confirmation code by its label', () => {
+    assert.equal(extractConfirmationNumber('Confirmation number JLIF0508C'), 'JLIF0508C');
+  });
+
+  test('does not confuse a BB order with a confirmation number', () => {
+    assert.equal(extractConfirmationNumber('Your order number is DEV-BB-50F6086'), null);
+  });
+
+  test('rejects page text glued to the confirmation code', () => {
+    assert.equal(extractConfirmationNumber('Confirmation number 8ACUAHVEHThank you'), null);
   });
 });

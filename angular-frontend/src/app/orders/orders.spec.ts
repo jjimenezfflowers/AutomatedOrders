@@ -44,6 +44,7 @@ const STORED_PAYMENT = {
 const STORED_CONFIG = {
   deliveryDate: '2026-01-10',
   purpose: 'Checkout QA',
+  placementMethod: 'storefront' as const,
   customerInfo: STORED_CUSTOMER_INFO,
   payment: STORED_PAYMENT,
   orders: [{ productId: 'roses', quantity: 3, deliveryDate: '2026-01-10' }]
@@ -167,6 +168,24 @@ describe('OrdersComponent', () => {
       post.flush({});
     });
 
+    it('persists the selected placement method with the draft', () => {
+      completeInit();
+
+      component.placementMethod = 'bb';
+      component.saveOrder();
+
+      httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+      const post = httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config');
+      expect(post.request.body.placementMethod).toBe('bb');
+      post.flush({});
+    });
+
+    it('restores the saved placement method', () => {
+      completeInit({ ...STORED_CONFIG, placementMethod: 'bb' });
+
+      expect(component.placementMethod).toBe('bb');
+    });
+
     it('preserves customerInfo written after the component loaded its own copy', () => {
       completeInit({ ...STORED_CONFIG, customerInfo: {}, payment: {} });
 
@@ -245,6 +264,19 @@ describe('OrdersComponent', () => {
   // --- Defect 2: runTest must persist first ----------------------------------------
 
   describe('runTest', () => {
+    it('sends the BB placement method selected on screen', () => {
+      completeInit();
+      component.placementMethod = 'bb';
+
+      component.runTest();
+      httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/order-config').flush(STORED_CONFIG);
+      httpMock.expectOne(r => r.method === 'POST' && r.url === '/api/order-config').flush({});
+
+      const runPost = httpMock.expectOne('/api/run-test');
+      expect(runPost.request.body).toEqual({ method: 'bb' });
+      runPost.flush({ success: true });
+    });
+
     it('POSTs /api/order-config before /api/run-test', () => {
       completeInit();
 

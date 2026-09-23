@@ -207,9 +207,10 @@ test("Place order from config", async ({ page, context }) => {
   await page.locator("#cart-sidebar-checkout").click();
 
   console.log('\n📋 Paso 3: Ingresando datos del cliente...');
-  await page.locator("#email").click();
+  const emailInput = page.locator("input#email");
+  await emailInput.click();
   await page.locator("div._9F1Rf").click();
-  await page.locator("#email").fill(customer.email);
+  await emailInput.fill(customer.email);
 
   await page
     .locator('input[name="firstName"]')
@@ -316,12 +317,14 @@ test("Place order from config", async ({ page, context }) => {
 
     const historyEntry = {
       orderNumber: order.orderNumber,
+      shopifyOrderNumber: order.shopifyOrderNumber ?? null,
       confirmationNumber: order.confirmationNumber,
       orderId: order.id,
       statusUrl: order.statusUrl,
       adminUrl: order.adminUrl ?? null,
       date: new Date().toISOString(),
       environment: ENVIRONMENT,
+      purpose: orderConfig.purpose || undefined,
       // What the run asked for. Kept because it carries the per-product delivery
       // dates, which the store does not report back.
       products: orderConfig.orders,

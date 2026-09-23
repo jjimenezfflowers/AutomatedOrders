@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const store = require('../../lib/store');
 const { disconnect } = require('../../lib/db');
 
-const ALLOWED_ORIGINS = new Set(['US', 'CO', 'EC']);
+const ALLOWED_ORIGINS = new Set(['US', 'CO', 'EC', 'USA/Holex']);
 
 after(async () => {
   await disconnect();
